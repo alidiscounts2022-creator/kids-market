@@ -5,12 +5,109 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>طفلي ماركت</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  direction: rtl;
+  background: #FBFBF8;
+}
+
+/* Header */
+.header {
+  background: #fff;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #010536;
+}
+
+.nav a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #010536;
+}
+
+.cta {
+  background: #F1F10D;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+
+/* Products */
+.products {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.price {
+  color: #010536;
+  font-weight: bold;
+}
+
+.btn {
+  display: block;
+  margin-top: 10px;
+  background: #25D366;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+</style>
+
 </head>
 
 <body>
 
-<h1>طفلي ماركت</h1>
-<p>أول نسخة من الموقع شغالة 🔥</p>
+<div class="header">
+  <div class="logo">طفلي ماركت</div>
+  <div class="nav">
+    <a href="#">الرئيسية</a>
+    <a href="#">المنتجات</a>
+    <a href="#" class="cta">أضف منتجاتك</a>
+  </div>
+</div>
+
+<div class="products">
+
+  <div class="card">
+    <img src="https://via.placeholder.com/300">
+    <p>بدلة أطفال</p>
+    <p class="price">65 د.ل</p>
+    <a class="btn" href="#">تواصل واتساب</a>
+  </div>
+
+  <div class="card">
+    <img src="https://via.placeholder.com/300">
+    <p>حذاء أطفال</p>
+    <p class="price">40 د.ل</p>
+    <a class="btn" href="#">تواصل واتساب</a>
+  </div>
+
+</div>
 
 </body>
 </html>
