@@ -7,160 +7,502 @@
 <title>طفلي ماركت</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   direction: rtl;
-  background: #F5F7FA;
+  background: linear-gradient(180deg, #F5F7FA 0%, #FFFFFF 100%);
   color: #1F2937;
 }
 
-/* HEADER */
+a {
+  text-decoration: none;
+}
+
+/* Header */
 .header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 25px;
-  background: white;
   position: sticky;
   top: 0;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  z-index: 1000;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.header-inner {
+  max-width: 1180px;
+  margin: auto;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 22px;
   color: #A855F7;
-  font-weight: bold;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #A855F7, #14B8A6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+  align-items: center;
 }
 
 .nav a {
-  margin-left: 12px;
-  text-decoration: none;
   color: #1F2937;
+  font-weight: 700;
+  font-size: 14px;
 }
 
-.cta {
+.nav .cta {
   background: #A855F7;
-  color: white !important;
-  padding: 8px 14px;
-  border-radius: 20px;
-}
-
-/* HERO */
-.hero {
-  padding: 60px 20px;
-  background: linear-gradient(135deg,#A855F7,#38BDF8);
   color: white;
-  position: relative;
+  padding: 10px 18px;
+  border-radius: 999px;
 }
 
-.hero h1 {
-  font-size: 32px;
+/* Hero */
+.hero {
+  max-width: 1180px;
+  margin: 28px auto 0;
+  padding: 20px;
 }
 
-.hero p {
-  opacity: 0.9;
+.hero-box {
+  min-height: 430px;
+  border-radius: 34px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(168,85,247,0.95), rgba(20,184,166,0.85)),
+    url("https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=1400&q=80");
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  padding: 45px;
+  color: white;
+  box-shadow: 0 25px 60px rgba(31,41,55,0.16);
 }
 
-.hero-btn {
+.hero-text h1 {
+  font-size: 42px;
+  line-height: 1.25;
+  margin: 0 0 14px;
+}
+
+.hero-text p {
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 520px;
+  opacity: 0.95;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.primary-btn,
+.secondary-btn {
+  padding: 13px 22px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.primary-btn {
   background: white;
   color: #A855F7;
-  padding: 10px 20px;
-  border-radius: 20px;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 10px;
 }
 
-/* FLOAT CARDS */
-.float-cards {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
+.secondary-btn {
+  background: rgba(255,255,255,0.16);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.45);
 }
 
-.float-card {
-  background: white;
+/* Hero Preview Card */
+.hero-preview {
+  background: rgba(255,255,255,0.92);
   color: #1F2937;
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+}
+
+.preview-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.preview-title {
+  font-weight: 900;
+}
+
+.preview-badge {
+  background: #38BDF8;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.preview-item {
+  background: #F5F7FA;
+  border-radius: 18px;
   padding: 10px;
-  border-radius: 15px;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.preview-item span {
+  display: block;
+  margin-top: 8px;
+  font-weight: 800;
   font-size: 13px;
 }
 
-/* CATEGORIES */
+/* Filters */
+.filters {
+  max-width: 1180px;
+  margin: 22px auto;
+  padding: 0 20px;
+}
+
+.filter-box {
+  background: white;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 12px 30px rgba(31,41,55,0.06);
+  border-radius: 24px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 12px;
+}
+
+.filter-box input,
+.filter-box select {
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 13px;
+  font-size: 14px;
+  color: #1F2937;
+  background: #F9FAFB;
+}
+
+/* Section */
+.section {
+  max-width: 1180px;
+  margin: 38px auto 0;
+  padding: 0 20px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 18px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.section-head p {
+  margin: 6px 0 0;
+  color: #6B7280;
+}
+
+/* Categories */
 .categories {
   display: grid;
   grid-template-columns: repeat(4,1fr);
-  gap: 15px;
-  padding: 20px;
+  gap: 14px;
 }
 
 .cat {
   background: white;
-  padding: 15px;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  border: 1px solid #E5E7EB;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(31,41,55,0.05);
+  transition: 0.25s;
 }
 
-/* PRODUCTS */
+.cat:hover {
+  transform: translateY(-4px);
+  border-color: #A855F7;
+}
+
+.cat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: #F3E8FF;
+  color: #A855F7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.cat h3 {
+  margin: 0 0 6px;
+}
+
+.cat p {
+  margin: 0;
+  color: #6B7280;
+  font-size: 13px;
+}
+
+/* Products */
 .products {
-  padding: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+  grid-template-columns: repeat(3,1fr);
   gap: 20px;
 }
 
 .card {
   background: white;
-  padding: 12px;
-  border-radius: 18px;
-  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  border: 1px solid #E5E7EB;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(31,41,55,0.07);
+  transition: 0.25s;
 }
 
-.image-box {
-  background: #EEF2FF;
-  height: 150px;
-  border-radius: 12px;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(31,41,55,0.12);
+}
+
+.image-wrap {
+  position: relative;
+  padding: 12px;
+  background: #F5F7FA;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+.badge {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: #A855F7;
+  color: white;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .price {
   color: #A855F7;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 900;
 }
 
-.meta {
+.city {
+  background: #ECFEFF;
+  color: #0F766E;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.shop {
+  color: #6B7280;
   font-size: 13px;
-  color: #666;
+  margin: 12px 0;
+  line-height: 1.7;
 }
 
-.btn {
+.whatsapp {
+  display: block;
   background: #25D366;
   color: white;
-  padding: 8px;
-  display: block;
   text-align: center;
-  border-radius: 10px;
-  margin-top: 10px;
-  text-decoration: none;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 900;
 }
 
-/* TRUST */
+/* Trust */
 .trust {
-  display: flex;
-  justify-content: space-around;
-  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
 }
 
-.trust div {
+.trust-card {
   background: white;
-  padding: 15px;
-  border-radius: 15px;
+  border: 1px solid #E5E7EB;
+  border-radius: 24px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(31,41,55,0.05);
 }
 
-/* FOOTER */
+.trust-card strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #1F2937;
+}
+
+/* Merchant */
+.merchant {
+  max-width: 1180px;
+  margin: 42px auto;
+  padding: 0 20px;
+}
+
+.merchant-box {
+  background: linear-gradient(135deg, #1F2937, #A855F7);
+  border-radius: 30px;
+  padding: 35px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.merchant-box h2 {
+  margin: 0 0 8px;
+}
+
+.merchant-box p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.merchant-box a {
+  background: #FFFFFF;
+  color: #A855F7;
+  padding: 13px 24px;
+  border-radius: 999px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* Footer */
 .footer {
+  background: white;
+  border-top: 1px solid #E5E7EB;
+  padding: 26px 20px;
   text-align: center;
-  padding: 20px;
-  color: #666;
+  color: #6B7280;
+}
+
+.float {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  background: #25D366;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 12px 30px rgba(37,211,102,0.35);
+}
+
+/* Mobile */
+@media(max-width: 850px) {
+  .hero-box {
+    grid-template-columns: 1fr;
+    padding: 28px;
+  }
+
+  .hero-text h1 {
+    font-size: 30px;
+  }
+
+  .filter-box {
+    grid-template-columns: 1fr;
+  }
+
+  .categories,
+  .products,
+  .trust {
+    grid-template-columns: 1fr;
+  }
+
+  .merchant-box {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nav {
+    gap: 8px;
+  }
+
+  .nav a {
+    font-size: 13px;
+  }
 }
 </style>
 
@@ -168,63 +510,224 @@ body {
 
 <body>
 
-<div class="header">
-  <div class="logo">طفلي ماركت</div>
-  <div class="nav">
-    <a href="#">الرئيسية</a>
-    <a href="#">المنتجات</a>
-    <a href="#" class="cta">أضف منتجاتك</a>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">👶</div>
+      <span>طفلي ماركت</span>
+    </div>
+
+```
+<nav class="nav">
+  <a href="#">الرئيسية</a>
+  <a href="#products">المنتجات</a>
+  <a href="#merchant" class="cta">أضف منتجاتك</a>
+</nav>
+```
+
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-box">
+    <div class="hero-text">
+      <h1>منتجات الأطفال من محلات ليبيا في مكان واحد</h1>
+      <p>اكتشف الملابس، الألعاب، مستلزمات المواليد، والأحذية من تجار محليين وتواصل معهم مباشرة عبر واتساب.</p>
+
+```
+  <div class="hero-actions">
+    <a href="#products" class="primary-btn">تصفح المنتجات</a>
+    <a href="#merchant" class="secondary-btn">سجّل كتاجر</a>
   </div>
 </div>
 
-<div class="hero">
-  <h1>كل منتجات الأطفال من محلات ليبيا</h1>
-  <p>تصفح وتواصل مباشرة مع التاجر عبر واتساب</p>
-  <a href="#" class="hero-btn">ابدأ الآن</a>
+<div class="hero-preview">
+  <div class="preview-top">
+    <div class="preview-title">مختارات اليوم</div>
+    <div class="preview-badge">جديد</div>
+  </div>
 
-  <div class="float-cards">
-    <div class="float-card">👕 ملابس</div>
-    <div class="float-card">🧸 ألعاب</div>
-    <div class="float-card">👶 مواليد</div>
+  <div class="preview-grid">
+    <div class="preview-item">
+      <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=500&q=80" alt="ملابس أطفال">
+      <span>ملابس</span>
+    </div>
+    <div class="preview-item">
+      <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=500&q=80" alt="ألعاب أطفال">
+      <span>ألعاب</span>
+    </div>
+    <div class="preview-item">
+      <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=500&q=80" alt="مستلزمات مواليد">
+      <span>مواليد</span>
+    </div>
+    <div class="preview-item">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="أحذية أطفال">
+      <span>أحذية</span>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<section class="filters">
+  <div class="filter-box">
+    <input type="text" placeholder="ابحث عن منتج...">
+    <select>
+      <option>كل المدن</option>
+      <option>طرابلس</option>
+      <option>مصراتة</option>
+      <option>بنغازي</option>
+    </select>
+    <select>
+      <option>كل التصنيفات</option>
+      <option>ملابس</option>
+      <option>ألعاب</option>
+      <option>مواليد</option>
+      <option>أحذية</option>
+    </select>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <h2>التصنيفات</h2>
+      <p>اختر القسم المناسب لاحتياجك</p>
+    </div>
+  </div>
+
+  <div class="categories">
+    <div class="cat">
+      <div class="cat-icon">👕</div>
+      <h3>ملابس أطفال</h3>
+      <p>ملابس يومية وعروض موسمية</p>
+    </div>
+
+```
+<div class="cat">
+  <div class="cat-icon">🧸</div>
+  <h3>ألعاب</h3>
+  <p>ألعاب تعليمية وترفيهية</p>
+</div>
+
+<div class="cat">
+  <div class="cat-icon">🍼</div>
+  <h3>مواليد</h3>
+  <p>احتياجات المولود الأساسية</p>
+</div>
+
+<div class="cat">
+  <div class="cat-icon">👟</div>
+  <h3>أحذية</h3>
+  <p>اختيارات مناسبة للأطفال</p>
+</div>
+```
+
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="section-head">
+    <div>
+      <h2>منتجات مميزة</h2>
+      <p>نماذج عرض أولية — لاحقاً تُستبدل بمنتجات التجار</p>
+    </div>
+  </div>
+
+  <div class="products">
+    <div class="card">
+      <div class="image-wrap">
+        <span class="badge">🔥 عرض</span>
+        <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=700&q=80" alt="بدلة أطفال">
+      </div>
+      <div class="card-body">
+        <h3>بدلة أطفال قطنية</h3>
+        <div class="price-row">
+          <div class="price">65 د.ل</div>
+          <div class="city">طرابلس</div>
+        </div>
+        <div class="shop">🏪 محل عالم الطفل<br>الحالة: يرجى التأكد من التوفر عبر واتساب</div>
+        <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على بدلة أطفال قطنية">تواصل واتساب</a>
+      </div>
+    </div>
+
+```
+<div class="card">
+  <div class="image-wrap">
+    <span class="badge">⭐ جديد</span>
+    <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=700&q=80" alt="لعبة أطفال">
+  </div>
+  <div class="card-body">
+    <h3>لعبة أطفال تعليمية</h3>
+    <div class="price-row">
+      <div class="price">35 د.ل</div>
+      <div class="city">مصراتة</div>
+    </div>
+    <div class="shop">🏪 ألعاب الصغار<br>الحالة: يرجى التأكد من التوفر عبر واتساب</div>
+    <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على لعبة أطفال تعليمية">تواصل واتساب</a>
   </div>
 </div>
 
-<div class="categories">
-  <div class="cat">ملابس</div>
-  <div class="cat">ألعاب</div>
-  <div class="cat">مواليد</div>
-  <div class="cat">أحذية</div>
-</div>
-
-<div class="products">
-
-  <div class="card">
-    <div class="image-box"></div>
-    <h3>بدلة أطفال</h3>
-    <p class="price">65 د.ل</p>
-    <p class="meta">📍 طرابلس</p>
-    <a class="btn" href="#">واتساب</a>
+<div class="card">
+  <div class="image-wrap">
+    <span class="badge">🍼 مواليد</span>
+    <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=700&q=80" alt="مستلزمات مواليد">
   </div>
-
-  <div class="card">
-    <div class="image-box"></div>
-    <h3>حذاء أطفال</h3>
-    <p class="price">40 د.ل</p>
-    <p class="meta">📍 مصراتة</p>
-    <a class="btn" href="#">واتساب</a>
+  <div class="card-body">
+    <h3>طقم مستلزمات مولود</h3>
+    <div class="price-row">
+      <div class="price">90 د.ل</div>
+      <div class="city">بنغازي</div>
+    </div>
+    <div class="shop">🏪 بيبي ستور<br>الحالة: يرجى التأكد من التوفر عبر واتساب</div>
+    <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على طقم مستلزمات مولود">تواصل واتساب</a>
   </div>
+</div>
+```
 
+  </div>
+</section>
+
+<section class="section">
+  <div class="trust">
+    <div class="trust-card">
+      <strong>محلات محلية</strong>
+      <span>المنتجات تُعرض من تجار داخل ليبيا</span>
+    </div>
+
+```
+<div class="trust-card">
+  <strong>تواصل مباشر</strong>
+  <span>الزبون يتواصل مع التاجر مباشرة عبر واتساب</span>
 </div>
 
-<div class="trust">
-  <div>منتجات من محلات محلية</div>
-  <div>تواصل مباشر</div>
-  <div>بدون عمولات</div>
+<div class="trust-card">
+  <strong>عرض فقط</strong>
+  <span>الموقع لا يدير الدفع أو التوصيل في المرحلة الحالية</span>
 </div>
+```
 
-<div class="footer">
-الموقع للعرض فقط
-</div>
+  </div>
+</section>
+
+<section class="merchant" id="merchant">
+  <div class="merchant-box">
+    <div>
+      <h2>عندك محل منتجات أطفال؟</h2>
+      <p>اعرض منتجاتك مجاناً في البداية ووصل لزبائن جدد من مدينتك.</p>
+    </div>
+    <a href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نضيف منتجاتي في طفلي ماركت">أضف منتجاتك الآن</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <strong>طفلي ماركت</strong><br>
+  الموقع يعرض المنتجات فقط، ويتم التواصل والشراء والتوصيل مباشرة بين الزبون والتاجر.
+</footer>
+
+<a class="float" href="https://wa.me/218XXXXXXXXX">💬</a>
 
 </body>
 </html>
