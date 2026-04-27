@@ -8,193 +8,494 @@
 
 <style>
 *{box-sizing:border-box}
-
+html{scroll-behavior:smooth}
 body{
-margin:0;
-font-family:Arial;
-direction:rtl;
-background:#F5F7FA;
-color:#1F2937;
+  margin:0;
+  font-family:Arial, sans-serif;
+  direction:rtl;
+  background:#F5F7FA;
+  color:#1F2937;
 }
+a{text-decoration:none}
+.container{max-width:1180px;margin:auto;padding:0 20px}
 
-/* HEADER */
+/* Header */
 .header{
-position:sticky;
-top:0;
-background:white;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:12px 20px;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
-z-index:999;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #E5E7EB;
 }
-
+.header-inner{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
 .logo{
-display:flex;
-align-items:center;
-gap:6px;
-font-weight:bold;
-color:#A855F7;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:22px;
+  font-weight:900;
+  color:#A855F7;
 }
-
-.logo span{
-background:#A855F7;
-color:white;
-padding:5px 10px;
-border-radius:12px;
-font-size:14px;
+.logo-icon{
+  width:42px;
+  height:42px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#A855F7,#14B8A6);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-
+.nav{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
 .nav a{
-margin-left:10px;
-color:#1F2937;
-text-decoration:none;
-font-size:14px;
+  color:#1F2937;
+  font-size:14px;
+  font-weight:800;
+}
+.nav .cta{
+  background:#A855F7;
+  color:white;
+  padding:11px 18px;
+  border-radius:999px;
+  box-shadow:0 10px 22px rgba(168,85,247,.25);
 }
 
-.cta{
-background:#A855F7;
-color:white!important;
-padding:7px 12px;
-border-radius:20px;
-}
-
-/* HERO */
+/* Hero */
 .hero{
-background:linear-gradient(135deg,#A855F7,#38BDF8);
-color:white;
-padding:35px 20px;
-text-align:center;
+  padding:34px 0 20px;
 }
-
+.hero-card{
+  min-height:520px;
+  border-radius:38px;
+  padding:48px;
+  overflow:hidden;
+  position:relative;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:34px;
+  align-items:center;
+  color:white;
+  background:
+    radial-gradient(circle at top left, rgba(56,189,248,.65), transparent 32%),
+    linear-gradient(135deg,#A855F7 0%,#14B8A6 100%);
+  box-shadow:0 30px 80px rgba(31,41,55,.18);
+}
+.hero-card:before{
+  content:"";
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(255,255,255,.14);
+  top:-70px;
+  left:-70px;
+}
+.hero-card:after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  bottom:35px;
+  right:42%;
+}
+.hero-content,.hero-visual{position:relative;z-index:2}
+.kicker{
+  display:inline-block;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.35);
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:18px;
+}
 .hero h1{
-font-size:26px;
-margin-bottom:8px;
+  font-size:46px;
+  line-height:1.25;
+  margin:0 0 16px;
 }
-
 .hero p{
-opacity:0.9;
-font-size:14px;
+  font-size:18px;
+  line-height:1.9;
+  margin:0;
+  max-width:560px;
+  opacity:.95;
+}
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:26px;
+}
+.btn-main,.btn-soft{
+  padding:14px 24px;
+  border-radius:999px;
+  font-weight:900;
+}
+.btn-main{
+  background:white;
+  color:#A855F7;
+}
+.btn-soft{
+  color:white;
+  border:1px solid rgba(255,255,255,.45);
+  background:rgba(255,255,255,.14);
+}
+.hero-stats{
+  display:flex;
+  gap:12px;
+  margin-top:28px;
+  flex-wrap:wrap;
+}
+.stat{
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:18px;
+  padding:12px 16px;
+  min-width:120px;
+}
+.stat strong{display:block;font-size:20px}
+.stat span{font-size:12px;opacity:.9}
+
+/* Visual */
+.visual-card{
+  background:rgba(255,255,255,.92);
+  color:#1F2937;
+  border-radius:34px;
+  padding:18px;
+  box-shadow:0 25px 60px rgba(0,0,0,.22);
+  transform:rotate(-1deg);
+}
+.visual-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+.visual-head strong{font-size:17px}
+.visual-head span{
+  background:#38BDF8;
+  color:white;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+.visual-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.visual-item{
+  background:#F5F7FA;
+  border-radius:22px;
+  padding:10px;
+}
+.visual-item img{
+  width:100%;
+  height:125px;
+  object-fit:cover;
+  border-radius:18px;
+  display:block;
+}
+.visual-item small{
+  display:block;
+  margin-top:8px;
+  font-weight:900;
+}
+.float-chip{
+  position:absolute;
+  background:white;
+  color:#1F2937;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 16px 34px rgba(0,0,0,.15);
+}
+.chip-1{top:42px;left:14px}
+.chip-2{bottom:45px;right:-8px}
+
+/* Filters */
+.filters{margin-top:22px}
+.filter-box{
+  background:white;
+  border:1px solid #E5E7EB;
+  border-radius:26px;
+  padding:16px;
+  box-shadow:0 16px 40px rgba(31,41,55,.07);
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:12px;
+}
+.filter-box input,.filter-box select{
+  border:1px solid #E5E7EB;
+  background:#F9FAFB;
+  color:#1F2937;
+  border-radius:17px;
+  padding:14px;
+  font-size:14px;
 }
 
-.hero-btn{
-margin-top:10px;
-display:inline-block;
-background:white;
-color:#A855F7;
-padding:8px 18px;
-border-radius:20px;
-font-weight:bold;
+/* Sections */
+.section{padding:42px 0 0}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:20px;
+}
+.section-head h2{
+  margin:0;
+  font-size:30px;
+}
+.section-head p{
+  margin:7px 0 0;
+  color:#6B7280;
+}
+.view-all{
+  color:#A855F7;
+  font-weight:900;
 }
 
-/* TRUST STRIP */
-.trust-strip{
-display:flex;
-justify-content:space-around;
-background:white;
-padding:15px;
-margin-top:-15px;
-border-radius:20px;
-width:90%;
-margin-left:auto;
-margin-right:auto;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+/* Categories */
+.categories{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
 }
-
-.trust-strip div{
-font-size:13px;
-text-align:center;
+.cat{
+  background:white;
+  border:1px solid #E5E7EB;
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 14px 34px rgba(31,41,55,.06);
+  transition:.25s;
 }
-
-/* SECTION */
-.section{
-padding:20px;
-max-width:1100px;
-margin:auto;
+.cat:hover{
+  transform:translateY(-6px);
+  border-color:#A855F7;
 }
-
-.section h2{
-margin-bottom:10px;
+.cat-icon{
+  width:52px;
+  height:52px;
+  border-radius:18px;
+  background:#F3E8FF;
+  color:#A855F7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  margin-bottom:14px;
 }
+.cat h3{margin:0 0 8px}
+.cat p{margin:0;color:#6B7280;font-size:13px;line-height:1.7}
 
-/* PRODUCTS */
+/* Products */
 .products{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-gap:15px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
 }
-
-.card{
-background:white;
-border-radius:18px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-transition:0.3s;
+.product{
+  background:white;
+  border:1px solid #E5E7EB;
+  border-radius:30px;
+  overflow:hidden;
+  box-shadow:0 18px 42px rgba(31,41,55,.08);
+  transition:.25s;
 }
-
-.card:hover{
-transform:translateY(-4px);
+.product:hover{
+  transform:translateY(-7px);
+  box-shadow:0 24px 55px rgba(31,41,55,.13);
 }
-
-.card img{
-width:100%;
-height:180px;
-object-fit:cover;
+.product-img{
+  padding:12px;
+  background:#F5F7FA;
+  position:relative;
 }
-
-.card-body{
-padding:12px;
+.product-img img{
+  width:100%;
+  height:225px;
+  object-fit:cover;
+  border-radius:22px;
+  display:block;
 }
-
+.badge{
+  position:absolute;
+  top:22px;
+  right:22px;
+  background:#A855F7;
+  color:white;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+.product-body{padding:18px}
+.product h3{margin:0 0 12px;font-size:19px}
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
 .price{
-color:#A855F7;
-font-weight:bold;
+  font-size:22px;
+  font-weight:900;
+  color:#A855F7;
+}
+.city{
+  background:#ECFEFF;
+  color:#0F766E;
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+.shop{
+  margin:14px 0;
+  color:#6B7280;
+  font-size:13px;
+  line-height:1.8;
+}
+.whatsapp{
+  display:block;
+  text-align:center;
+  background:#25D366;
+  color:white;
+  padding:13px;
+  border-radius:17px;
+  font-weight:900;
+  transition:.2s;
+}
+.whatsapp:hover{filter:brightness(.95);transform:scale(.99)}
+
+/* How it works */
+.steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.step{
+  background:white;
+  border:1px solid #E5E7EB;
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 14px 34px rgba(31,41,55,.06);
+}
+.step-num{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  background:linear-gradient(135deg,#A855F7,#38BDF8);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  margin-bottom:14px;
+}
+.step h3{margin:0 0 8px}
+.step p{margin:0;color:#6B7280;line-height:1.8;font-size:14px}
+
+/* Merchants */
+.merchant{
+  margin:46px 0;
+}
+.merchant-box{
+  border-radius:34px;
+  padding:36px;
+  background:
+    radial-gradient(circle at top right, rgba(56,189,248,.35), transparent 30%),
+    linear-gradient(135deg,#1F2937,#A855F7);
+  color:white;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:24px;
+  align-items:center;
+  box-shadow:0 25px 60px rgba(31,41,55,.18);
+}
+.merchant-box h2{margin:0 0 10px;font-size:30px}
+.merchant-box p{margin:0;opacity:.9;line-height:1.8}
+.merchant-box a{
+  background:white;
+  color:#A855F7;
+  padding:14px 24px;
+  border-radius:999px;
+  font-weight:900;
+  white-space:nowrap;
 }
 
-.meta{
-font-size:12px;
-color:#555;
-margin-top:5px;
-line-height:1.6;
-}
-
-.btn{
-display:block;
-margin-top:10px;
-background:#25D366;
-color:white;
-padding:8px;
-text-align:center;
-border-radius:10px;
-font-size:14px;
-}
-
-/* FOOTER */
+/* Footer */
 .footer{
-text-align:center;
-padding:20px;
-color:#666;
-font-size:13px;
-margin-top:20px;
+  background:white;
+  border-top:1px solid #E5E7EB;
+  margin-top:20px;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:20px;
+  padding:30px 20px;
+}
+.footer h3{margin:0 0 10px;color:#A855F7}
+.footer p,.footer a{
+  color:#6B7280;
+  font-size:14px;
+  line-height:1.8;
+}
+.copyright{
+  border-top:1px solid #E5E7EB;
+  padding:14px 20px;
+  text-align:center;
+  color:#6B7280;
+  font-size:13px;
 }
 
-/* FLOAT */
 .float{
-position:fixed;
-bottom:20px;
-left:20px;
-background:#25D366;
-color:white;
-padding:14px;
-border-radius:50%;
-font-size:20px;
+  position:fixed;
+  left:22px;
+  bottom:22px;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#25D366;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  box-shadow:0 14px 34px rgba(37,211,102,.38);
+  z-index:1001;
 }
 
-/* MOBILE */
-@media(max-width:700px){
-.header{flex-direction:column;gap:8px}
-.trust-strip{flex-direction:column;gap:10px}
+/* Responsive */
+@media(max-width:900px){
+  .hero-card{grid-template-columns:1fr;padding:30px;min-height:auto}
+  .hero h1{font-size:32px}
+  .filter-box,.categories,.products,.steps,.footer-grid{grid-template-columns:1fr}
+  .merchant-box{grid-template-columns:1fr;text-align:center}
+}
+@media(max-width:620px){
+  .header-inner{height:auto;flex-direction:column;gap:12px;padding:12px 0}
+  .nav{gap:10px;flex-wrap:wrap;justify-content:center}
+  .hero{padding-top:18px}
+  .hero-card{border-radius:28px;padding:24px}
+  .visual-item img{height:105px}
+  .section-head{display:block}
 }
 </style>
 
@@ -202,74 +503,269 @@ font-size:20px;
 
 <body>
 
-<div class="header">
-  <div class="logo">
-    <span>👶</span> طفلي ماركت
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-icon">👶</div>
+      <span>طفلي ماركت</span>
+    </div>
+    <nav class="nav">
+      <a href="#">الرئيسية</a>
+      <a href="#categories">التصنيفات</a>
+      <a href="#products">المنتجات</a>
+      <a href="#merchant" class="cta">أضف منتجاتك</a>
+    </nav>
   </div>
-  <div class="nav">
-    <a href="#">الرئيسية</a>
-    <a href="#products">المنتجات</a>
-    <a href="#merchant" class="cta">أضف منتجاتك</a>
-  </div>
-</div>
+</header>
 
-<div class="hero">
-  <h1>منتجات الأطفال من محلات ليبيا</h1>
-  <p>تصفح وتواصل مباشرة مع التاجر عبر واتساب</p>
-  <a href="#products" class="hero-btn">تصفح الآن</a>
-</div>
+<main>
 
-<div class="trust-strip">
-  <div>محلات محلية</div>
-  <div>تواصل مباشر</div>
-  <div>بدون عمولات</div>
-</div>
-
-<div class="section" id="products">
-  <h2>أحدث المنتجات</h2>
-
-  <div class="products">
+<section class="hero">
+  <div class="container">
+    <div class="hero-card">
+      <div class="hero-content">
+        <span class="kicker">منصة عرض منتجات الأطفال في ليبيا</span>
+        <h1>كل ما يحتاجه طفلك من محلات ليبيا في مكان واحد</h1>
+        <p>تصفح منتجات الأطفال، قارن الأسعار، واختر الأقرب لك. التواصل والشراء يتم مباشرة مع التاجر عبر واتساب.</p>
+        <div class="actions">
+          <a class="btn-main" href="#products">تصفح المنتجات</a>
+          <a class="btn-soft" href="#merchant">سجّل كتاجر</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>+4</strong><span>تصنيفات رئيسية</span></div>
+          <div class="stat"><strong>واتساب</strong><span>تواصل مباشر</span></div>
+          <div class="stat"><strong>ليبيا</strong><span>محلات محلية</span></div>
+        </div>
+      </div>
 
 ```
-<div class="card">
-  <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8">
-  <div class="card-body">
-    <h3>بدلة أطفال</h3>
-    <div class="price">65 د.ل</div>
-    <div class="meta">📍 طرابلس<br>🏪 عالم الطفل</div>
-    <a class="btn" href="#">واتساب</a>
+  <div class="hero-visual">
+    <div class="float-chip chip-1">🔥 عروض أطفال</div>
+    <div class="float-chip chip-2">📍 حسب المدينة</div>
+    <div class="visual-card">
+      <div class="visual-head">
+        <strong>مختارات اليوم</strong>
+        <span>جديد</span>
+      </div>
+      <div class="visual-grid">
+        <div class="visual-item">
+          <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=500&q=80" alt="ملابس أطفال">
+          <small>ملابس أطفال</small>
+        </div>
+        <div class="visual-item">
+          <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=500&q=80" alt="ألعاب أطفال">
+          <small>ألعاب</small>
+        </div>
+        <div class="visual-item">
+          <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=500&q=80" alt="مواليد">
+          <small>مواليد</small>
+        </div>
+        <div class="visual-item">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="أحذية">
+          <small>أحذية</small>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="card">
-  <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088">
-  <div class="card-body">
-    <h3>لعبة أطفال</h3>
-    <div class="price">35 د.ل</div>
-    <div class="meta">📍 مصراتة<br>🏪 ألعاب الصغار</div>
-    <a class="btn" href="#">واتساب</a>
+</div>
+```
+
   </div>
-</div>
+</section>
 
-<div class="card">
-  <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2">
-  <div class="card-body">
-    <h3>مستلزمات مولود</h3>
-    <div class="price">90 د.ل</div>
-    <div class="meta">📍 بنغازي<br>🏪 بيبي ستور</div>
-    <a class="btn" href="#">واتساب</a>
+<section class="filters">
+  <div class="container">
+    <div class="filter-box">
+      <input type="text" placeholder="ابحث عن منتج مثل: بدلة، لعبة، حذاء...">
+      <select>
+        <option>كل المدن</option>
+        <option>طرابلس</option>
+        <option>مصراتة</option>
+        <option>بنغازي</option>
+      </select>
+      <select>
+        <option>كل التصنيفات</option>
+        <option>ملابس أطفال</option>
+        <option>ألعاب</option>
+        <option>مواليد</option>
+        <option>أحذية</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="categories">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2>التصنيفات</h2>
+        <p>أقسام واضحة تساعد الزبون يوصل للمنتج بسرعة.</p>
+      </div>
+      <a class="view-all" href="#products">عرض المنتجات</a>
+    </div>
+
+```
+<div class="categories">
+  <div class="cat">
+    <div class="cat-icon">👕</div>
+    <h3>ملابس أطفال</h3>
+    <p>بدلات، ملابس يومية، وملابس موسمية.</p>
+  </div>
+  <div class="cat">
+    <div class="cat-icon">🧸</div>
+    <h3>ألعاب</h3>
+    <p>ألعاب تعليمية وترفيهية مناسبة للأطفال.</p>
+  </div>
+  <div class="cat">
+    <div class="cat-icon">🍼</div>
+    <h3>مواليد</h3>
+    <p>احتياجات المولود والعناية الأساسية.</p>
+  </div>
+  <div class="cat">
+    <div class="cat-icon">👟</div>
+    <h3>أحذية</h3>
+    <p>أحذية أطفال حسب المقاسات والمدن.</p>
   </div>
 </div>
 ```
 
   </div>
-</div>
+</section>
 
-<div class="footer">
-طفلي ماركت - عرض منتجات فقط والتواصل يتم مع التاجر مباشرة
-</div>
+<section class="section" id="products">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2>منتجات مميزة</h2>
+        <p>نماذج أولية للعرض — لاحقاً يتم استبدالها بمنتجات التجار.</p>
+      </div>
+      <a class="view-all" href="#merchant">أضف منتجك</a>
+    </div>
 
-<a href="#" class="float">💬</a>
+```
+<div class="products">
+  <div class="product">
+    <div class="product-img">
+      <span class="badge">🔥 عرض</span>
+      <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=700&q=80" alt="بدلة أطفال">
+    </div>
+    <div class="product-body">
+      <h3>بدلة أطفال قطنية</h3>
+      <div class="info-row">
+        <div class="price">65 د.ل</div>
+        <div class="city">طرابلس</div>
+      </div>
+      <div class="shop">🏪 محل عالم الطفل<br>الحالة: تأكد من التوفر عبر واتساب</div>
+      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على بدلة أطفال قطنية">تواصل واتساب</a>
+    </div>
+  </div>
+
+  <div class="product">
+    <div class="product-img">
+      <span class="badge">⭐ جديد</span>
+      <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=700&q=80" alt="لعبة أطفال">
+    </div>
+    <div class="product-body">
+      <h3>لعبة أطفال تعليمية</h3>
+      <div class="info-row">
+        <div class="price">35 د.ل</div>
+        <div class="city">مصراتة</div>
+      </div>
+      <div class="shop">🏪 ألعاب الصغار<br>الحالة: تأكد من التوفر عبر واتساب</div>
+      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على لعبة أطفال تعليمية">تواصل واتساب</a>
+    </div>
+  </div>
+
+  <div class="product">
+    <div class="product-img">
+      <span class="badge">🍼 مواليد</span>
+      <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=700&q=80" alt="مستلزمات مولود">
+    </div>
+    <div class="product-body">
+      <h3>طقم مستلزمات مولود</h3>
+      <div class="info-row">
+        <div class="price">90 د.ل</div>
+        <div class="city">بنغازي</div>
+      </div>
+      <div class="shop">🏪 بيبي ستور<br>الحالة: تأكد من التوفر عبر واتساب</div>
+      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على طقم مستلزمات مولود">تواصل واتساب</a>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2>كيف يعمل الموقع؟</h2>
+        <p>طريقة بسيطة وواضحة بدون دفع إلكتروني في المرحلة الحالية.</p>
+      </div>
+    </div>
+
+```
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <h3>تصفح المنتج</h3>
+    <p>اختار التصنيف أو المدينة وشوف المنتجات المعروضة.</p>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <h3>تواصل عبر واتساب</h3>
+    <p>اضغط زر واتساب وراسل التاجر مباشرة للاستفسار.</p>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <h3>اتفق مع التاجر</h3>
+    <p>التوفر، الدفع، والتوصيل يتم بينهم مباشرة.</p>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<section class="merchant" id="merchant">
+  <div class="container">
+    <div class="merchant-box">
+      <div>
+        <h2>عندك محل منتجات أطفال؟</h2>
+        <p>ابدأ بعرض منتجاتك مجاناً في النسخة التجريبية ووصل لزبائن جدد من مدينتك بدون ما تحتاج موقع أو تطبيق خاص.</p>
+      </div>
+      <a href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نضيف منتجاتي في طفلي ماركت">أضف منتجاتك الآن</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <h3>طفلي ماركت</h3>
+      <p>منصة عرض منتجات الأطفال من محلات ليبيا. البيع والتوصيل يتمان مباشرة بين الزبون والتاجر.</p>
+    </div>
+    <div>
+      <h3>روابط</h3>
+      <p><a href="#products">المنتجات</a></p>
+      <p><a href="#categories">التصنيفات</a></p>
+      <p><a href="#merchant">أضف منتجاتك</a></p>
+    </div>
+    <div>
+      <h3>تواصل</h3>
+      <p>واتساب الإدارة: 218XXXXXXXXX</p>
+      <p>المرحلة الحالية: عرض فقط بدون دفع داخل الموقع.</p>
+    </div>
+  </div>
+  <div class="copyright">© 2026 طفلي ماركت — جميع الحقوق محفوظة</div>
+</footer>
+
+<a class="float" href="https://wa.me/218XXXXXXXXX">💬</a>
 
 </body>
 </html>
