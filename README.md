@@ -1,2 +1,36 @@
-# kids-market
-A marketplace for kids products in Libya connecting merchants and customers via WhatsApp
+# طفلي ماركت
+
+واجهة Landing Page عربية RTL لمشروع "طفلي ماركت"، منصة MVP لعرض منتجات الأطفال في ليبيا وربط الزبائن بالمحلات المحلية عبر واتساب.
+
+## محتويات المشروع
+
+- `index.html`: الواجهة كاملة في ملف واحد، تشمل HTML وCSS وJavaScript.
+- `preview-desktop.png`: لقطة معاينة لسطح المكتب.
+- `preview-mobile.png`: لقطة معاينة للهاتف.
+- `preview-mobile-500.png`: لقطة معاينة لهاتف بعرض أكبر.
+- `docs/facebook-import-mvp.md`: خطة ربط فيسبوك واستيراد المنشورات كمسودات.
+- `supabase/schema.sql`: مخطط قاعدة البيانات المقترح.
+- `supabase/functions/facebook-oauth`: وظيفة ربط صفحة فيسبوك.
+- `supabase/functions/facebook-import`: وظيفة استيراد منشورات الصفحة.
+- `.env.example`: أسماء المتغيرات المطلوبة لاحقا بدون أي مفاتيح حقيقية.
+
+## التشغيل
+
+افتح ملف `index.html` مباشرة في المتصفح.
+
+## النشر على GitHub Pages
+
+1. ارفع ملفات المشروع إلى Repository جديد في GitHub.
+2. افتح إعدادات الريبو.
+3. اختر `Pages`.
+4. من `Build and deployment` اختر `Deploy from a branch`.
+5. اختر الفرع `main` والمجلد `/root`.
+6. احفظ الإعدادات وانتظر ظهور رابط الموقع.
+
+## ملاحظة
+
+الموقع للعرض فقط ولا يدير البيع أو الدفع أو التوصيل. التواصل يتم مباشرة بين الزبون والتاجر عبر واتساب.
+
+## مرحلة فيسبوك المقترحة
+
+ابدأ بقراءة `docs/facebook-import-mvp.md`. الفكرة هي ربط صفحات التجار واستيراد المنشورات إلى جدول `product_drafts` للمراجعة قبل النشر في جدول `products`.
