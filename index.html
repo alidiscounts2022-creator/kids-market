@@ -9,7 +9,7 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   direction: rtl;
   background: #F5F7FA;
   color: #1F2937;
@@ -17,15 +17,14 @@ body {
 
 /* Header */
 .header {
-  background: #ffffff;
+  background: white;
   padding: 14px 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   position: sticky;
   top: 0;
-  z-index: 999;
 }
 
 .logo {
@@ -35,10 +34,9 @@ body {
 }
 
 .nav a {
-  margin-left: 12px;
+  margin-left: 10px;
   text-decoration: none;
   color: #1F2937;
-  font-weight: 600;
 }
 
 .cta {
@@ -50,14 +48,18 @@ body {
 
 /* Hero */
 .hero {
-  text-align: center;
-  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 25px;
+}
+
+.hero-text {
+  max-width: 500px;
 }
 
 .hero h1 {
-  font-size: 28px;
-  margin-bottom: 10px;
-  color: #1F2937;
+  font-size: 32px;
 }
 
 .hero p {
@@ -65,44 +67,47 @@ body {
 }
 
 .hero-btn {
-  display: inline-block;
   margin-top: 15px;
+  display: inline-block;
   background: #14B8A6;
   color: white;
-  padding: 10px 22px;
+  padding: 10px 20px;
   border-radius: 20px;
   text-decoration: none;
+}
+
+.hero img {
+  width: 300px;
+  border-radius: 20px;
 }
 
 /* Categories */
 .categories {
   text-align: center;
-  padding: 10px;
+  padding: 15px;
 }
 
 .categories span {
   display: inline-block;
   margin: 5px;
   padding: 8px 14px;
-  background: #ffffff;
+  background: white;
   border-radius: 20px;
-  border: 1px solid #eee;
-  font-size: 14px;
 }
 
 /* Products */
 .products {
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+  gap: 20px;
 }
 
 .card {
-  background: #ffffff;
+  background: white;
   border-radius: 18px;
   padding: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   transition: 0.3s;
 }
 
@@ -112,12 +117,17 @@ body {
 
 .card img {
   width: 100%;
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
-.card h3 {
-  margin: 8px 0;
-  font-size: 16px;
+.tag {
+  background: #38BDF8;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  display: inline-block;
+  margin-bottom: 6px;
 }
 
 .price {
@@ -125,62 +135,58 @@ body {
   font-weight: bold;
 }
 
-.meta {
-  font-size: 13px;
-  color: #555;
-  line-height: 1.6;
-}
-
-.tag {
-  background: #38BDF8;
-  color: white;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  display: inline-block;
-  margin-bottom: 5px;
-}
-
 .btn {
   display: block;
   margin-top: 10px;
   background: #25D366;
   color: white;
-  text-align: center;
-  padding: 9px;
+  padding: 8px;
   border-radius: 10px;
+  text-align: center;
   text-decoration: none;
+}
+
+/* Trust */
+.trust {
+  display: flex;
+  justify-content: space-around;
+  padding: 30px 10px;
+}
+
+.trust div {
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  width: 30%;
+  text-align: center;
 }
 
 /* Merchant */
 .merchant {
-  margin: 25px;
-  padding: 30px 20px;
   background: #A855F7;
   color: white;
+  padding: 30px;
   text-align: center;
   border-radius: 20px;
+  margin: 20px;
 }
 
 .merchant a {
-  display: inline-block;
-  margin-top: 12px;
   background: #F1F10D;
-  color: #1F2937;
+  color: black;
   padding: 10px 20px;
   border-radius: 20px;
   text-decoration: none;
 }
 
-/* Notice */
-.notice {
+/* Footer */
+.footer {
   text-align: center;
-  font-size: 13px;
+  padding: 20px;
   color: #666;
-  padding: 15px;
 }
 
-/* Floating WhatsApp */
+/* Floating */
 .float {
   position: fixed;
   bottom: 20px;
@@ -190,14 +196,23 @@ body {
   padding: 14px;
   border-radius: 50%;
   text-decoration: none;
-  font-size: 20px;
 }
 
 /* Mobile */
-@media(max-width:600px){
-  .header {
+@media(max-width:700px){
+  .hero {
     flex-direction: column;
-    gap: 10px;
+  }
+  .hero img {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .trust {
+    flex-direction: column;
+  }
+  .trust div {
+    width: 90%;
+    margin: 10px auto;
   }
 }
 </style>
@@ -216,51 +231,59 @@ body {
 </div>
 
 <div class="hero">
-  <h1>منتجات الأطفال من محلات ليبيا</h1>
-  <p>تصفح وتواصل مباشرة مع التاجر عبر واتساب</p>
-  <a href="#products" class="hero-btn">ابدأ التصفح</a>
+  <div class="hero-text">
+    <h1>منتجات الأطفال من محلات ليبيا</h1>
+    <p>تصفح وتواصل مباشرة عبر واتساب</p>
+    <a href="#products" class="hero-btn">ابدأ التصفح</a>
+  </div>
+  <img src="https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8">
 </div>
 
 <div class="categories">
   <span>ملابس</span>
-  <span>أحذية</span>
   <span>ألعاب</span>
   <span>مواليد</span>
+  <span>أحذية</span>
 </div>
 
 <div class="products" id="products">
 
   <div class="card">
     <span class="tag">🔥 عرض</span>
-    <img src="https://via.placeholder.com/300">
+    <img src="https://images.unsplash.com/photo-1585386959984-a41552231658">
     <h3>بدلة أطفال</h3>
     <p class="price">65 د.ل</p>
-    <p class="meta">📍 طرابلس<br>🏪 محل عالم الطفل</p>
-    <a class="btn" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم نبي هذا المنتج">تواصل واتساب</a>
+    <p>📍 طرابلس</p>
+    <a class="btn" href="#">واتساب</a>
   </div>
 
   <div class="card">
     <span class="tag">⭐ جديد</span>
-    <img src="https://via.placeholder.com/300">
+    <img src="https://images.unsplash.com/photo-1596464716127-f2a82984de30">
     <h3>حذاء أطفال</h3>
     <p class="price">40 د.ل</p>
-    <p class="meta">📍 مصراتة<br>🏪 متجر الطفل الأنيق</p>
-    <a class="btn" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم نبي هذا المنتج">تواصل واتساب</a>
+    <p>📍 مصراتة</p>
+    <a class="btn" href="#">واتساب</a>
   </div>
 
 </div>
 
+<div class="trust">
+  <div>منتجات من محلات محلية</div>
+  <div>تواصل مباشر مع التاجر</div>
+  <div>بدون عمولات على الزبون</div>
+</div>
+
 <div class="merchant" id="merchant">
   <h2>عندك محل؟</h2>
-  <p>اعرض منتجاتك ووصل لزبائن جدد</p>
-  <a href="https://wa.me/218XXXXXXXXX">ابدأ الآن</a>
+  <a href="#">ابدأ الآن</a>
 </div>
 
-<div class="notice">
-الموقع يعرض المنتجات فقط، ويتم الشراء عبر التاجر مباشرة.
+<div class="footer">
+الموقع للعرض فقط، التواصل يتم مع التاجر مباشرة
 </div>
 
-<a href="https://wa.me/218XXXXXXXXX" class="float">💬</a>
+<a href="#" class="float">💬</a>
 
 </body>
 </html>
