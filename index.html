@@ -1,771 +1,1889 @@
 <!DOCTYPE html>
-
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>طفلي ماركت</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طفلي ماركت | سوق منتجات الأطفال في ليبيا</title>
+  <meta name="description" content="طفلي ماركت منصة ليبية لعرض منتجات الأطفال من محلات محلية والتواصل المباشر مع التجار عبر واتساب." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --purple: #A855F7;
+      --teal: #14B8A6;
+      --sky: #38BDF8;
+      --bg: #F5F7FA;
+      --white: #FFFFFF;
+      --text: #1F2937;
+      --muted: #667085;
+      --line: #E5EAF1;
+      --soft-purple: #F3E8FF;
+      --soft-teal: #E6FFFB;
+      --soft-sky: #EAF8FF;
+      --shadow: 0 24px 60px rgba(31, 41, 55, 0.12);
+      --shadow-sm: 0 14px 36px rgba(31, 41, 55, 0.1);
+      --radius: 24px;
+      --container: min(1140px, calc(100% - 32px));
+    }
 
-<style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  direction:rtl;
-  background:#F5F7FA;
-  color:#1F2937;
-}
-a{text-decoration:none}
-.container{max-width:1180px;margin:auto;padding:0 20px}
+    * {
+      box-sizing: border-box;
+    }
 
-/* Header */
-.header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid #E5E7EB;
-}
-.header-inner{
-  height:72px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:22px;
-  font-weight:900;
-  color:#A855F7;
-}
-.logo-icon{
-  width:42px;
-  height:42px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#A855F7,#14B8A6);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.nav{
-  display:flex;
-  align-items:center;
-  gap:18px;
-}
-.nav a{
-  color:#1F2937;
-  font-size:14px;
-  font-weight:800;
-}
-.nav .cta{
-  background:#A855F7;
-  color:white;
-  padding:11px 18px;
-  border-radius:999px;
-  box-shadow:0 10px 22px rgba(168,85,247,.25);
-}
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
 
-/* Hero */
-.hero{
-  padding:34px 0 20px;
-}
-.hero-card{
-  min-height:520px;
-  border-radius:38px;
-  padding:48px;
-  overflow:hidden;
-  position:relative;
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:34px;
-  align-items:center;
-  color:white;
-  background:
-    radial-gradient(circle at top left, rgba(56,189,248,.65), transparent 32%),
-    linear-gradient(135deg,#A855F7 0%,#14B8A6 100%);
-  box-shadow:0 30px 80px rgba(31,41,55,.18);
-}
-.hero-card:before{
-  content:"";
-  position:absolute;
-  width:260px;
-  height:260px;
-  border-radius:50%;
-  background:rgba(255,255,255,.14);
-  top:-70px;
-  left:-70px;
-}
-.hero-card:after{
-  content:"";
-  position:absolute;
-  width:170px;
-  height:170px;
-  border-radius:50%;
-  background:rgba(255,255,255,.12);
-  bottom:35px;
-  right:42%;
-}
-.hero-content,.hero-visual{position:relative;z-index:2}
-.kicker{
-  display:inline-block;
-  background:rgba(255,255,255,.18);
-  border:1px solid rgba(255,255,255,.35);
-  padding:8px 14px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:800;
-  margin-bottom:18px;
-}
-.hero h1{
-  font-size:46px;
-  line-height:1.25;
-  margin:0 0 16px;
-}
-.hero p{
-  font-size:18px;
-  line-height:1.9;
-  margin:0;
-  max-width:560px;
-  opacity:.95;
-}
-.actions{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:26px;
-}
-.btn-main,.btn-soft{
-  padding:14px 24px;
-  border-radius:999px;
-  font-weight:900;
-}
-.btn-main{
-  background:white;
-  color:#A855F7;
-}
-.btn-soft{
-  color:white;
-  border:1px solid rgba(255,255,255,.45);
-  background:rgba(255,255,255,.14);
-}
-.hero-stats{
-  display:flex;
-  gap:12px;
-  margin-top:28px;
-  flex-wrap:wrap;
-}
-.stat{
-  background:rgba(255,255,255,.16);
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:18px;
-  padding:12px 16px;
-  min-width:120px;
-}
-.stat strong{display:block;font-size:20px}
-.stat span{font-size:12px;opacity:.9}
+    body {
+      margin: 0;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(245, 247, 250, 0.86), rgba(245, 247, 250, 1) 480px),
+        var(--bg);
+      line-height: 1.7;
+      max-width: 100%;
+      overflow-x: clip;
+    }
 
-/* Visual */
-.visual-card{
-  background:rgba(255,255,255,.92);
-  color:#1F2937;
-  border-radius:34px;
-  padding:18px;
-  box-shadow:0 25px 60px rgba(0,0,0,.22);
-  transform:rotate(-1deg);
-}
-.visual-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:14px;
-}
-.visual-head strong{font-size:17px}
-.visual-head span{
-  background:#38BDF8;
-  color:white;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-}
-.visual-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.visual-item{
-  background:#F5F7FA;
-  border-radius:22px;
-  padding:10px;
-}
-.visual-item img{
-  width:100%;
-  height:125px;
-  object-fit:cover;
-  border-radius:18px;
-  display:block;
-}
-.visual-item small{
-  display:block;
-  margin-top:8px;
-  font-weight:900;
-}
-.float-chip{
-  position:absolute;
-  background:white;
-  color:#1F2937;
-  padding:10px 14px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:900;
-  box-shadow:0 16px 34px rgba(0,0,0,.15);
-}
-.chip-1{top:42px;left:14px}
-.chip-2{bottom:45px;right:-8px}
+    img {
+      display: block;
+      max-width: 100%;
+    }
 
-/* Filters */
-.filters{margin-top:22px}
-.filter-box{
-  background:white;
-  border:1px solid #E5E7EB;
-  border-radius:26px;
-  padding:16px;
-  box-shadow:0 16px 40px rgba(31,41,55,.07);
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  gap:12px;
-}
-.filter-box input,.filter-box select{
-  border:1px solid #E5E7EB;
-  background:#F9FAFB;
-  color:#1F2937;
-  border-radius:17px;
-  padding:14px;
-  font-size:14px;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-/* Sections */
-.section{padding:42px 0 0}
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  margin-bottom:20px;
-}
-.section-head h2{
-  margin:0;
-  font-size:30px;
-}
-.section-head p{
-  margin:7px 0 0;
-  color:#6B7280;
-}
-.view-all{
-  color:#A855F7;
-  font-weight:900;
-}
+    button,
+    input,
+    select {
+      font: inherit;
+    }
 
-/* Categories */
-.categories{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-}
-.cat{
-  background:white;
-  border:1px solid #E5E7EB;
-  border-radius:26px;
-  padding:22px;
-  box-shadow:0 14px 34px rgba(31,41,55,.06);
-  transition:.25s;
-}
-.cat:hover{
-  transform:translateY(-6px);
-  border-color:#A855F7;
-}
-.cat-icon{
-  width:52px;
-  height:52px;
-  border-radius:18px;
-  background:#F3E8FF;
-  color:#A855F7;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  margin-bottom:14px;
-}
-.cat h3{margin:0 0 8px}
-.cat p{margin:0;color:#6B7280;font-size:13px;line-height:1.7}
+    .container {
+      width: var(--container);
+      margin-inline: auto;
+    }
 
-/* Products */
-.products{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:22px;
-}
-.product{
-  background:white;
-  border:1px solid #E5E7EB;
-  border-radius:30px;
-  overflow:hidden;
-  box-shadow:0 18px 42px rgba(31,41,55,.08);
-  transition:.25s;
-}
-.product:hover{
-  transform:translateY(-7px);
-  box-shadow:0 24px 55px rgba(31,41,55,.13);
-}
-.product-img{
-  padding:12px;
-  background:#F5F7FA;
-  position:relative;
-}
-.product-img img{
-  width:100%;
-  height:225px;
-  object-fit:cover;
-  border-radius:22px;
-  display:block;
-}
-.badge{
-  position:absolute;
-  top:22px;
-  right:22px;
-  background:#A855F7;
-  color:white;
-  padding:8px 12px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-}
-.product-body{padding:18px}
-.product h3{margin:0 0 12px;font-size:19px}
-.info-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-.price{
-  font-size:22px;
-  font-weight:900;
-  color:#A855F7;
-}
-.city{
-  background:#ECFEFF;
-  color:#0F766E;
-  padding:7px 11px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:900;
-}
-.shop{
-  margin:14px 0;
-  color:#6B7280;
-  font-size:13px;
-  line-height:1.8;
-}
-.whatsapp{
-  display:block;
-  text-align:center;
-  background:#25D366;
-  color:white;
-  padding:13px;
-  border-radius:17px;
-  font-weight:900;
-  transition:.2s;
-}
-.whatsapp:hover{filter:brightness(.95);transform:scale(.99)}
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.82);
+      border-bottom: 1px solid rgba(229, 234, 241, 0.78);
+      backdrop-filter: blur(20px);
+    }
 
-/* How it works */
-.steps{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-.step{
-  background:white;
-  border:1px solid #E5E7EB;
-  border-radius:26px;
-  padding:24px;
-  box-shadow:0 14px 34px rgba(31,41,55,.06);
-}
-.step-num{
-  width:42px;
-  height:42px;
-  border-radius:15px;
-  background:linear-gradient(135deg,#A855F7,#38BDF8);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  margin-bottom:14px;
-}
-.step h3{margin:0 0 8px}
-.step p{margin:0;color:#6B7280;line-height:1.8;font-size:14px}
+    .nav-shell {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
 
-/* Merchants */
-.merchant{
-  margin:46px 0;
-}
-.merchant-box{
-  border-radius:34px;
-  padding:36px;
-  background:
-    radial-gradient(circle at top right, rgba(56,189,248,.35), transparent 30%),
-    linear-gradient(135deg,#1F2937,#A855F7);
-  color:white;
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:24px;
-  align-items:center;
-  box-shadow:0 25px 60px rgba(31,41,55,.18);
-}
-.merchant-box h2{margin:0 0 10px;font-size:30px}
-.merchant-box p{margin:0;opacity:.9;line-height:1.8}
-.merchant-box a{
-  background:white;
-  color:#A855F7;
-  padding:14px 24px;
-  border-radius:999px;
-  font-weight:900;
-  white-space:nowrap;
-}
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: 0;
+      white-space: nowrap;
+      min-width: 0;
+    }
 
-/* Footer */
-.footer{
-  background:white;
-  border-top:1px solid #E5E7EB;
-  margin-top:20px;
-}
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.2fr 1fr 1fr;
-  gap:20px;
-  padding:30px 20px;
-}
-.footer h3{margin:0 0 10px;color:#A855F7}
-.footer p,.footer a{
-  color:#6B7280;
-  font-size:14px;
-  line-height:1.8;
-}
-.copyright{
-  border-top:1px solid #E5E7EB;
-  padding:14px 20px;
-  text-align:center;
-  color:#6B7280;
-  font-size:13px;
-}
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0)),
+        linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 16px 30px rgba(168, 85, 247, 0.28);
+    }
 
-.float{
-  position:fixed;
-  left:22px;
-  bottom:22px;
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#25D366;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-  box-shadow:0 14px 34px rgba(37,211,102,.38);
-  z-index:1001;
-}
+    .brand-text {
+      font-size: 1.1rem;
+      min-width: 0;
+    }
 
-/* Responsive */
-@media(max-width:900px){
-  .hero-card{grid-template-columns:1fr;padding:30px;min-height:auto}
-  .hero h1{font-size:32px}
-  .filter-box,.categories,.products,.steps,.footer-grid{grid-template-columns:1fr}
-  .merchant-box{grid-template-columns:1fr;text-align:center}
-}
-@media(max-width:620px){
-  .header-inner{height:auto;flex-direction:column;gap:12px;padding:12px 0}
-  .nav{gap:10px;flex-wrap:wrap;justify-content:center}
-  .hero{padding-top:18px}
-  .hero-card{border-radius:28px;padding:24px}
-  .visual-item img{height:105px}
-  .section-head{display:block}
-}
-</style>
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      color: #4B5563;
+      font-weight: 700;
+    }
 
+    .nav-links a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--purple);
+      background: var(--soft-purple);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .menu-toggle {
+      width: 42px;
+      height: 42px;
+      display: inline-grid;
+      place-items: center;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple), #7C3AED);
+      box-shadow: 0 16px 34px rgba(168, 85, 247, 0.28);
+    }
+
+    .btn-teal {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--teal), #0F9488);
+      box-shadow: 0 16px 34px rgba(20, 184, 166, 0.25);
+    }
+
+    .btn-light {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 14px 34px rgba(31, 41, 55, 0.14);
+    }
+
+    .btn-ghost {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-compact {
+      min-height: 40px;
+      padding: 9px 13px;
+      font-size: 0.88rem;
+    }
+
+    .mobile-nav {
+      display: none;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .mobile-nav.open {
+      display: block;
+    }
+
+    .mobile-nav .container {
+      display: grid;
+      gap: 4px;
+      padding-block: 12px 16px;
+    }
+
+    .mobile-nav a {
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      color: #4B5563;
+    }
+
+    .mobile-nav a:hover {
+      background: var(--soft-sky);
+      color: #0369A1;
+    }
+
+    .hero {
+      padding-block: 22px 54px;
+    }
+
+    .hero-shell {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: grid;
+      gap: 34px;
+      min-height: 680px;
+      padding: 34px 20px 28px;
+      color: var(--white);
+      border-radius: 0 0 36px 36px;
+      background:
+        linear-gradient(145deg, rgba(168, 85, 247, 0.96) 0%, rgba(56, 189, 248, 0.92) 52%, rgba(20, 184, 166, 0.98) 100%);
+      box-shadow: 0 30px 80px rgba(31, 41, 55, 0.2);
+    }
+
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(112deg, rgba(255,255,255,0.16) 0 11%, transparent 11% 20%, rgba(255,255,255,0.13) 20% 29%, transparent 29% 100%),
+        linear-gradient(24deg, transparent 0 54%, rgba(255,255,255,0.15) 54% 58%, transparent 58% 100%);
+      opacity: 0.9;
+    }
+
+    .hero-shell::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 150px;
+      z-index: -1;
+      background: linear-gradient(180deg, transparent, rgba(31, 41, 55, 0.16));
+    }
+
+    .hero-copy {
+      align-self: center;
+      max-width: 620px;
+      min-width: 0;
+      padding-top: 8px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      color: #ECFEFF;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .hero h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(2.1rem, 8vw, 4.65rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+      max-width: 11ch;
+      overflow-wrap: anywhere;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 620px;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 28px;
+      max-width: 560px;
+    }
+
+    .metric {
+      padding: 13px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.18rem;
+      line-height: 1.2;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 480px;
+      align-self: center;
+      min-width: 0;
+    }
+
+    .phone-mockup {
+      position: relative;
+      z-index: 2;
+      width: min(320px, 82vw);
+      max-width: calc(100vw - 58px);
+      margin-inline: auto;
+      padding: 12px;
+      border-radius: 42px;
+      background: #101827;
+      box-shadow: 0 34px 84px rgba(31, 41, 55, 0.34);
+      transform: rotate(-2deg);
+    }
+
+    .phone-screen {
+      overflow: hidden;
+      border-radius: 32px;
+      min-height: 570px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F4F7FB 100%);
+      color: var(--text);
+    }
+
+    .app-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 16px 12px;
+    }
+
+    .app-top strong {
+      font-size: 0.98rem;
+      line-height: 1.35;
+    }
+
+    .app-top span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .app-avatar {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+    }
+
+    .mini-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 16px 14px;
+      padding: 10px 12px;
+      color: #7C8593;
+      border-radius: 16px;
+      background: #F1F5F9;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .app-categories {
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+      padding-inline: 16px;
+    }
+
+    .app-chip {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: var(--soft-purple);
+      color: #7E22CE;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .app-chip:nth-child(2) {
+      background: var(--soft-teal);
+      color: #0F766E;
+    }
+
+    .app-chip:nth-child(3) {
+      background: var(--soft-sky);
+      color: #0369A1;
+    }
+
+    .mock-products {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .mock-card {
+      overflow: hidden;
+      border-radius: 20px;
+      background: var(--white);
+      box-shadow: 0 10px 24px rgba(31, 41, 55, 0.08);
+    }
+
+    .mock-card img {
+      width: 100%;
+      height: 118px;
+      object-fit: cover;
+    }
+
+    .mock-card div {
+      padding: 10px;
+    }
+
+    .mock-card b {
+      display: block;
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .mock-card small {
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    .app-deal {
+      margin: 0 16px 18px;
+      padding: 14px;
+      border-radius: 20px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple), var(--sky));
+    }
+
+    .app-deal b {
+      display: block;
+      font-size: 0.86rem;
+    }
+
+    .app-deal small {
+      color: rgba(255, 255, 255, 0.86);
+      font-weight: 700;
+    }
+
+    .float-card {
+      position: absolute;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: max-content;
+      max-width: 230px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 20px 48px rgba(31, 41, 55, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      animation: floaty 5.5s ease-in-out infinite;
+    }
+
+    .float-card b {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.3;
+    }
+
+    .float-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .float-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+    }
+
+    .float-card.offer {
+      inset-block-start: 12px;
+      inset-inline-start: 2px;
+    }
+
+    .float-card.city {
+      inset-block-start: 210px;
+      inset-inline-end: 0;
+      animation-delay: -1.5s;
+    }
+
+    .float-card.whatsapp {
+      inset-block-end: 20px;
+      inset-inline-start: 4px;
+      animation-delay: -2.6s;
+    }
+
+    .whatsapp .float-icon,
+    .whatsapp-icon {
+      background: linear-gradient(135deg, #22C55E, var(--teal));
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    section {
+      padding-block: 58px;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      color: var(--purple);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.65rem, 4vw, 2.7rem);
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 620px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .search-panel {
+      margin-top: -46px;
+      position: relative;
+      z-index: 4;
+      padding-block: 0;
+    }
+
+    .search-box {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229, 234, 241, 0.86);
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #596273;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .field i {
+      position: absolute;
+      inset-inline-start: 14px;
+      bottom: 14px;
+      color: #98A2B3;
+      pointer-events: none;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 45px 12px 14px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      outline: 0;
+      background: #FBFCFE;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(168, 85, 247, 0.58);
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.12);
+    }
+
+    .category-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      min-height: 118px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .category-card::after {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 0;
+      width: 8px;
+      background: linear-gradient(180deg, var(--purple), var(--teal));
+    }
+
+    .category-icon {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple), var(--sky));
+      box-shadow: 0 15px 30px rgba(168, 85, 247, 0.18);
+    }
+
+    .category-card:nth-child(2) .category-icon,
+    .category-card:nth-child(5) .category-icon {
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+      box-shadow: 0 15px 30px rgba(20, 184, 166, 0.16);
+    }
+
+    .category-card:nth-child(3) .category-icon {
+      background: linear-gradient(135deg, #F59E0B, var(--purple));
+    }
+
+    .category-copy h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .category-copy p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .category-count {
+      color: #7C3AED;
+      font-size: 0.82rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .products-section {
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.72));
+    }
+
+    .product-toolbar {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+      scrollbar-width: none;
+    }
+
+    .product-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: #586172;
+      background: var(--white);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .filter-pill.active {
+      color: var(--white);
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 12px 24px rgba(168, 85, 247, 0.18);
+    }
+
+    .products-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .product-card {
+      overflow: hidden;
+      border: 1px solid rgba(229, 234, 241, 0.9);
+      border-radius: 28px;
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .product-media {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1.15 / 1;
+      background: #EAF0F6;
+    }
+
+    .product-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+
+    .product-card:hover .product-media img {
+      transform: scale(1.05);
+    }
+
+    .badge {
+      position: absolute;
+      inset-block-start: 14px;
+      inset-inline-start: 14px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--purple), #7C3AED);
+      font-size: 0.76rem;
+      font-weight: 900;
+      box-shadow: 0 12px 22px rgba(31, 41, 55, 0.16);
+    }
+
+    .badge.teal {
+      background: linear-gradient(135deg, var(--teal), #0E9384);
+    }
+
+    .badge.sky {
+      background: linear-gradient(135deg, var(--sky), #0284C7);
+    }
+
+    .product-body {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .product-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .product-title-row h3 {
+      margin: 0;
+      font-size: 1.04rem;
+      line-height: 1.45;
+    }
+
+    .price {
+      color: #7C3AED;
+      font-size: 1.05rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      display: grid;
+      gap: 8px;
+      color: #596273;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .meta-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-line i {
+      color: var(--teal);
+    }
+
+    .whatsapp-btn {
+      width: 100%;
+      color: var(--white);
+      background: linear-gradient(135deg, #22C55E, var(--teal));
+      box-shadow: 0 16px 30px rgba(20, 184, 166, 0.22);
+    }
+
+    .steps {
+      display: grid;
+      gap: 16px;
+      counter-reset: steps;
+    }
+
+    .step-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 174px;
+      padding: 22px;
+      border-radius: 28px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      counter-increment: steps;
+    }
+
+    .step-card::before {
+      content: "0" counter(steps);
+      position: absolute;
+      inset-inline-end: 18px;
+      inset-block-start: 10px;
+      color: rgba(168, 85, 247, 0.12);
+      font-size: 4.5rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .step-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      color: var(--white);
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--purple), var(--sky));
+    }
+
+    .step-card:nth-child(2) .step-icon {
+      background: linear-gradient(135deg, #22C55E, var(--teal));
+    }
+
+    .step-card:nth-child(3) .step-icon {
+      background: linear-gradient(135deg, #F97316, var(--purple));
+    }
+
+    .step-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.14rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .merchant-cta {
+      padding-block: 34px 70px;
+    }
+
+    .merchant-shell {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 20px;
+      padding: 26px;
+      color: var(--white);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(31, 41, 55, 0.92), rgba(31, 41, 55, 0.74)),
+        linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: var(--shadow);
+    }
+
+    .merchant-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.18) 0 12%, transparent 12% 28%, rgba(255,255,255,0.12) 28% 42%, transparent 42% 100%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .merchant-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .merchant-content h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      line-height: 1.18;
+    }
+
+    .merchant-content p {
+      margin: 0;
+      max-width: 620px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 1.02rem;
+      font-weight: 600;
+    }
+
+    .merchant-stats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+    }
+
+    .merchant-stat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .merchant-stat i {
+      color: #99F6E4;
+    }
+
+    .merchant-stat b {
+      display: block;
+      line-height: 1.35;
+    }
+
+    .merchant-stat span {
+      display: block;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .trust-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 18px;
+      border-radius: 24px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(31, 41, 55, 0.07);
+    }
+
+    .trust-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--white);
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--teal), var(--sky));
+    }
+
+    .trust-item:nth-child(2) .trust-icon,
+    .trust-item:nth-child(4) .trust-icon {
+      background: linear-gradient(135deg, var(--purple), var(--sky));
+    }
+
+    .trust-item h3 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+    }
+
+    .trust-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .site-footer {
+      color: rgba(255, 255, 255, 0.84);
+      background: #111827;
+      padding-block: 42px 24px;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 28px;
+    }
+
+    .footer-brand .brand-mark {
+      box-shadow: none;
+    }
+
+    .footer-brand p {
+      margin: 14px 0 0;
+      max-width: 420px;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 600;
+    }
+
+    .footer-col h3 {
+      margin: 0 0 12px;
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 9px;
+    }
+
+    .footer-links a,
+    .footer-links span {
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 540px) {
+      :root {
+        --container: min(1140px, calc(100% - 22px));
+      }
+
+      .nav-shell {
+        gap: 8px;
+        min-height: 72px;
+      }
+
+      .brand {
+        gap: 7px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 13px;
+      }
+
+      .brand-text {
+        font-size: 0.98rem;
+      }
+
+      .header-actions {
+        gap: 7px;
+      }
+
+      .header-actions .btn {
+        min-height: 40px;
+        padding: 8px 11px;
+        font-size: 0.82rem;
+      }
+
+      .menu-toggle {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero-shell {
+        padding-inline: 14px;
+        border-radius: 28px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 10vw, 2.55rem);
+        max-width: 100%;
+      }
+
+      .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .float-card {
+        transform: scale(0.92);
+      }
+
+      .float-card.city {
+        inset-inline-end: -16px;
+      }
+
+      .product-title-row {
+        display: grid;
+      }
+    }
+
+    @media (min-width: 640px) {
+      .hero-shell {
+        padding: 42px 34px 36px;
+      }
+
+      .hero-metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .search-box {
+        grid-template-columns: 1.4fr 1fr 1fr auto;
+        align-items: end;
+      }
+
+      .search-box .btn {
+        min-height: 52px;
+      }
+
+      .category-grid,
+      .products-grid,
+      .steps,
+      .trust-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .merchant-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 900px) {
+      .nav-links {
+        display: flex;
+      }
+
+      .menu-toggle,
+      .mobile-nav {
+        display: none !important;
+      }
+
+      .hero {
+        padding-block: 30px 74px;
+      }
+
+      .hero-shell {
+        grid-template-columns: 1fr 0.86fr;
+        min-height: 720px;
+        padding: 58px 54px 44px;
+        border-radius: 40px;
+      }
+
+      .hero h1 {
+        max-width: 10ch;
+      }
+
+      .float-card.offer {
+        inset-inline-start: -20px;
+      }
+
+      .float-card.city {
+        inset-inline-end: -28px;
+      }
+
+      .float-card.whatsapp {
+        inset-inline-start: -32px;
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .category-card {
+        grid-template-columns: 1fr;
+        align-content: start;
+        min-height: 228px;
+      }
+
+      .category-card::after {
+        width: 100%;
+        height: 7px;
+        inset-block: auto 0;
+      }
+
+      .category-count {
+        align-self: end;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .merchant-shell {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        padding: 42px;
+      }
+
+      .trust-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .footer-grid {
+        grid-template-columns: 1.5fr 0.7fr 0.7fr 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="brand" href="#home" aria-label="طفلي ماركت">
+        <span class="brand-mark"><i data-lucide="baby"></i></span>
+        <span class="brand-text">طفلي ماركت</span>
+      </a>
 
-<header class="header">
-  <div class="container header-inner">
-    <div class="logo">
-      <div class="logo-icon">👶</div>
-      <span>طفلي ماركت</span>
+      <nav class="nav-links" aria-label="روابط الموقع">
+        <a href="#home">الرئيسية</a>
+        <a href="#categories">التصنيفات</a>
+        <a href="#products">المنتجات</a>
+        <a href="#merchant">أضف منتجاتك</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn-primary btn-compact" href="#merchant">
+          <i data-lucide="store"></i>
+          سجّل كتاجر
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
     </div>
-    <nav class="nav">
-      <a href="#">الرئيسية</a>
-      <a href="#categories">التصنيفات</a>
-      <a href="#products">المنتجات</a>
-      <a href="#merchant" class="cta">أضف منتجاتك</a>
+
+    <nav class="mobile-nav" id="mobileNav" aria-label="قائمة الهاتف">
+      <div class="container">
+        <a href="#home">الرئيسية</a>
+        <a href="#categories">التصنيفات</a>
+        <a href="#products">المنتجات</a>
+        <a href="#merchant">أضف منتجاتك</a>
+      </div>
     </nav>
-  </div>
-</header>
+  </header>
 
-<main>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-shell">
+        <div class="hero-copy">
+          <span class="eyebrow">
+            <i data-lucide="sparkles"></i>
+            منصة عرض محلية لمنتجات الأطفال في ليبيا
+          </span>
+          <h1>كل منتجات طفلك من محلات قريبة منك</h1>
+          <p>
+            طفلي ماركت يجمع ملابس الأطفال، الألعاب، مستلزمات المواليد، الأحذية، العربات والكراسي في واجهة واحدة، مع تواصل مباشر مع التاجر عبر واتساب.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="#products">
+              <i data-lucide="shopping-bag"></i>
+              تصفح المنتجات
+            </a>
+            <a class="btn btn-ghost" href="#merchant">
+              <i data-lucide="badge-plus"></i>
+              سجّل كتاجر
+            </a>
+          </div>
 
-<section class="hero">
-  <div class="container">
-    <div class="hero-card">
-      <div class="hero-content">
-        <span class="kicker">منصة عرض منتجات الأطفال في ليبيا</span>
-        <h1>كل ما يحتاجه طفلك من محلات ليبيا في مكان واحد</h1>
-        <p>تصفح منتجات الأطفال، قارن الأسعار، واختر الأقرب لك. التواصل والشراء يتم مباشرة مع التاجر عبر واتساب.</p>
-        <div class="actions">
-          <a class="btn-main" href="#products">تصفح المنتجات</a>
-          <a class="btn-soft" href="#merchant">سجّل كتاجر</a>
+          <div class="hero-metrics" aria-label="أرقام تجريبية">
+            <div class="metric">
+              <strong>120+</strong>
+              <span>منتج تجريبي</span>
+            </div>
+            <div class="metric">
+              <strong>5</strong>
+              <span>تصنيفات رئيسية</span>
+            </div>
+            <div class="metric">
+              <strong>مباشر</strong>
+              <span>تواصل واتساب</span>
+            </div>
+          </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat"><strong>+4</strong><span>تصنيفات رئيسية</span></div>
-          <div class="stat"><strong>واتساب</strong><span>تواصل مباشر</span></div>
-          <div class="stat"><strong>ليبيا</strong><span>محلات محلية</span></div>
+
+        <div class="hero-visual" aria-label="تصور تطبيق طفلي ماركت">
+          <div class="float-card offer">
+            <span class="float-icon"><i data-lucide="ticket-percent"></i></span>
+            <span>
+              <b>عروض محلية</b>
+              <span>تابع التخفيضات حسب التصنيف</span>
+            </span>
+          </div>
+
+          <div class="phone-mockup">
+            <div class="phone-screen">
+              <div class="app-top">
+                <div>
+                  <strong>أهلاً بك في طفلي</strong>
+                  <span>منتجات مختارة من محلات ليبيا</span>
+                </div>
+                <span class="app-avatar"><i data-lucide="heart"></i></span>
+              </div>
+
+              <div class="mini-search">
+                <i data-lucide="search"></i>
+                ابحثي عن ملابس، ألعاب، عربات...
+              </div>
+
+              <div class="app-categories">
+                <span class="app-chip">ملابس</span>
+                <span class="app-chip">ألعاب</span>
+                <span class="app-chip">مواليد</span>
+                <span class="app-chip">أحذية</span>
+              </div>
+
+              <div class="mock-products">
+                <article class="mock-card">
+                  <img src="https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=480&q=80" alt="سلة ملابس مواليد" />
+                  <div>
+                    <b>طقم مولود قطني</b>
+                    <small>65 د.ل</small>
+                  </div>
+                </article>
+                <article class="mock-card">
+                  <img src="https://images.unsplash.com/photo-1558907353-ceb54f3882ed?auto=format&fit=crop&w=480&q=80" alt="مكعبات ألعاب خشبية" />
+                  <div>
+                    <b>مكعبات تعليمية</b>
+                    <small>38 د.ل</small>
+                  </div>
+                </article>
+                <article class="mock-card">
+                  <img src="https://images.unsplash.com/photo-1565430076958-f6579417a6ef?auto=format&fit=crop&w=480&q=80" alt="حذاء أطفال أبيض" />
+                  <div>
+                    <b>حذاء بيبي</b>
+                    <small>45 د.ل</small>
+                  </div>
+                </article>
+                <article class="mock-card">
+                  <img src="https://images.unsplash.com/photo-1667063446746-86bcf4bcb0fe?auto=format&fit=crop&w=480&q=80" alt="عربة أطفال" />
+                  <div>
+                    <b>عربة أطفال</b>
+                    <small>310 د.ل</small>
+                  </div>
+                </article>
+              </div>
+
+              <div class="app-deal">
+                <b>منتجات جديدة في طرابلس وبنغازي</b>
+                <small>تواصلي مع المحل واتفقوا مباشرة بدون دفع داخل الموقع.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="float-card city">
+            <span class="float-icon"><i data-lucide="map-pin"></i></span>
+            <span>
+              <b>حسب المدينة</b>
+              <span>طرابلس، بنغازي، مصراتة</span>
+            </span>
+          </div>
+
+          <div class="float-card whatsapp">
+            <span class="float-icon whatsapp-icon"><i data-lucide="message-circle"></i></span>
+            <span>
+              <b>رسالة جاهزة</b>
+              <span>استفسار سريع عبر واتساب</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="search-panel" aria-label="البحث والتصفية">
+      <div class="container">
+        <form class="search-box" id="searchForm">
+          <div class="field">
+            <label for="searchInput">ابحث عن المنتج</label>
+            <i data-lucide="search"></i>
+            <input id="searchInput" type="search" placeholder="مثال: طقم مولود، عربة، لعبة..." autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="cityFilter">المدينة</label>
+            <i data-lucide="map-pin"></i>
+            <select id="cityFilter">
+              <option value="all">كل المدن</option>
+              <option value="طرابلس">طرابلس</option>
+              <option value="بنغازي">بنغازي</option>
+              <option value="مصراتة">مصراتة</option>
+              <option value="سبها">سبها</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="categoryFilter">التصنيف</label>
+            <i data-lucide="layers-3"></i>
+            <select id="categoryFilter">
+              <option value="all">كل التصنيفات</option>
+              <option value="ملابس أطفال">ملابس أطفال</option>
+              <option value="ألعاب">ألعاب</option>
+              <option value="مواليد">مواليد</option>
+              <option value="أحذية">أحذية</option>
+              <option value="عربات وكراسي">عربات وكراسي</option>
+            </select>
+          </div>
+          <button class="btn btn-teal" type="submit">
+            <i data-lucide="sliders-horizontal"></i>
+            تطبيق البحث
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section id="categories">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">تصنيفات سريعة</span>
+          <h2>اختاري التصنيف المناسب وابدئي التصفح</h2>
+          <p>واجهة منظمة تشبه تطبيقات السوق، تساعد الزائر يصل للمنتج بسرعة حسب نوع المنتج والمدينة.</p>
+        </div>
+
+        <div class="category-grid">
+          <article class="category-card">
+            <span class="category-icon"><i data-lucide="shirt"></i></span>
+            <div class="category-copy">
+              <h3>ملابس أطفال</h3>
+              <p>أطقم، بيجامات، فساتين وملابس يومية.</p>
+            </div>
+            <span class="category-count">34 منتج</span>
+          </article>
+          <article class="category-card">
+            <span class="category-icon"><i data-lucide="puzzle"></i></span>
+            <div class="category-copy">
+              <h3>ألعاب</h3>
+              <p>ألعاب تعليمية وآمنة لمختلف الأعمار.</p>
+            </div>
+            <span class="category-count">28 منتج</span>
+          </article>
+          <article class="category-card">
+            <span class="category-icon"><i data-lucide="baby"></i></span>
+            <div class="category-copy">
+              <h3>مواليد</h3>
+              <p>بطانيات، رضاعات، شنط وأساسيات المولود.</p>
+            </div>
+            <span class="category-count">22 منتج</span>
+          </article>
+          <article class="category-card">
+            <span class="category-icon"><i data-lucide="footprints"></i></span>
+            <div class="category-copy">
+              <h3>أحذية</h3>
+              <p>أحذية ناعمة ومريحة للأطفال والمواليد.</p>
+            </div>
+            <span class="category-count">16 منتج</span>
+          </article>
+          <article class="category-card">
+            <span class="category-icon"><i data-lucide="armchair"></i></span>
+            <div class="category-copy">
+              <h3>عربات وكراسي</h3>
+              <p>عربات، كراسي سيارة ومقاعد طعام.</p>
+            </div>
+            <span class="category-count">13 منتج</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="products-section" id="products">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">منتجات مختارة</span>
+          <h2>كروت منتجات جاهزة لعرض MVP قوي</h2>
+          <p>كل كرت يحتوي السعر، المدينة، المحل، وزر واتساب برسالة جاهزة للاستفسار عن المنتج.</p>
+        </div>
+
+        <div class="product-toolbar" aria-label="فلاتر المنتجات">
+          <button class="filter-pill active" data-filter="all">الكل</button>
+          <button class="filter-pill" data-filter="ملابس أطفال">ملابس أطفال</button>
+          <button class="filter-pill" data-filter="ألعاب">ألعاب</button>
+          <button class="filter-pill" data-filter="مواليد">مواليد</button>
+          <button class="filter-pill" data-filter="أحذية">أحذية</button>
+          <button class="filter-pill" data-filter="عربات وكراسي">عربات وكراسي</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">طريقة الاستخدام</span>
+          <h2>ثلاث خطوات بسيطة من التصفح إلى الاتفاق</h2>
+          <p>طفلي ماركت لا يدير الدفع أو التوصيل حالياً. دوره عرض المنتجات وتسهيل التواصل بين الزبون والتاجر.</p>
+        </div>
+
+        <div class="steps">
+          <article class="step-card">
+            <span class="step-icon"><i data-lucide="search-check"></i></span>
+            <h3>تصفح المنتج</h3>
+            <p>استخدم البحث أو التصنيفات للوصول إلى المنتجات المناسبة حسب المدينة ونوع المنتج.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-icon"><i data-lucide="message-circle"></i></span>
+            <h3>تواصل عبر واتساب</h3>
+            <p>اضغط زر واتساب لتصل للتاجر برسالة جاهزة تحمل اسم المنتج الذي تريد الاستفسار عنه.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-icon"><i data-lucide="handshake"></i></span>
+            <h3>اتفق مع التاجر</h3>
+            <p>التفاصيل النهائية مثل التوفر، الدفع، الاستلام أو التوصيل تتم مباشرة بينك وبين المحل.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="merchant-cta" id="merchant">
+      <div class="container">
+        <div class="merchant-shell">
+          <div class="merchant-content">
+            <span class="eyebrow">
+              <i data-lucide="store"></i>
+              للتجار والمحلات المحلية
+            </span>
+            <h2>عندك محل منتجات أطفال؟</h2>
+            <p>اعرض منتجاتك مجاناً في النسخة التجريبية، واجعل الزبائن يصلون لك مباشرة عبر واتساب من صفحة منتج منظمة واحترافية.</p>
+            <div class="hero-actions">
+              <a class="btn btn-light" href="https://wa.me/218912345678?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%86%D8%A8%D9%8A%20%D9%86%D8%B6%D9%8A%D9%81%20%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA%D9%8A%20%D9%81%D9%8A%20%D8%B7%D9%81%D9%84%D9%8A%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA" target="_blank" rel="noopener">
+                <i data-lucide="badge-plus"></i>
+                أضف منتجاتك الآن
+              </a>
+            </div>
+          </div>
+
+          <div class="merchant-stats">
+            <div class="merchant-stat">
+              <i data-lucide="camera"></i>
+              <div>
+                <b>صور + تفاصيل</b>
+                <span>اسم المنتج، السعر، المدينة والمحل</span>
+              </div>
+            </div>
+            <div class="merchant-stat">
+              <i data-lucide="message-square-text"></i>
+              <div>
+                <b>طلبات عبر واتساب</b>
+                <span>كل استفسار يذهب مباشرة للتاجر</span>
+              </div>
+            </div>
+            <div class="merchant-stat">
+              <i data-lucide="rocket"></i>
+              <div>
+                <b>نسخة تجريبية</b>
+                <span>مناسبة لاختبار الفكرة مع السوق</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">الثقة والوضوح</span>
+          <h2>منصة عرض تربط الزبون بالمحل مباشرة</h2>
+        </div>
+
+        <div class="trust-grid">
+          <article class="trust-item">
+            <span class="trust-icon"><i data-lucide="store"></i></span>
+            <div>
+              <h3>محلات محلية</h3>
+              <p>المنتجات من متاجر أطفال داخل ليبيا.</p>
+            </div>
+          </article>
+          <article class="trust-item">
+            <span class="trust-icon"><i data-lucide="messages-square"></i></span>
+            <div>
+              <h3>تواصل مباشر</h3>
+              <p>واتساب يفتح مع التاجر برسالة جاهزة.</p>
+            </div>
+          </article>
+          <article class="trust-item">
+            <span class="trust-icon"><i data-lucide="eye"></i></span>
+            <div>
+              <h3>للعرض فقط</h3>
+              <p>الموقع يعرض المنتجات ولا يبيع مباشرة.</p>
+            </div>
+          </article>
+          <article class="trust-item">
+            <span class="trust-icon"><i data-lucide="credit-card"></i></span>
+            <div>
+              <h3>لا يوجد دفع داخلي</h3>
+              <p>الدفع والتوصيل يتمان خارج المنصة حالياً.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="#home">
+            <span class="brand-mark"><i data-lucide="baby"></i></span>
+            <span class="brand-text">طفلي ماركت</span>
+          </a>
+          <p>منصة MVP لعرض منتجات الأطفال في ليبيا وربط الزبائن بالمحلات المحلية عبر واتساب بطريقة سهلة وواضحة.</p>
+        </div>
+
+        <div class="footer-col">
+          <h3>روابط</h3>
+          <div class="footer-links">
+            <a href="#home">الرئيسية</a>
+            <a href="#categories">التصنيفات</a>
+            <a href="#products">المنتجات</a>
+            <a href="#merchant">أضف منتجاتك</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>التصنيفات</h3>
+          <div class="footer-links">
+            <span>ملابس أطفال</span>
+            <span>ألعاب</span>
+            <span>مواليد</span>
+            <span>عربات وكراسي</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>واتساب الإدارة</h3>
+          <div class="footer-links">
+            <a href="https://wa.me/218912345678?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%86%D8%A8%D9%8A%20%D9%86%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%84%D9%89%20%D8%B7%D9%81%D9%84%D9%8A%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA" target="_blank" rel="noopener">+218 91 234 5678</a>
+            <span>متاح لاستقبال طلبات التجار في النسخة التجريبية.</span>
+          </div>
         </div>
       </div>
 
-```
-  <div class="hero-visual">
-    <div class="float-chip chip-1">🔥 عروض أطفال</div>
-    <div class="float-chip chip-2">📍 حسب المدينة</div>
-    <div class="visual-card">
-      <div class="visual-head">
-        <strong>مختارات اليوم</strong>
-        <span>جديد</span>
-      </div>
-      <div class="visual-grid">
-        <div class="visual-item">
-          <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=500&q=80" alt="ملابس أطفال">
-          <small>ملابس أطفال</small>
-        </div>
-        <div class="visual-item">
-          <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=500&q=80" alt="ألعاب أطفال">
-          <small>ألعاب</small>
-        </div>
-        <div class="visual-item">
-          <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=500&q=80" alt="مواليد">
-          <small>مواليد</small>
-        </div>
-        <div class="visual-item">
-          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="أحذية">
-          <small>أحذية</small>
-        </div>
+      <div class="footer-note">
+        تنبيه: طفلي ماركت يعرض المنتجات فقط ولا يدير البيع أو الدفع أو التوصيل حالياً. أي اتفاق يتم مباشرة بين الزبون والتاجر.
       </div>
     </div>
-  </div>
+  </footer>
 
-</div>
-```
+  <script>
+    const products = [
+      {
+        name: "طقم مولود قطني 5 قطع",
+        price: "65 د.ل",
+        city: "طرابلس",
+        store: "محل ماما بيبي",
+        category: "مواليد",
+        badge: "مواليد",
+        badgeClass: "teal",
+        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80"
+      },
+      {
+        name: "مكعبات تعليمية خشبية",
+        price: "38 د.ل",
+        city: "بنغازي",
+        store: "ألعاب سمارت كيدز",
+        category: "ألعاب",
+        badge: "جديد",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1558907353-ceb54f3882ed?auto=format&fit=crop&w=900&q=80"
+      },
+      {
+        name: "حذاء بيبي أبيض ناعم",
+        price: "45 د.ل",
+        city: "مصراتة",
+        store: "ركن الطفل",
+        category: "أحذية",
+        badge: "جديد",
+        badgeClass: "",
+        image: "https://images.unsplash.com/photo-1565430076958-f6579417a6ef?auto=format&fit=crop&w=900&q=80"
+      },
+      {
+        name: "عربة أطفال عملية قابلة للطي",
+        price: "310 د.ل",
+        city: "طرابلس",
+        store: "بيبي ستور ليبيا",
+        category: "عربات وكراسي",
+        badge: "عرض",
+        badgeClass: "teal",
+        image: "https://images.unsplash.com/photo-1667063446746-86bcf4bcb0fe?auto=format&fit=crop&w=900&q=80"
+      },
+      {
+        name: "طقم بيجامة أطفال شتوي",
+        price: "72 د.ل",
+        city: "سبها",
+        store: "أناقة الصغار",
+        category: "ملابس أطفال",
+        badge: "عرض",
+        badgeClass: "",
+        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80"
+      },
+      {
+        name: "حقيبة ألعاب تعليمية ملونة",
+        price: "54 د.ل",
+        city: "بنغازي",
+        store: "كيدز هاوس",
+        category: "ألعاب",
+        badge: "الأكثر طلباً",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=900&q=80"
+      }
+    ];
 
-  </div>
-</section>
+    const productsGrid = document.getElementById("productsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const cityFilter = document.getElementById("cityFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const searchForm = document.getElementById("searchForm");
+    const filterPills = document.querySelectorAll(".filter-pill");
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileNav = document.getElementById("mobileNav");
 
-<section class="filters">
-  <div class="container">
-    <div class="filter-box">
-      <input type="text" placeholder="ابحث عن منتج مثل: بدلة، لعبة، حذاء...">
-      <select>
-        <option>كل المدن</option>
-        <option>طرابلس</option>
-        <option>مصراتة</option>
-        <option>بنغازي</option>
-      </select>
-      <select>
-        <option>كل التصنيفات</option>
-        <option>ملابس أطفال</option>
-        <option>ألعاب</option>
-        <option>مواليد</option>
-        <option>أحذية</option>
-      </select>
-    </div>
-  </div>
-</section>
+    function whatsappUrl(productName) {
+      const phone = "218912345678";
+      const text = `السلام عليكم، نبي نستفسر على ${productName}`;
+      return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    }
 
-<section class="section" id="categories">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>التصنيفات</h2>
-        <p>أقسام واضحة تساعد الزبون يوصل للمنتج بسرعة.</p>
-      </div>
-      <a class="view-all" href="#products">عرض المنتجات</a>
-    </div>
+    function productCard(product) {
+      return `
+        <article class="product-card" data-category="${product.category}" data-city="${product.city}" data-name="${product.name}">
+          <div class="product-media">
+            <img src="${product.image}" alt="${product.name}" loading="lazy" />
+            <span class="badge ${product.badgeClass}">${product.badge}</span>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3>${product.name}</h3>
+              <span class="price">${product.price}</span>
+            </div>
+            <div class="product-meta">
+              <span class="meta-line"><i data-lucide="map-pin"></i>${product.city}</span>
+              <span class="meta-line"><i data-lucide="store"></i>${product.store}</span>
+            </div>
+            <a class="btn whatsapp-btn" href="${whatsappUrl(product.name)}" target="_blank" rel="noopener">
+              <i data-lucide="message-circle"></i>
+              استفسر عبر واتساب
+            </a>
+          </div>
+        </article>
+      `;
+    }
 
-```
-<div class="categories">
-  <div class="cat">
-    <div class="cat-icon">👕</div>
-    <h3>ملابس أطفال</h3>
-    <p>بدلات، ملابس يومية، وملابس موسمية.</p>
-  </div>
-  <div class="cat">
-    <div class="cat-icon">🧸</div>
-    <h3>ألعاب</h3>
-    <p>ألعاب تعليمية وترفيهية مناسبة للأطفال.</p>
-  </div>
-  <div class="cat">
-    <div class="cat-icon">🍼</div>
-    <h3>مواليد</h3>
-    <p>احتياجات المولود والعناية الأساسية.</p>
-  </div>
-  <div class="cat">
-    <div class="cat-icon">👟</div>
-    <h3>أحذية</h3>
-    <p>أحذية أطفال حسب المقاسات والمدن.</p>
-  </div>
-</div>
-```
+    function renderProducts(list) {
+      productsGrid.innerHTML = list.length
+        ? list.map(productCard).join("")
+        : `<div class="product-card" style="padding: 28px; grid-column: 1 / -1; text-align: center;">
+            <h3 style="margin:0 0 8px;">لا توجد نتائج مطابقة حالياً</h3>
+            <p style="margin:0;color:#667085;font-weight:700;">جرّب تغيير المدينة أو التصنيف أو كلمة البحث.</p>
+          </div>`;
+      lucide.createIcons();
+    }
 
-  </div>
-</section>
+    function applyFilters(categoryFromPill = null) {
+      const query = searchInput.value.trim().toLowerCase();
+      const city = cityFilter.value;
+      const category = categoryFromPill || categoryFilter.value;
 
-<section class="section" id="products">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>منتجات مميزة</h2>
-        <p>نماذج أولية للعرض — لاحقاً يتم استبدالها بمنتجات التجار.</p>
-      </div>
-      <a class="view-all" href="#merchant">أضف منتجك</a>
-    </div>
+      if (categoryFromPill) {
+        categoryFilter.value = categoryFromPill;
+      }
 
-```
-<div class="products">
-  <div class="product">
-    <div class="product-img">
-      <span class="badge">🔥 عرض</span>
-      <img src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=700&q=80" alt="بدلة أطفال">
-    </div>
-    <div class="product-body">
-      <h3>بدلة أطفال قطنية</h3>
-      <div class="info-row">
-        <div class="price">65 د.ل</div>
-        <div class="city">طرابلس</div>
-      </div>
-      <div class="shop">🏪 محل عالم الطفل<br>الحالة: تأكد من التوفر عبر واتساب</div>
-      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على بدلة أطفال قطنية">تواصل واتساب</a>
-    </div>
-  </div>
+      const filtered = products.filter(product => {
+        const matchesQuery = !query || product.name.toLowerCase().includes(query) || product.store.toLowerCase().includes(query);
+        const matchesCity = city === "all" || product.city === city;
+        const matchesCategory = category === "all" || product.category === category;
+        return matchesQuery && matchesCity && matchesCategory;
+      });
 
-  <div class="product">
-    <div class="product-img">
-      <span class="badge">⭐ جديد</span>
-      <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=700&q=80" alt="لعبة أطفال">
-    </div>
-    <div class="product-body">
-      <h3>لعبة أطفال تعليمية</h3>
-      <div class="info-row">
-        <div class="price">35 د.ل</div>
-        <div class="city">مصراتة</div>
-      </div>
-      <div class="shop">🏪 ألعاب الصغار<br>الحالة: تأكد من التوفر عبر واتساب</div>
-      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على لعبة أطفال تعليمية">تواصل واتساب</a>
-    </div>
-  </div>
+      renderProducts(filtered);
+    }
 
-  <div class="product">
-    <div class="product-img">
-      <span class="badge">🍼 مواليد</span>
-      <img src="https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=700&q=80" alt="مستلزمات مولود">
-    </div>
-    <div class="product-body">
-      <h3>طقم مستلزمات مولود</h3>
-      <div class="info-row">
-        <div class="price">90 د.ل</div>
-        <div class="city">بنغازي</div>
-      </div>
-      <div class="shop">🏪 بيبي ستور<br>الحالة: تأكد من التوفر عبر واتساب</div>
-      <a class="whatsapp" href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نستفسر على طقم مستلزمات مولود">تواصل واتساب</a>
-    </div>
-  </div>
-</div>
-```
+    searchForm.addEventListener("submit", event => {
+      event.preventDefault();
+      applyFilters();
+    });
 
-  </div>
-</section>
+    [searchInput, cityFilter, categoryFilter].forEach(element => {
+      element.addEventListener("input", () => applyFilters());
+      element.addEventListener("change", () => applyFilters());
+    });
 
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>كيف يعمل الموقع؟</h2>
-        <p>طريقة بسيطة وواضحة بدون دفع إلكتروني في المرحلة الحالية.</p>
-      </div>
-    </div>
+    filterPills.forEach(pill => {
+      pill.addEventListener("click", () => {
+        filterPills.forEach(item => item.classList.remove("active"));
+        pill.classList.add("active");
+        applyFilters(pill.dataset.filter);
+      });
+    });
 
-```
-<div class="steps">
-  <div class="step">
-    <div class="step-num">1</div>
-    <h3>تصفح المنتج</h3>
-    <p>اختار التصنيف أو المدينة وشوف المنتجات المعروضة.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">2</div>
-    <h3>تواصل عبر واتساب</h3>
-    <p>اضغط زر واتساب وراسل التاجر مباشرة للاستفسار.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">3</div>
-    <h3>اتفق مع التاجر</h3>
-    <p>التوفر، الدفع، والتوصيل يتم بينهم مباشرة.</p>
-  </div>
-</div>
-```
+    menuToggle.addEventListener("click", () => {
+      const isOpen = mobileNav.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
 
-  </div>
-</section>
+    mobileNav.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileNav.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
+    });
 
-<section class="merchant" id="merchant">
-  <div class="container">
-    <div class="merchant-box">
-      <div>
-        <h2>عندك محل منتجات أطفال؟</h2>
-        <p>ابدأ بعرض منتجاتك مجاناً في النسخة التجريبية ووصل لزبائن جدد من مدينتك بدون ما تحتاج موقع أو تطبيق خاص.</p>
-      </div>
-      <a href="https://wa.me/218XXXXXXXXX?text=السلام عليكم، نبي نضيف منتجاتي في طفلي ماركت">أضف منتجاتك الآن</a>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <h3>طفلي ماركت</h3>
-      <p>منصة عرض منتجات الأطفال من محلات ليبيا. البيع والتوصيل يتمان مباشرة بين الزبون والتاجر.</p>
-    </div>
-    <div>
-      <h3>روابط</h3>
-      <p><a href="#products">المنتجات</a></p>
-      <p><a href="#categories">التصنيفات</a></p>
-      <p><a href="#merchant">أضف منتجاتك</a></p>
-    </div>
-    <div>
-      <h3>تواصل</h3>
-      <p>واتساب الإدارة: 218XXXXXXXXX</p>
-      <p>المرحلة الحالية: عرض فقط بدون دفع داخل الموقع.</p>
-    </div>
-  </div>
-  <div class="copyright">© 2026 طفلي ماركت — جميع الحقوق محفوظة</div>
-</footer>
-
-<a class="float" href="https://wa.me/218XXXXXXXXX">💬</a>
-
+    renderProducts(products);
+    lucide.createIcons();
+  </script>
 </body>
 </html>
