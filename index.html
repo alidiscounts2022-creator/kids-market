@@ -9,99 +9,172 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   direction: rtl;
   background: #FBFBF8;
+  color: #010536;
 }
 
-/* Header */
 .header {
   background: #ffffff;
-  padding: 15px 25px;
+  padding: 16px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: #010536;
+  font-size: 24px;
+  font-weight: 800;
 }
 
 .nav a {
-  margin-left: 15px;
+  margin-left: 14px;
   text-decoration: none;
   color: #010536;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .cta {
   background: #F1F10D;
-  padding: 8px 14px;
-  border-radius: 6px;
+  padding: 9px 16px;
+  border-radius: 20px;
 }
 
-/* Hero */
 .hero {
   text-align: center;
-  padding: 40px 20px;
-  background: #ffffff;
+  padding: 55px 20px;
+  background: linear-gradient(180deg, #ffffff, #FBFBF8);
 }
 
 .hero h1 {
-  color: #010536;
-  margin-bottom: 10px;
+  font-size: 34px;
+  margin-bottom: 12px;
 }
 
 .hero p {
   color: #555;
+  font-size: 17px;
 }
 
 .hero-btn {
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 18px;
   background: #010536;
   color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 12px 24px;
+  border-radius: 24px;
   text-decoration: none;
+  font-weight: bold;
 }
 
-/* Products */
+.categories {
+  padding: 20px;
+  text-align: center;
+}
+
+.categories span {
+  display: inline-block;
+  background: #ffffff;
+  margin: 6px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  font-weight: 600;
+}
+
+.section-title {
+  text-align: center;
+  margin-top: 15px;
+}
+
 .products {
-  padding: 30px;
+  padding: 25px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 22px;
 }
 
 .card {
   background: #ffffff;
-  border-radius: 10px;
-  padding: 15px;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(1,5,54,0.06);
 }
 
 .card img {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
+}
+
+.card h3 {
+  margin-bottom: 6px;
 }
 
 .price {
+  font-size: 18px;
   color: #010536;
-  font-weight: bold;
+  font-weight: 800;
+}
+
+.meta {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .btn {
   display: block;
-  margin-top: 10px;
+  margin-top: 12px;
   background: #25D366;
   color: white;
   text-align: center;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 10px;
   text-decoration: none;
+  font-weight: bold;
+}
+
+.merchant {
+  margin: 35px 20px;
+  padding: 35px 20px;
+  text-align: center;
+  background: #010536;
+  color: white;
+  border-radius: 20px;
+}
+
+.merchant a {
+  display: inline-block;
+  margin-top: 12px;
+  background: #F1F10D;
+  color: #010536;
+  padding: 12px 24px;
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.notice {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
 }
 </style>
 
@@ -109,43 +182,67 @@ body {
 
 <body>
 
-<!-- Header -->
-
 <div class="header">
   <div class="logo">طفلي ماركت</div>
   <div class="nav">
     <a href="#">الرئيسية</a>
-    <a href="#">المنتجات</a>
-    <a href="#" class="cta">أضف منتجاتك</a>
+    <a href="#products">المنتجات</a>
+    <a href="#merchant" class="cta">أضف منتجاتك</a>
   </div>
 </div>
 
-<!-- Hero -->
-
 <div class="hero">
-  <h1>كل مستلزمات الأطفال في مكان واحد 👶</h1>
-  <p>تصفح منتجات من محلات ليبيا وتواصل مباشرة مع التاجر عبر واتساب</p>
-  <a href="#" class="hero-btn">تصفح المنتجات</a>
+  <h1>كل مستلزمات الأطفال من محلات ليبيا في مكان واحد</h1>
+  <p>تصفح المنتجات، قارن الأسعار، وتواصل مباشرة مع التاجر عبر واتساب.</p>
+  <a href="#products" class="hero-btn">تصفح المنتجات</a>
 </div>
 
-<!-- Products -->
+<div class="categories">
+  <span>ملابس أطفال</span>
+  <span>أحذية</span>
+  <span>ألعاب</span>
+  <span>مستلزمات مواليد</span>
+  <span>عربات وكراسي</span>
+</div>
+
+<h2 class="section-title" id="products">منتجات مميزة</h2>
 
 <div class="products">
 
   <div class="card">
     <img src="https://via.placeholder.com/300">
-    <p>بدلة أطفال</p>
+    <h3>بدلة أطفال شتوية</h3>
     <p class="price">65 د.ل</p>
+    <p class="meta">📍 طرابلس<br>🏪 محل عالم الطفل<br>الحالة: يرجى التأكد عبر واتساب</p>
     <a class="btn" href="https://wa.me/218XXXXXXXXX">تواصل واتساب</a>
   </div>
 
   <div class="card">
     <img src="https://via.placeholder.com/300">
-    <p>حذاء أطفال</p>
+    <h3>حذاء أطفال</h3>
     <p class="price">40 د.ل</p>
+    <p class="meta">📍 مصراتة<br>🏪 متجر الطفل الأنيق<br>الحالة: يرجى التأكد عبر واتساب</p>
     <a class="btn" href="https://wa.me/218XXXXXXXXX">تواصل واتساب</a>
   </div>
 
+  <div class="card">
+    <img src="https://via.placeholder.com/300">
+    <h3>لعبة تعليمية</h3>
+    <p class="price">35 د.ل</p>
+    <p class="meta">📍 بنغازي<br>🏪 ألعاب الصغار<br>الحالة: يرجى التأكد عبر واتساب</p>
+    <a class="btn" href="https://wa.me/218XXXXXXXXX">تواصل واتساب</a>
+  </div>
+
+</div>
+
+<div class="merchant" id="merchant">
+  <h2>عندك محل منتجات أطفال؟</h2>
+  <p>اعرض منتجاتك مجاناً في البداية ووصل لزبائن جدد بدون ما تحتاج موقع أو تطبيق.</p>
+  <a href="https://wa.me/218XXXXXXXXX">أضف منتجاتك الآن</a>
+</div>
+
+<div class="notice">
+  تنبيه: الموقع يعرض المنتجات فقط، ويتم التواصل والشراء والتوصيل مباشرة بين الزبون والتاجر.
 </div>
 
 </body>
