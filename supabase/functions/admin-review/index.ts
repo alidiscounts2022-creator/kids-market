@@ -8,6 +8,13 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const ADMIN_API_KEY = (Deno.env.get("ADMIN_API_KEY") ?? "").trim();
+const PRODUCT_IMAGES_BUCKET = "product-images";
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -41,6 +48,11 @@ Deno.serve(async (req) => {
     if (req.method === "POST" && action === "manual-product") {
       const payload = await req.json();
       return await createManualProduct(payload);
+    }
+
+    if (req.method === "POST" && action === "upload-image") {
+      const payload = await req.json();
+      return await uploadProductImage(payload);
     }
 
     if (req.method === "POST" && action === "seed") {
@@ -276,6 +288,41 @@ async function createManualProduct(payload: Record<string, unknown>): Promise<Re
   return json({ ok: true, product: inserted });
 }
 
+async function uploadProductImage(payload: Record<string, unknown>): Promise<Response> {
+  const mimeType = requiredString(payload.mime_type, "نوع الصورة مطلوب.");
+  const extension = ALLOWED_IMAGE_TYPES[mimeType];
+  if (!extension) {
+    return json({ error: "نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP." }, 400);
+  }
+
+  const rawData = requiredString(payload.data, "بيانات الصورة مطلوبة.");
+  const base64 = rawData.includes(",") ? rawData.split(",").pop() ?? "" : rawData;
+  const bytes = decodeBase64(base64);
+  if (!bytes.length) return json({ error: "تعذر قراءة الصورة." }, 400);
+  if (bytes.byteLength > MAX_IMAGE_BYTES) {
+    return json({ error: "حجم الصورة كبير. اختر صورة أصغر من 5MB." }, 400);
+  }
+
+  await ensureImageBucket();
+
+  const safeName = cleanFileName(payload.file_name);
+  const filePath = `products/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${safeName}.${extension}`;
+  const { error } = await supabase.storage
+    .from(PRODUCT_IMAGES_BUCKET)
+    .upload(filePath, bytes, {
+      contentType: mimeType,
+      upsert: false,
+    });
+
+  if (error) throw error;
+
+  const { data } = supabase.storage
+    .from(PRODUCT_IMAGES_BUCKET)
+    .getPublicUrl(filePath);
+
+  return json({ ok: true, url: data.publicUrl, path: filePath });
+}
+
 async function approveDraft(payload: Record<string, unknown>): Promise<Response> {
   const id = String(payload.id ?? "");
   if (!id) return json({ error: "id is required" }, 400);
@@ -401,6 +448,51 @@ function splitList(value: unknown): string[] {
     .map((item) => item.trim())
     .filter(Boolean)
     .slice(0, 12);
+}
+
+function decodeBase64(value: string): Uint8Array {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+function cleanFileName(value: unknown): string {
+  const base = String(value ?? "product-image")
+    .toLowerCase()
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return base || "product-image";
+}
+
+async function ensureImageBucket(): Promise<void> {
+  const { data: bucket } = await supabase.storage.getBucket(PRODUCT_IMAGES_BUCKET);
+  if (!bucket) {
+    const { error } = await supabase.storage.createBucket(PRODUCT_IMAGES_BUCKET, {
+      public: true,
+      fileSizeLimit: MAX_IMAGE_BYTES,
+      allowedMimeTypes: Object.keys(ALLOWED_IMAGE_TYPES),
+    });
+
+    if (error && !error.message.toLowerCase().includes("already exists")) {
+      throw error;
+    }
+    return;
+  }
+
+  if (!bucket.public) {
+    const { error } = await supabase.storage.updateBucket(PRODUCT_IMAGES_BUCKET, {
+      public: true,
+      fileSizeLimit: MAX_IMAGE_BYTES,
+      allowedMimeTypes: Object.keys(ALLOWED_IMAGE_TYPES),
+    });
+
+    if (error) throw error;
+  }
 }
 
 function json(payload: unknown, status = 200): Response {

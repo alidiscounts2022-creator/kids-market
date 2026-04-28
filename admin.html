@@ -146,6 +146,31 @@
       border-color: rgba(168, 85, 247, .6);
       box-shadow: 0 0 0 4px rgba(168, 85, 247, .12);
     }
+    .upload-tools {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .upload-tools input[type="file"] {
+      padding: 10px;
+      min-height: auto;
+      border-style: dashed;
+      cursor: pointer;
+    }
+    .image-preview {
+      display: none;
+      width: 100%;
+      max-height: 190px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #EAF0F6;
+    }
+    .upload-note {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 800;
+    }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -372,6 +397,11 @@
           <div class="field">
             <label>رابط الصورة</label>
             <input name="image_url" type="url" placeholder="https://..." />
+            <div class="upload-tools">
+              <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
+              <span class="upload-note">أو اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
+              <img class="image-preview" data-image-preview alt="معاينة الصورة" />
+            </div>
           </div>
           <div class="field">
             <label>شارة المنتج</label>
@@ -463,6 +493,11 @@
           <div class="field">
             <label>رابط الصورة</label>
             <input name="image_url" type="url" />
+            <div class="upload-tools">
+              <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
+              <span class="upload-note">أو اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
+              <img class="image-preview" data-image-preview alt="معاينة الصورة" />
+            </div>
           </div>
           <div class="field">
             <label>المقاسات المتوفرة</label>
@@ -499,6 +534,8 @@
 
   <script>
     const ADMIN_FUNCTION_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review";
+    const MAX_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024;
+    const MAX_IMAGE_SIDE = 1400;
     const adminKeyInput = document.getElementById("adminKey");
     const saveConfig = document.getElementById("saveConfig");
     const seedDraftBtn = document.getElementById("seedDraft");
@@ -574,6 +611,98 @@
       return payload;
     }
 
+    async function handleImageUpload(input) {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const form = input.closest("form");
+      if (!form) return;
+
+      try {
+        input.disabled = true;
+        saveCurrentConfig();
+        setStatus("جاري تجهيز ورفع الصورة...");
+        const payload = await prepareImagePayload(file);
+        const result = await api("/upload-image", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        const targetName = input.dataset.targetName || "image_url";
+        if (form.elements[targetName]) {
+          form.elements[targetName].value = result.url;
+        }
+        updateImagePreview(form, result.url);
+        setStatus("تم رفع الصورة وإضافة رابطها تلقائياً.", "ok");
+      } catch (error) {
+        input.value = "";
+        setStatus(error.message, "error");
+      } finally {
+        input.disabled = false;
+      }
+    }
+
+    async function prepareImagePayload(file) {
+      if (!file.type.startsWith("image/")) {
+        throw new Error("اختر ملف صورة فقط.");
+      }
+
+      const source = await readAsDataUrl(file);
+      const image = await loadImage(source);
+      const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+
+      const context = canvas.getContext("2d");
+      context.fillStyle = "#FFFFFF";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.84));
+      if (!blob) throw new Error("تعذر تجهيز الصورة.");
+      if (blob.size > MAX_IMAGE_UPLOAD_BYTES) {
+        throw new Error("حجم الصورة بعد الضغط مازال كبيراً. اختر صورة أصغر.");
+      }
+
+      const dataUrl = await readAsDataUrl(blob);
+      return {
+        file_name: file.name,
+        mime_type: "image/jpeg",
+        data: dataUrl.split(",").pop(),
+      };
+    }
+
+    function readAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("تعذر قراءة الصورة."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImage(source) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error("تعذر فتح الصورة."));
+        image.src = source;
+      });
+    }
+
+    function updateImagePreview(form, url) {
+      const preview = form.querySelector("[data-image-preview]");
+      if (!preview) return;
+      if (!url) {
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+        return;
+      }
+      preview.src = url;
+      preview.style.display = "block";
+    }
+
     async function loadDrafts() {
       try {
         setStatus("جاري جلب المسودات...");
@@ -647,6 +776,7 @@
           form.elements[field].value = values[field] ?? "";
         }
       }
+      updateImagePreview(form, values.image_url);
     }
 
     function formData(form) {
@@ -756,9 +886,16 @@
       saveCurrentConfig();
       loadDrafts();
     });
+    document.addEventListener("change", async (event) => {
+      const input = event.target?.closest?.("[data-image-upload]");
+      if (input) await handleImageUpload(input);
+    });
     manualProductForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       await createManualProduct(manualProductForm);
+    });
+    manualProductForm.addEventListener("reset", () => {
+      setTimeout(() => updateImagePreview(manualProductForm, ""), 0);
     });
 
     const config = getConfig();
