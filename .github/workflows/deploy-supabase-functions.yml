@@ -1,0 +1,26 @@
+name: Deploy Supabase Functions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy admin review function
+        run: supabase functions deploy admin-review --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy Facebook import function
+        run: supabase functions deploy facebook-import --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy Facebook OAuth function
+        run: supabase functions deploy facebook-oauth --project-ref "$PROJECT_ID" --no-verify-jwt

@@ -9,11 +9,13 @@
 - `preview-mobile.png`: لقطة معاينة للهاتف.
 - `preview-mobile-500.png`: لقطة معاينة لهاتف بعرض أكبر.
 - `docs/facebook-import-mvp.md`: خطة ربط فيسبوك واستيراد المنشورات كمسودات.
+- `docs/setup-supabase.md`: خطوات إعداد Supabase وتشغيل قاعدة البيانات والدوال.
 - `admin.html`: لوحة مراجعة مسودات المنتجات واعتمادها.
 - `supabase/schema.sql`: مخطط قاعدة البيانات المقترح.
 - `supabase/functions/admin-review`: وظيفة إدارة المسودات واعتماد المنتجات.
 - `supabase/functions/facebook-oauth`: وظيفة ربط صفحة فيسبوك.
 - `supabase/functions/facebook-import`: وظيفة استيراد منشورات الصفحة.
+- `.github/workflows/deploy-supabase-functions.yml`: نشر دوال Supabase عبر GitHub Actions.
 - `.env.example`: أسماء المتغيرات المطلوبة لاحقا بدون أي مفاتيح حقيقية.
 
 ## التشغيل
@@ -35,7 +37,7 @@
 
 ## مرحلة فيسبوك المقترحة
 
-ابدأ بقراءة `docs/facebook-import-mvp.md`. الفكرة هي ربط صفحات التجار واستيراد المنشورات إلى جدول `product_drafts` للمراجعة قبل النشر في جدول `products`.
+ابدأ بقراءة `docs/setup-supabase.md` ثم `docs/facebook-import-mvp.md`. الفكرة هي ربط صفحات التجار واستيراد المنشورات إلى جدول `product_drafts` للمراجعة قبل النشر في جدول `products`.
 
 بعد نشر وظائف Supabase، افتح `admin.html` وأدخل:
 

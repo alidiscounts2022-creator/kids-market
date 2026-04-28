@@ -22,6 +22,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const GRAPH_VERSION = Deno.env.get("FACEBOOK_GRAPH_VERSION") ?? "v20.0";
+const ADMIN_API_KEY = Deno.env.get("ADMIN_API_KEY") ?? "";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -33,6 +34,10 @@ Deno.serve(async (req) => {
   try {
     if (req.method !== "POST") {
       return json({ error: "Method not allowed" }, 405);
+    }
+
+    if (!isAuthorized(req)) {
+      return json({ error: "Unauthorized" }, 401);
     }
 
     const { merchant_id, facebook_page_id, limit = 20 } = await req.json();
@@ -118,6 +123,11 @@ Deno.serve(async (req) => {
   }
 });
 
+function isAuthorized(req: Request): boolean {
+  const header = req.headers.get("x-admin-key");
+  return Boolean(ADMIN_API_KEY && header && header === ADMIN_API_KEY);
+}
+
 async function fetchFacebookPosts(pageId: string, accessToken: string, limit: number): Promise<FacebookPost[]> {
   const fields = [
     "id",
@@ -177,4 +187,3 @@ function json(payload: unknown, status = 200): Response {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }
-

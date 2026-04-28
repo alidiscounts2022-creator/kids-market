@@ -40,15 +40,16 @@
 
 ## التشغيل المقترح
 
-1. أنشئ مشروع Supabase.
-2. نفذ ملف `supabase/schema.sql` داخل SQL Editor.
-3. أنشئ Meta App من لوحة Meta for Developers.
-4. أضف Redirect URI الخاص بوظيفة `facebook-oauth`.
-5. انشر وظائف Supabase:
+1. اتبع خطوات `docs/setup-supabase.md`.
+2. أنشئ مشروع Supabase.
+3. نفذ ملف `supabase/schema.sql` داخل SQL Editor.
+4. أنشئ Meta App من لوحة Meta for Developers.
+5. أضف Redirect URI الخاص بوظيفة `facebook-oauth`.
+6. انشر وظائف Supabase:
    - `admin-review`
    - `facebook-oauth`
    - `facebook-import`
-6. ضع القيم السرية من `.env.example` داخل Supabase Edge Function secrets.
+7. ضع القيم السرية من `.env.example` داخل Supabase Edge Function secrets.
 
 ## لوحة الإدارة
 
