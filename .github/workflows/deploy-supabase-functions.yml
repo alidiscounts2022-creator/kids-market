@@ -37,3 +37,6 @@ jobs:
 
       - name: Deploy Facebook OAuth function
         run: supabase functions deploy facebook-oauth --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy public products function
+        run: supabase functions deploy public-products --project-ref "$PROJECT_ID" --no-verify-jwt

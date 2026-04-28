@@ -744,6 +744,13 @@
       display: none;
     }
 
+    .helper-note {
+      margin: 10px 0 18px;
+      color: #667085;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
     .filter-pill {
       flex: 0 0 auto;
       border: 1px solid var(--line);
@@ -1554,6 +1561,7 @@
           <button class="filter-pill" data-filter="أحذية">أحذية</button>
           <button class="filter-pill" data-filter="عربات وكراسي">عربات وكراسي</button>
         </div>
+        <p class="helper-note" id="productsStatus">جاري تحميل المنتجات المنشورة...</p>
 
         <div class="products-grid" id="productsGrid"></div>
       </div>
@@ -1720,7 +1728,7 @@
   </footer>
 
   <script>
-    const products = [
+    const fallbackProducts = [
       {
         name: "طقم مولود قطني 5 قطع",
         price: "65 د.ل",
@@ -1783,7 +1791,11 @@
       }
     ];
 
+    const LIVE_PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    let products = [...fallbackProducts];
+
     const productsGrid = document.getElementById("productsGrid");
+    const productsStatus = document.getElementById("productsStatus");
     const searchInput = document.getElementById("searchInput");
     const cityFilter = document.getElementById("cityFilter");
     const categoryFilter = document.getElementById("categoryFilter");
@@ -1792,29 +1804,86 @@
     const menuToggle = document.getElementById("menuToggle");
     const mobileNav = document.getElementById("mobileNav");
 
-    function whatsappUrl(productName) {
-      const phone = "218912345678";
-      const text = `السلام عليكم، نبي نستفسر على ${productName}`;
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function safeImage(value) {
+      const fallback = "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=900&q=80";
+      if (!value) return fallback;
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function formatPrice(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || number <= 0) return "السعر عند التاجر";
+      return `${number.toLocaleString("ar-LY")} د.ل`;
+    }
+
+    function badgeClassFor(product) {
+      const text = `${product.badge || ""} ${product.category || ""}`;
+      if (text.includes("مواليد") || text.includes("عرض")) return "teal";
+      if (text.includes("ألعاب") || text.includes("جديد")) return "sky";
+      return "";
+    }
+
+    function normalizeLiveProduct(product) {
+      return {
+        name: product.title || "منتج بدون اسم",
+        price: formatPrice(product.price_lyd),
+        city: product.city || "غير محدد",
+        store: product.store_name || "محل محلي",
+        category: product.category || "غير مصنف",
+        badge: product.badge || product.category || "جديد",
+        badgeClass: badgeClassFor(product),
+        image: safeImage(product.image_url),
+        whatsapp: product.whatsapp_phone || "218912345678"
+      };
+    }
+
+    function whatsappUrl(product) {
+      const phone = String(product.whatsapp || "218912345678").replace(/\D/g, "") || "218912345678";
+      const text = `السلام عليكم، نبي نستفسر على ${product.name}`;
       return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     }
 
     function productCard(product) {
+      const name = escapeHtml(product.name);
+      const city = escapeHtml(product.city);
+      const store = escapeHtml(product.store);
+      const category = escapeHtml(product.category);
+      const price = escapeHtml(product.price);
+      const badge = escapeHtml(product.badge);
+      const badgeClass = escapeHtml(product.badgeClass);
+      const image = safeImage(product.image);
+
       return `
-        <article class="product-card" data-category="${product.category}" data-city="${product.city}" data-name="${product.name}">
+        <article class="product-card" data-category="${category}" data-city="${city}" data-name="${name}">
           <div class="product-media">
-            <img src="${product.image}" alt="${product.name}" loading="lazy" />
-            <span class="badge ${product.badgeClass}">${product.badge}</span>
+            <img src="${image}" alt="${name}" loading="lazy" />
+            <span class="badge ${badgeClass}">${badge}</span>
           </div>
           <div class="product-body">
             <div class="product-title-row">
-              <h3>${product.name}</h3>
-              <span class="price">${product.price}</span>
+              <h3>${name}</h3>
+              <span class="price">${price}</span>
             </div>
             <div class="product-meta">
-              <span class="meta-line"><i data-lucide="map-pin"></i>${product.city}</span>
-              <span class="meta-line"><i data-lucide="store"></i>${product.store}</span>
+              <span class="meta-line"><i data-lucide="map-pin"></i>${city}</span>
+              <span class="meta-line"><i data-lucide="store"></i>${store}</span>
             </div>
-            <a class="btn whatsapp-btn" href="${whatsappUrl(product.name)}" target="_blank" rel="noopener">
+            <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener">
               <i data-lucide="message-circle"></i>
               استفسر عبر واتساب
             </a>
@@ -1831,6 +1900,40 @@
             <p style="margin:0;color:#667085;font-weight:700;">جرّب تغيير المدينة أو التصنيف أو كلمة البحث.</p>
           </div>`;
       lucide.createIcons();
+    }
+
+    function setProductsStatus(message, type = "") {
+      if (!productsStatus) return;
+      productsStatus.textContent = message;
+      productsStatus.style.color = type === "error" ? "#B42318" : "#667085";
+    }
+
+    async function loadLiveProducts() {
+      try {
+        setProductsStatus("جاري تحميل المنتجات المنشورة من قاعدة البيانات...");
+        const response = await fetch(`${LIVE_PRODUCTS_URL}?limit=60`);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.error || "تعذر تحميل المنتجات المنشورة.");
+        }
+
+        const liveProducts = Array.isArray(payload.products)
+          ? payload.products.map(normalizeLiveProduct)
+          : [];
+
+        if (liveProducts.length) {
+          products = liveProducts;
+          setProductsStatus(`تم تحميل ${liveProducts.length} منتج منشور من Supabase.`);
+        } else {
+          products = [...fallbackProducts];
+          setProductsStatus("لا توجد منتجات منشورة بعد؛ يتم عرض بيانات تجريبية مؤقتة.");
+        }
+      } catch (error) {
+        products = [...fallbackProducts];
+        setProductsStatus("تعذر تحميل منتجات Supabase حالياً؛ يتم عرض بيانات تجريبية مؤقتة.", "error");
+      }
+
+      applyFilters();
     }
 
     function applyFilters(categoryFromPill = null) {
@@ -1883,6 +1986,7 @@
     });
 
     renderProducts(products);
+    loadLiveProducts();
     lucide.createIcons();
   </script>
 </body>
