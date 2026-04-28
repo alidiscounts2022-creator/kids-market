@@ -57,7 +57,7 @@
 
 1. افتح `admin.html`.
 2. أدخل رابط الدالة:
-   `https://YOUR_PROJECT_ID.supabase.co/functions/v1/admin-review`
+   `https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review`
 3. أدخل قيمة `ADMIN_API_KEY`.
 4. اضغط حفظ وجلب المسودات.
 5. عدل بيانات المنتج ثم اضغط اعتماد ونشر.

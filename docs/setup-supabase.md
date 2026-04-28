@@ -41,7 +41,7 @@
 ```bash
 FACEBOOK_APP_ID=YOUR_FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET=YOUR_FACEBOOK_APP_SECRET
-FACEBOOK_REDIRECT_URI=https://YOUR_PROJECT_ID.supabase.co/functions/v1/facebook-oauth/callback
+FACEBOOK_REDIRECT_URI=https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/facebook-oauth/callback
 FACEBOOK_GRAPH_VERSION=v20.0
 ADMIN_API_KEY=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
 ```
@@ -64,7 +64,7 @@ ADMIN_API_KEY=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
 ```powershell
 cd "C:\Users\HP\Documents\Codex\2026-04-27\landing-page-rtl-marketplace-mobile-app"
 supabase login
-supabase link --project-ref YOUR_PROJECT_REF
+supabase link --project-ref qtfqbtymouzcjgsbupcf
 supabase functions deploy admin-review --no-verify-jwt
 supabase functions deploy facebook-import --no-verify-jwt
 supabase functions deploy facebook-oauth --no-verify-jwt
@@ -86,9 +86,11 @@ supabase functions deploy facebook-oauth --no-verify-jwt
 1. افتح GitHub repo.
 2. اذهب إلى `Settings` ثم `Secrets and variables` ثم `Actions`.
 3. أضف Secret باسم `SUPABASE_ACCESS_TOKEN`.
-4. أضف Secret باسم `SUPABASE_PROJECT_REF`.
-5. افتح تبويب `Actions`.
-6. شغل Workflow باسم `Deploy Supabase Functions` يدويا.
+4. افتح تبويب `Actions`.
+5. شغل Workflow باسم `Deploy Supabase Functions` يدويا.
+
+ملاحظة: `Project Ref` الخاص بهذا المشروع محفوظ داخل ملف الـ workflow لأنه قيمة عامة وليست كلمة سر:
+`qtfqbtymouzcjgsbupcf`.
 
 هذا الخيار ينشر الدوال فقط. الأسرار مثل `FACEBOOK_APP_SECRET` و `ADMIN_API_KEY` يجب أن تكون محفوظة داخل Supabase Function secrets.
 
@@ -96,7 +98,7 @@ supabase functions deploy facebook-oauth --no-verify-jwt
 
 1. افتح `admin.html`.
 2. أدخل رابط الدالة:
-   `https://YOUR_PROJECT_ID.supabase.co/functions/v1/admin-review`
+   `https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review`
 3. أدخل قيمة `ADMIN_API_KEY`.
 4. اضغط `حفظ وجلب المسودات`.
 

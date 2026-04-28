@@ -41,5 +41,5 @@
 
 بعد نشر وظائف Supabase، افتح `admin.html` وأدخل:
 
-- رابط دالة الإدارة: `https://YOUR_PROJECT_ID.supabase.co/functions/v1/admin-review`
+- رابط دالة الإدارة: `https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review`
 - مفتاح الإدارة: نفس قيمة `ADMIN_API_KEY` المحفوظة في Supabase secrets
