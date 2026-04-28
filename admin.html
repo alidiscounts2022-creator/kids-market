@@ -182,6 +182,26 @@
     }
     .status.error { color: var(--danger); }
     .status.ok { color: #0F766E; }
+    .stats-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      padding: 7px 10px;
+      font-size: .82rem;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, .06);
+    }
+    .stat-chip strong { color: var(--purple); }
     .drafts {
       display: grid;
       gap: 16px;
@@ -290,6 +310,7 @@
         <div>
           <h2>المسودات بانتظار المراجعة</h2>
           <div class="status" id="status">أدخل مفتاح الإدارة للبدء.</div>
+          <div class="stats-strip" id="statsStrip" aria-live="polite"></div>
         </div>
         <button class="btn btn-teal" id="refreshBtn" type="button"><i data-lucide="refresh-cw"></i>تحديث</button>
       </div>
@@ -367,6 +388,7 @@
     const seedDraftBtn = document.getElementById("seedDraft");
     const refreshBtn = document.getElementById("refreshBtn");
     const statusEl = document.getElementById("status");
+    const statsStrip = document.getElementById("statsStrip");
     const draftsEl = document.getElementById("drafts");
     const template = document.getElementById("draftTemplate");
 
@@ -379,6 +401,36 @@
     function setStatus(message, type = "") {
       statusEl.textContent = message;
       statusEl.className = `status ${type}`.trim();
+    }
+
+    function setStats(stats) {
+      if (!statsStrip) return;
+
+      if (!stats) {
+        statsStrip.innerHTML = "";
+        return;
+      }
+
+      const latest = stats.latest_product?.title
+        ? `<span class="stat-chip">آخر منتج: <strong>${escapeHtml(stats.latest_product.title)}</strong></span>`
+        : "";
+
+      statsStrip.innerHTML = `
+        <span class="stat-chip">منشور: <strong>${Number(stats.published_products || 0)}</strong></span>
+        <span class="stat-chip">بانتظار المراجعة: <strong>${Number(stats.pending_drafts || 0)}</strong></span>
+        <span class="stat-chip">معتمد: <strong>${Number(stats.approved_drafts || 0)}</strong></span>
+        ${latest}
+      `;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;",
+      }[char]));
     }
 
     function saveCurrentConfig() {
@@ -409,12 +461,21 @@
       try {
         setStatus("جاري جلب المسودات...");
         draftsEl.innerHTML = "";
-        const payload = await api("?status=pending_review");
+        const [payload] = await Promise.all([
+          api("?status=pending_review"),
+          loadStats(),
+        ]);
         renderDrafts(payload.drafts || []);
         setStatus(`تم جلب ${payload.drafts?.length || 0} مسودة.`, "ok");
       } catch (error) {
         setStatus(error.message, "error");
       }
+    }
+
+    async function loadStats() {
+      const payload = await api("/stats");
+      setStats(payload.stats);
+      return payload.stats;
     }
 
     function renderDrafts(drafts) {
@@ -476,7 +537,9 @@
           body: JSON.stringify(formData(form)),
         });
         card.remove();
-        setStatus("تم اعتماد المنتج ونشره.", "ok");
+        const stats = await loadStats();
+        const count = Number(stats?.published_products || 0);
+        setStatus(`تم اعتماد المنتج ونشره. عدد المنتجات المنشورة الآن: ${count}.`, "ok");
       } catch (error) {
         setStatus(error.message, "error");
       }

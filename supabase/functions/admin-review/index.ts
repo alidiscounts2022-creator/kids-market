@@ -23,19 +23,14 @@ Deno.serve(async (req) => {
     }
 
     const url = new URL(req.url);
-    const action = url.pathname.split("/").pop();
+    const action = url.pathname.split("/").filter(Boolean).pop();
+
+    if (req.method === "GET" && action === "stats") {
+      return await getStats();
+    }
 
     if (req.method === "GET") {
-      const status = url.searchParams.get("status") ?? "pending_review";
-      const { data, error } = await supabase
-        .from("product_drafts")
-        .select("*")
-        .eq("status", status)
-        .order("created_at", { ascending: false })
-        .limit(100);
-
-      if (error) throw error;
-      return json({ drafts: data ?? [] });
+      return await listDrafts(url);
     }
 
     if (req.method === "POST" && action === "approve") {
@@ -77,7 +72,7 @@ function getAuthError(req: Request): { message: string; status: number } | null 
   const header = (req.headers.get("x-admin-key") ?? "").trim();
   if (!header) {
     return {
-      message: "أدخل مفتاح الإدارة ADMIN_API_KEY أولا.",
+      message: "أدخل مفتاح الإدارة ADMIN_API_KEY أولاً.",
       status: 401,
     };
   }
@@ -90,6 +85,62 @@ function getAuthError(req: Request): { message: string; status: number } | null 
   }
 
   return null;
+}
+
+async function listDrafts(url: URL): Promise<Response> {
+  const status = url.searchParams.get("status") ?? "pending_review";
+  const { data, error } = await supabase
+    .from("product_drafts")
+    .select("*")
+    .eq("status", status)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (error) throw error;
+  return json({ drafts: data ?? [] });
+}
+
+async function getStats(): Promise<Response> {
+  const [pendingDrafts, approvedDrafts, rejectedDrafts, publishedProducts, latestProduct] = await Promise.all([
+    countRows("product_drafts", "pending_review"),
+    countRows("product_drafts", "approved"),
+    countRows("product_drafts", "rejected"),
+    countRows("products", "published"),
+    getLatestProduct(),
+  ]);
+
+  return json({
+    stats: {
+      pending_drafts: pendingDrafts,
+      approved_drafts: approvedDrafts,
+      rejected_drafts: rejectedDrafts,
+      published_products: publishedProducts,
+      latest_product: latestProduct,
+    },
+  });
+}
+
+async function countRows(table: string, status: string): Promise<number> {
+  const { count, error } = await supabase
+    .from(table)
+    .select("id", { count: "exact", head: true })
+    .eq("status", status);
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
+async function getLatestProduct(): Promise<Record<string, unknown> | null> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,title,city,category,status,created_at")
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ?? null;
 }
 
 async function createDemoDraft(): Promise<Response> {
@@ -145,7 +196,7 @@ async function createDemoDraft(): Promise<Response> {
   return json({ ok: true, draft: insertedDraft });
 }
 
-async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<any> {
+async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<Record<string, unknown>> {
   const { data, error } = await supabase
     .from("merchants")
     .insert(merchantInfo)
@@ -170,6 +221,7 @@ async function approveDraft(payload: Record<string, unknown>): Promise<Response>
     return json({ error: "Draft not found" }, 404);
   }
 
+  const category = cleanString(payload.category, draft.category);
   const product = {
     merchant_id: draft.merchant_id,
     draft_id: draft.id,
@@ -177,12 +229,12 @@ async function approveDraft(payload: Record<string, unknown>): Promise<Response>
     description: cleanString(payload.description, draft.description),
     price_lyd: normalizePrice(payload.price_lyd, draft.price_lyd),
     city: cleanString(payload.city, draft.city),
-    category: cleanString(payload.category, draft.category),
+    category,
     store_name: cleanString(payload.store_name, draft.store_name),
     whatsapp_phone: cleanString(payload.whatsapp_phone, draft.whatsapp_phone),
     image_url: cleanString(payload.image_url, draft.image_url),
     source_url: draft.source_url,
-    badge: draft.category === "مواليد" ? "مواليد" : "جديد",
+    badge: category === "مواليد" ? "مواليد" : "جديد",
     status: "published",
   };
 
