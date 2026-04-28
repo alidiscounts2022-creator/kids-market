@@ -43,6 +43,10 @@ Deno.serve(async (req) => {
       return await approveDraft(payload);
     }
 
+    if (req.method === "POST" && action === "seed") {
+      return await createDemoDraft();
+    }
+
     if (req.method === "POST" && action === "reject") {
       const { id } = await req.json();
       if (!id) return json({ error: "id is required" }, 400);
@@ -86,6 +90,70 @@ function getAuthError(req: Request): { message: string; status: number } | null 
   }
 
   return null;
+}
+
+async function createDemoDraft(): Promise<Response> {
+  const merchantInfo = {
+    store_name: "محل براعم طرابلس",
+    owner_name: "تاجر تجريبي",
+    city: "طرابلس",
+    whatsapp_phone: "218912345678",
+    facebook_page_url: "https://facebook.com/tafli-demo-store",
+    status: "active",
+  };
+
+  const { data: existingMerchant, error: merchantLookupError } = await supabase
+    .from("merchants")
+    .select("*")
+    .eq("store_name", merchantInfo.store_name)
+    .eq("whatsapp_phone", merchantInfo.whatsapp_phone)
+    .maybeSingle();
+
+  if (merchantLookupError) throw merchantLookupError;
+
+  const merchant = existingMerchant ?? await insertMerchant(merchantInfo);
+  const sourcePostId = `demo-${Date.now()}`;
+
+  const draft = {
+    merchant_id: merchant.id,
+    source_platform: "facebook",
+    source_post_id: sourcePostId,
+    source_url: "https://facebook.com/tafli-demo-store/posts/demo",
+    title: "طقم مواليد قطني - 5 قطع",
+    description: "مسودة تجريبية لاختبار دورة المراجعة والنشر في طفلي ماركت.",
+    price_lyd: 89,
+    city: merchant.city,
+    category: "مواليد",
+    store_name: merchant.store_name,
+    whatsapp_phone: merchant.whatsapp_phone,
+    image_url: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=900&q=80",
+    raw_payload: {
+      demo: true,
+      source: "admin-review seed",
+    },
+    status: "pending_review",
+  };
+
+  const { data: insertedDraft, error: draftError } = await supabase
+    .from("product_drafts")
+    .insert(draft)
+    .select()
+    .single();
+
+  if (draftError) throw draftError;
+
+  return json({ ok: true, draft: insertedDraft });
+}
+
+async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<any> {
+  const { data, error } = await supabase
+    .from("merchants")
+    .insert(merchantInfo)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 async function approveDraft(payload: Record<string, unknown>): Promise<Response> {

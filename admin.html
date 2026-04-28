@@ -229,6 +229,11 @@
       flex-wrap: wrap;
       gap: 8px;
     }
+    .config-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
     .empty-state {
       padding: 28px;
       text-align: center;
@@ -275,13 +280,16 @@
           <label for="adminKey">مفتاح الإدارة</label>
           <input id="adminKey" type="password" placeholder="ADMIN_API_KEY" />
         </div>
-        <button class="btn btn-primary" id="saveConfig" type="button"><i data-lucide="save"></i>حفظ وجلب المسودات</button>
+        <div class="config-actions">
+          <button class="btn btn-primary" id="saveConfig" type="button"><i data-lucide="save"></i>حفظ وجلب المسودات</button>
+          <button class="btn btn-teal" id="seedDraft" type="button"><i data-lucide="plus-circle"></i>إضافة مسودة تجريبية</button>
+        </div>
       </section>
 
       <div class="toolbar">
         <div>
           <h2>المسودات بانتظار المراجعة</h2>
-          <div class="status" id="status">أدخل رابط الدالة ومفتاح الإدارة للبدء.</div>
+          <div class="status" id="status">أدخل مفتاح الإدارة للبدء.</div>
         </div>
         <button class="btn btn-teal" id="refreshBtn" type="button"><i data-lucide="refresh-cw"></i>تحديث</button>
       </div>
@@ -356,6 +364,7 @@
     const ADMIN_FUNCTION_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review";
     const adminKeyInput = document.getElementById("adminKey");
     const saveConfig = document.getElementById("saveConfig");
+    const seedDraftBtn = document.getElementById("seedDraft");
     const refreshBtn = document.getElementById("refreshBtn");
     const statusEl = document.getElementById("status");
     const draftsEl = document.getElementById("drafts");
@@ -487,11 +496,30 @@
       }
     }
 
+    async function seedDraft() {
+      try {
+        saveCurrentConfig();
+        setStatus("جاري إنشاء مسودة تجريبية...");
+        await api("/seed", {
+          method: "POST",
+          body: JSON.stringify({}),
+        });
+        setStatus("تم إنشاء مسودة تجريبية.", "ok");
+        await loadDrafts();
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    }
+
     saveConfig.addEventListener("click", () => {
       saveCurrentConfig();
       loadDrafts();
     });
-    refreshBtn.addEventListener("click", loadDrafts);
+    seedDraftBtn.addEventListener("click", seedDraft);
+    refreshBtn.addEventListener("click", () => {
+      saveCurrentConfig();
+      loadDrafts();
+    });
 
     const config = getConfig();
     adminKeyInput.value = config.adminKey;
