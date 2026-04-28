@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
 
     const { data, error } = await supabase
       .from("products")
-      .select("id,title,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at")
+      .select("id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at")
       .eq("status", "published")
       .order("created_at", { ascending: false })
       .limit(limit);

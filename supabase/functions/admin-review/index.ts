@@ -171,7 +171,12 @@ async function createDemoDraft(): Promise<Response> {
     source_post_id: sourcePostId,
     source_url: "https://facebook.com/tafli-demo-store/posts/demo",
     title: "طقم مواليد قطني - 5 قطع",
-    description: "مسودة تجريبية لاختبار دورة المراجعة والنشر في طفلي ماركت.",
+    description: buildProductDescription(
+      "مسودة تجريبية لاختبار دورة المراجعة والنشر في طفلي ماركت.",
+      "0-3 أشهر، 3-6 أشهر، 6-12 شهر",
+      "أبيض، سماوي، وردي",
+      "متوفر"
+    ),
     price_lyd: 89,
     city: merchant.city,
     category: "مواليد",
@@ -196,7 +201,7 @@ async function createDemoDraft(): Promise<Response> {
   return json({ ok: true, draft: insertedDraft });
 }
 
-async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<Record<string, unknown>> {
+async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<any> {
   const { data, error } = await supabase
     .from("merchants")
     .insert(merchantInfo)
@@ -222,11 +227,18 @@ async function approveDraft(payload: Record<string, unknown>): Promise<Response>
   }
 
   const category = cleanString(payload.category, draft.category);
+  const description = buildProductDescription(
+    payload.description,
+    payload.sizes,
+    payload.colors,
+    payload.stock_status,
+    draft.description
+  );
   const product = {
     merchant_id: draft.merchant_id,
     draft_id: draft.id,
     title: cleanString(payload.title, draft.title),
-    description: cleanString(payload.description, draft.description),
+    description,
     price_lyd: normalizePrice(payload.price_lyd, draft.price_lyd),
     city: cleanString(payload.city, draft.city),
     category,
@@ -277,6 +289,48 @@ function normalizePrice(value: unknown, fallback: unknown): number | null {
   if (resolved === "" || resolved === null || resolved === undefined) return null;
   const number = Number(resolved);
   return Number.isFinite(number) ? number : null;
+}
+
+function buildProductDescription(
+  value: unknown,
+  sizesValue: unknown,
+  colorsValue: unknown,
+  stockStatusValue: unknown,
+  fallback?: unknown
+): string | null {
+  const base = stripAttributeLines(cleanString(value, fallback) ?? "");
+  const sizes = splitList(sizesValue);
+  const colors = splitList(colorsValue);
+  const stockStatus = cleanString(stockStatusValue, "");
+  const lines = [base];
+
+  if (sizes.length) lines.push(`المقاسات المتوفرة: ${sizes.join("، ")}`);
+  if (colors.length) lines.push(`الألوان: ${colors.join("، ")}`);
+  if (stockStatus) lines.push(`التوفر: ${stockStatus}`);
+
+  const description = lines.filter(Boolean).join("\n\n");
+  return description || null;
+}
+
+function stripAttributeLines(value: string): string {
+  return value
+    .split(/\r?\n/)
+    .filter((line) => {
+      const trimmed = line.trim();
+      return !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(trimmed);
+    })
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function splitList(value: unknown): string[] {
+  const raw = Array.isArray(value) ? value.join("،") : String(value ?? "");
+  return raw
+    .split(/[,،\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 12);
 }
 
 function json(payload: unknown, status = 200): Response {

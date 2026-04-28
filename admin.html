@@ -365,6 +365,23 @@
             <label>رابط الصورة</label>
             <input name="image_url" type="url" />
           </div>
+          <div class="field">
+            <label>المقاسات المتوفرة</label>
+            <input name="sizes" placeholder="مثال: 0-3 أشهر، 3-6 أشهر، 6-12 شهر" />
+          </div>
+          <div class="field">
+            <label>الألوان</label>
+            <input name="colors" placeholder="مثال: أبيض، سماوي، وردي" />
+          </div>
+          <div class="field">
+            <label>حالة التوفر</label>
+            <select name="stock_status">
+              <option>متوفر</option>
+              <option>كمية محدودة</option>
+              <option>حسب تأكيد التاجر</option>
+              <option>نفد مؤقتاً</option>
+            </select>
+          </div>
           <div class="field wide">
             <label>الوصف</label>
             <textarea name="description"></textarea>
@@ -516,9 +533,18 @@
     }
 
     function fill(form, draft) {
-      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "description"]) {
+      const attributes = parseDescriptionAttributes(draft.description || "");
+      const values = {
+        ...draft,
+        description: stripDescriptionAttributes(draft.description || ""),
+        sizes: draft.sizes?.length ? draft.sizes.join("، ") : attributes.sizes.join("، "),
+        colors: draft.colors?.length ? draft.colors.join("، ") : attributes.colors.join("، "),
+        stock_status: draft.stock_status || attributes.stockStatus || "متوفر",
+      };
+
+      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "sizes", "colors", "stock_status", "description"]) {
         if (form.elements[field]) {
-          form.elements[field].value = draft[field] ?? "";
+          form.elements[field].value = values[field] ?? "";
         }
       }
     }
@@ -527,6 +553,36 @@
       const data = Object.fromEntries(new FormData(form).entries());
       data.price_lyd = data.price_lyd ? Number(data.price_lyd) : null;
       return data;
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { sizes: [], colors: [], stockStatus: "" };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]\s*(.+)$/) || [];
+        if (!label || !value) return;
+
+        if (label.includes("مقاس")) attributes.sizes = splitList(value);
+        if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
+        if (label === "التوفر") attributes.stockStatus = value.trim();
+      });
+      return attributes;
+    }
+
+    function stripDescriptionAttributes(description) {
+      return String(description || "")
+        .split(/\r?\n/)
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(line.trim()))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function splitList(value) {
+      return String(value || "")
+        .split(/[,،\n]/)
+        .map(item => item.trim())
+        .filter(Boolean);
     }
 
     async function approveDraft(form, card) {

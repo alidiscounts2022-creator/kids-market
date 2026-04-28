@@ -49,6 +49,10 @@
       overflow-x: clip;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     img {
       display: block;
       max-width: 100%;
@@ -871,11 +875,186 @@
       color: var(--teal);
     }
 
+    .product-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .mini-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #475467;
+      background: #F3F6FA;
+      border: 1px solid rgba(229, 234, 241, 0.9);
+      font-size: 0.75rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .product-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    .details-btn {
+      width: 100%;
+      color: #5B21B6;
+      background: #F3E8FF;
+      border: 1px solid #E9D5FF;
+    }
+
     .whatsapp-btn {
       width: 100%;
       color: var(--white);
       background: linear-gradient(135deg, #22C55E, var(--teal));
       box-shadow: 0 16px 30px rgba(20, 184, 166, 0.22);
+    }
+
+    .product-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.54);
+      backdrop-filter: blur(10px);
+    }
+
+    .product-modal.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      position: relative;
+      overflow: hidden;
+      width: min(960px, 100%);
+      max-height: min(92vh, 860px);
+      display: grid;
+      background: var(--white);
+      border-radius: 28px 28px 22px 22px;
+      box-shadow: 0 30px 90px rgba(15, 23, 42, 0.32);
+      animation: modalIn 0.22s ease both;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      inset-block-start: 12px;
+      inset-inline-end: 12px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 26px rgba(31, 41, 55, 0.14);
+      cursor: pointer;
+    }
+
+    .modal-media {
+      position: relative;
+      min-height: 260px;
+      background: #EAF0F6;
+    }
+
+    .modal-media img {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      max-height: 420px;
+      object-fit: cover;
+    }
+
+    .modal-content {
+      overflow-y: auto;
+      display: grid;
+      gap: 18px;
+      padding: 20px;
+    }
+
+    .modal-head {
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      line-height: 1.35;
+    }
+
+    .modal-price {
+      color: #7C3AED;
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .modal-description {
+      margin: 0;
+      color: #596273;
+      font-weight: 700;
+    }
+
+    .option-group {
+      display: grid;
+      gap: 9px;
+    }
+
+    .option-group h4 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .option-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .option-chip {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #475467;
+      background: #F8FAFC;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .option-chip.active {
+      color: var(--white);
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 12px 24px rgba(168, 85, 247, 0.18);
+    }
+
+    .modal-summary {
+      display: grid;
+      gap: 9px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #F8FAFC;
+    }
+
+    .modal-actions {
+      display: grid;
+      gap: 10px;
     }
 
     .steps {
@@ -1207,6 +1386,11 @@
       .merchant-stats {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
+
+      .product-actions,
+      .modal-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (min-width: 900px) {
@@ -1268,6 +1452,21 @@
 
       .products-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .product-modal {
+        align-items: center;
+      }
+
+      .modal-sheet {
+        grid-template-columns: 0.95fr 1.05fr;
+        border-radius: 30px;
+      }
+
+      .modal-media,
+      .modal-media img {
+        min-height: 100%;
+        max-height: none;
       }
 
       .steps {
@@ -1549,8 +1748,8 @@
       <div class="container">
         <div class="section-head">
           <span class="section-kicker">منتجات مختارة</span>
-          <h2>كروت منتجات جاهزة لعرض MVP قوي</h2>
-          <p>كل كرت يحتوي السعر، المدينة، المحل، وزر واتساب برسالة جاهزة للاستفسار عن المنتج.</p>
+          <h2>منتجات بتفاصيل واختيارات قبل واتساب</h2>
+          <p>افتح تفاصيل المنتج، اختر المقاس أو اللون المتاح، ثم أرسل استفسار واتساب برسالة جاهزة وواضحة للتاجر.</p>
         </div>
 
         <div class="product-toolbar" aria-label="فلاتر المنتجات">
@@ -1583,8 +1782,8 @@
           </article>
           <article class="step-card">
             <span class="step-icon"><i data-lucide="message-circle"></i></span>
-            <h3>تواصل عبر واتساب</h3>
-            <p>اضغط زر واتساب لتصل للتاجر برسالة جاهزة تحمل اسم المنتج الذي تريد الاستفسار عنه.</p>
+            <h3>اختر ثم تواصل</h3>
+            <p>من تفاصيل المنتج اختر المقاس أو اللون، ثم افتح واتساب برسالة جاهزة تحمل الاختيارات.</p>
           </article>
           <article class="step-card">
             <span class="step-icon"><i data-lucide="handshake"></i></span>
@@ -1727,6 +1926,44 @@
     </div>
   </footer>
 
+  <div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalProductTitle" aria-hidden="true">
+    <div class="modal-sheet">
+      <button class="modal-close" id="modalClose" type="button" aria-label="إغلاق تفاصيل المنتج">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-media">
+        <img id="modalImage" src="" alt="" />
+        <span class="badge teal" id="modalBadge"></span>
+      </div>
+      <div class="modal-content">
+        <div class="modal-head">
+          <span class="section-kicker" id="modalCategory"></span>
+          <h3 id="modalProductTitle"></h3>
+          <span class="modal-price" id="modalPrice"></span>
+          <div class="product-meta">
+            <span class="meta-line"><i data-lucide="map-pin"></i><span id="modalCity"></span></span>
+            <span class="meta-line"><i data-lucide="store"></i><span id="modalStore"></span></span>
+          </div>
+        </div>
+
+        <p class="modal-description" id="modalDescription"></p>
+        <div class="option-group" id="sizeGroup"></div>
+        <div class="option-group" id="colorGroup"></div>
+        <div class="modal-summary" id="modalSummary"></div>
+        <div class="modal-actions">
+          <a class="btn whatsapp-btn" id="modalWhatsapp" href="#" target="_blank" rel="noopener">
+            <i data-lucide="message-circle"></i>
+            استفسر بالاختيارات
+          </a>
+          <button class="btn details-btn" id="modalReset" type="button">
+            <i data-lucide="rotate-ccw"></i>
+            تغيير الاختيار
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const fallbackProducts = [
       {
@@ -1737,7 +1974,11 @@
         category: "مواليد",
         badge: "مواليد",
         badgeClass: "teal",
-        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80",
+        description: "طقم ناعم مناسب للمولود، قماش قطني عملي للاستخدام اليومي والهدايا.",
+        sizes: ["0-3 أشهر", "3-6 أشهر", "6-12 شهر"],
+        colors: ["أبيض", "سماوي", "وردي"],
+        availability: "متوفر"
       },
       {
         name: "مكعبات تعليمية خشبية",
@@ -1747,7 +1988,11 @@
         category: "ألعاب",
         badge: "جديد",
         badgeClass: "sky",
-        image: "https://images.unsplash.com/photo-1558907353-ceb54f3882ed?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1558907353-ceb54f3882ed?auto=format&fit=crop&w=900&q=80",
+        description: "مكعبات خشبية ملونة تساعد الطفل على التعلم والتركيب بطريقة آمنة.",
+        sizes: ["3+ سنوات"],
+        colors: ["ألوان متعددة"],
+        availability: "كمية محدودة"
       },
       {
         name: "حذاء بيبي أبيض ناعم",
@@ -1757,7 +2002,11 @@
         category: "أحذية",
         badge: "جديد",
         badgeClass: "",
-        image: "https://images.unsplash.com/photo-1565430076958-f6579417a6ef?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1565430076958-f6579417a6ef?auto=format&fit=crop&w=900&q=80",
+        description: "حذاء خفيف وناعم للمواليد، مناسب للطلعات والتصوير.",
+        sizes: ["16", "17", "18", "19"],
+        colors: ["أبيض", "بيج"],
+        availability: "متوفر"
       },
       {
         name: "عربة أطفال عملية قابلة للطي",
@@ -1767,7 +2016,11 @@
         category: "عربات وكراسي",
         badge: "عرض",
         badgeClass: "teal",
-        image: "https://images.unsplash.com/photo-1667063446746-86bcf4bcb0fe?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1667063446746-86bcf4bcb0fe?auto=format&fit=crop&w=900&q=80",
+        description: "عربة قابلة للطي، مناسبة للتنقل اليومي وتوفر مساحة تخزين عملية.",
+        sizes: ["حديثي الولادة حتى 3 سنوات"],
+        colors: ["رمادي", "أسود"],
+        availability: "حسب تأكيد التاجر"
       },
       {
         name: "طقم بيجامة أطفال شتوي",
@@ -1777,7 +2030,11 @@
         category: "ملابس أطفال",
         badge: "عرض",
         badgeClass: "",
-        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1768693602418-260d828b878d?auto=format&fit=crop&w=900&q=80",
+        description: "بيجامة شتوية دافئة بقماش مريح للأطفال، مناسبة للبيت والنوم.",
+        sizes: ["2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات"],
+        colors: ["أزرق", "وردي", "رمادي"],
+        availability: "متوفر"
       },
       {
         name: "حقيبة ألعاب تعليمية ملونة",
@@ -1787,7 +2044,11 @@
         category: "ألعاب",
         badge: "الأكثر طلباً",
         badgeClass: "sky",
-        image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=900&q=80"
+        image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=900&q=80",
+        description: "حقيبة ألعاب تعليمية بألوان جذابة، مناسبة كهدية عملية للأطفال.",
+        sizes: ["2+ سنوات"],
+        colors: ["ألوان متعددة"],
+        availability: "متوفر"
       }
     ];
 
@@ -1803,6 +2064,24 @@
     const filterPills = document.querySelectorAll(".filter-pill");
     const menuToggle = document.getElementById("menuToggle");
     const mobileNav = document.getElementById("mobileNav");
+    const productModal = document.getElementById("productModal");
+    const modalClose = document.getElementById("modalClose");
+    const modalReset = document.getElementById("modalReset");
+    const modalImage = document.getElementById("modalImage");
+    const modalBadge = document.getElementById("modalBadge");
+    const modalCategory = document.getElementById("modalCategory");
+    const modalProductTitle = document.getElementById("modalProductTitle");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalCity = document.getElementById("modalCity");
+    const modalStore = document.getElementById("modalStore");
+    const modalDescription = document.getElementById("modalDescription");
+    const sizeGroup = document.getElementById("sizeGroup");
+    const colorGroup = document.getElementById("colorGroup");
+    const modalSummary = document.getElementById("modalSummary");
+    const modalWhatsapp = document.getElementById("modalWhatsapp");
+    let visibleProducts = [];
+    let selectedProduct = null;
+    let selectedOptions = { size: "", color: "" };
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -1838,27 +2117,91 @@
       return "";
     }
 
+    function splitList(value) {
+      if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);
+      return String(value || "")
+        .split(/[,،\n]/)
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { sizes: [], colors: [], stockStatus: "" };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]\s*(.+)$/) || [];
+        if (!label || !value) return;
+
+        if (label.includes("مقاس")) attributes.sizes = splitList(value);
+        if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
+        if (label === "التوفر") attributes.stockStatus = value.trim();
+      });
+      return attributes;
+    }
+
+    function stripDescriptionAttributes(description) {
+      return String(description || "")
+        .split(/\r?\n/)
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(line.trim()))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function fallbackOptionsFor(product) {
+      const category = product.category || "";
+      const name = product.name || product.title || "";
+      if (category.includes("مواليد") || name.includes("مواليد") || name.includes("مولود")) {
+        return { sizes: ["0-3 أشهر", "3-6 أشهر", "6-12 شهر"], colors: ["أبيض", "سماوي", "وردي"] };
+      }
+      if (category.includes("ملابس")) {
+        return { sizes: ["2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات"], colors: ["أزرق", "وردي", "رمادي"] };
+      }
+      if (category.includes("أحذية")) {
+        return { sizes: ["16", "17", "18", "19"], colors: ["أبيض", "بيج"] };
+      }
+      return { sizes: [], colors: [] };
+    }
+
     function normalizeLiveProduct(product) {
-      return {
+      const attributes = parseDescriptionAttributes(product.description);
+      const baseProduct = {
         name: product.title || "منتج بدون اسم",
+        category: product.category || "غير مصنف"
+      };
+      const fallbacks = fallbackOptionsFor(baseProduct);
+
+      return {
+        id: product.id || crypto.randomUUID?.() || String(Date.now()),
+        name: baseProduct.name,
         price: formatPrice(product.price_lyd),
         city: product.city || "غير محدد",
         store: product.store_name || "محل محلي",
-        category: product.category || "غير مصنف",
+        category: baseProduct.category,
         badge: product.badge || product.category || "جديد",
         badgeClass: badgeClassFor(product),
         image: safeImage(product.image_url),
+        description: stripDescriptionAttributes(product.description) || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.",
+        sizes: splitList(product.sizes).length ? splitList(product.sizes) : (attributes.sizes.length ? attributes.sizes : fallbacks.sizes),
+        colors: splitList(product.colors).length ? splitList(product.colors) : (attributes.colors.length ? attributes.colors : fallbacks.colors),
+        availability: product.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
         whatsapp: product.whatsapp_phone || "218912345678"
       };
     }
 
-    function whatsappUrl(product) {
+    function whatsappUrl(product, options = {}) {
       const phone = String(product.whatsapp || "218912345678").replace(/\D/g, "") || "218912345678";
-      const text = `السلام عليكم، نبي نستفسر على ${product.name}`;
+      const details = [
+        options.size ? `المقاس: ${options.size}` : "",
+        options.color ? `اللون: ${options.color}` : ""
+      ].filter(Boolean).join("، ");
+      const text = details
+        ? `السلام عليكم، نبي نستفسر على ${product.name}، ${details}`
+        : `السلام عليكم، نبي نستفسر على ${product.name}`;
       return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     }
 
-    function productCard(product) {
+    function productCard(product, index) {
       const name = escapeHtml(product.name);
       const city = escapeHtml(product.city);
       const store = escapeHtml(product.store);
@@ -1867,6 +2210,14 @@
       const badge = escapeHtml(product.badge);
       const badgeClass = escapeHtml(product.badgeClass);
       const image = safeImage(product.image);
+      const sizes = splitList(product.sizes);
+      const colors = splitList(product.colors);
+      const availability = escapeHtml(product.availability || "حسب تأكيد التاجر");
+      const tags = [
+        sizes.length ? `<span class="mini-chip"><i data-lucide="ruler"></i>${escapeHtml(sizes[0])}${sizes.length > 1 ? ` +${sizes.length - 1}` : ""}</span>` : "",
+        colors.length ? `<span class="mini-chip"><i data-lucide="palette"></i>${escapeHtml(colors[0])}${colors.length > 1 ? ` +${colors.length - 1}` : ""}</span>` : "",
+        `<span class="mini-chip"><i data-lucide="check-circle-2"></i>${availability}</span>`
+      ].filter(Boolean).join("");
 
       return `
         <article class="product-card" data-category="${category}" data-city="${city}" data-name="${name}">
@@ -1883,23 +2234,102 @@
               <span class="meta-line"><i data-lucide="map-pin"></i>${city}</span>
               <span class="meta-line"><i data-lucide="store"></i>${store}</span>
             </div>
-            <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener">
-              <i data-lucide="message-circle"></i>
-              استفسر عبر واتساب
-            </a>
+            <div class="product-tags">${tags}</div>
+            <div class="product-actions">
+              <button class="btn details-btn" type="button" data-product-index="${index}">
+                <i data-lucide="list-checks"></i>
+                تفاصيل واختيار
+              </button>
+              <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener">
+                <i data-lucide="message-circle"></i>
+                واتساب سريع
+              </a>
+            </div>
           </div>
         </article>
       `;
     }
 
     function renderProducts(list) {
+      visibleProducts = list;
       productsGrid.innerHTML = list.length
-        ? list.map(productCard).join("")
+        ? list.map((product, index) => productCard(product, index)).join("")
         : `<div class="product-card" style="padding: 28px; grid-column: 1 / -1; text-align: center;">
             <h3 style="margin:0 0 8px;">لا توجد نتائج مطابقة حالياً</h3>
             <p style="margin:0;color:#667085;font-weight:700;">جرّب تغيير المدينة أو التصنيف أو كلمة البحث.</p>
           </div>`;
       lucide.createIcons();
+    }
+
+    function openProductDetails(product) {
+      selectedProduct = product;
+      selectedOptions = {
+        size: splitList(product.sizes)[0] || "",
+        color: splitList(product.colors)[0] || ""
+      };
+
+      modalImage.src = safeImage(product.image);
+      modalImage.alt = product.name || "صورة المنتج";
+      modalBadge.textContent = product.badge || product.category || "جديد";
+      modalBadge.className = `badge ${product.badgeClass || ""}`.trim();
+      modalCategory.textContent = product.category || "";
+      modalProductTitle.textContent = product.name || "";
+      modalPrice.textContent = product.price || "";
+      modalCity.textContent = product.city || "";
+      modalStore.textContent = product.store || "";
+      modalDescription.textContent = product.description || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.";
+      renderOptionGroup(sizeGroup, "المقاس", "size", splitList(product.sizes));
+      renderOptionGroup(colorGroup, "اللون", "color", splitList(product.colors));
+      updateModalWhatsapp();
+
+      productModal.classList.add("open");
+      productModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+      lucide.createIcons();
+    }
+
+    function renderOptionGroup(container, title, key, options) {
+      if (!options.length) {
+        container.innerHTML = `
+          <h4>${title}</h4>
+          <div class="option-list">
+            <span class="mini-chip">يتم تأكيد ${title} مع التاجر</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <h4>${title}</h4>
+        <div class="option-list">
+          ${options.map(option => `
+            <button class="option-chip ${selectedOptions[key] === option ? "active" : ""}" type="button" data-option-key="${key}" data-option-value="${escapeHtml(option)}">
+              ${escapeHtml(option)}
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function updateModalWhatsapp() {
+      if (!selectedProduct) return;
+
+      const sizeLine = selectedOptions.size ? `المقاس: ${escapeHtml(selectedOptions.size)}` : "المقاس: يتم تأكيده مع التاجر";
+      const colorLine = selectedOptions.color ? `اللون: ${escapeHtml(selectedOptions.color)}` : "اللون: يتم تأكيده مع التاجر";
+      const availability = escapeHtml(selectedProduct.availability || "حسب تأكيد التاجر");
+      modalSummary.innerHTML = `
+        <span class="meta-line"><i data-lucide="ruler"></i>${sizeLine}</span>
+        <span class="meta-line"><i data-lucide="palette"></i>${colorLine}</span>
+        <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${availability}</span>
+      `;
+      modalWhatsapp.href = whatsappUrl(selectedProduct, selectedOptions);
+      lucide.createIcons();
+    }
+
+    function closeProductModal() {
+      productModal.classList.remove("open");
+      productModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
     }
 
     function setProductsStatus(message, type = "") {
@@ -1971,6 +2401,41 @@
         pill.classList.add("active");
         applyFilters(pill.dataset.filter);
       });
+    });
+
+    productsGrid.addEventListener("click", event => {
+      const button = event.target.closest("[data-product-index]");
+      if (!button) return;
+
+      const product = visibleProducts[Number(button.dataset.productIndex)];
+      if (product) openProductDetails(product);
+    });
+
+    productModal.addEventListener("click", event => {
+      if (event.target === productModal) closeProductModal();
+
+      const option = event.target.closest("[data-option-key]");
+      if (!option || !productModal.contains(option)) return;
+
+      selectedOptions[option.dataset.optionKey] = option.dataset.optionValue;
+      renderOptionGroup(sizeGroup, "المقاس", "size", splitList(selectedProduct?.sizes));
+      renderOptionGroup(colorGroup, "اللون", "color", splitList(selectedProduct?.colors));
+      updateModalWhatsapp();
+    });
+
+    modalClose.addEventListener("click", closeProductModal);
+    modalReset.addEventListener("click", () => {
+      if (!selectedProduct) return;
+      selectedOptions = { size: "", color: "" };
+      renderOptionGroup(sizeGroup, "المقاس", "size", splitList(selectedProduct.sizes));
+      renderOptionGroup(colorGroup, "اللون", "color", splitList(selectedProduct.colors));
+      updateModalWhatsapp();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && productModal.classList.contains("open")) {
+        closeProductModal();
+      }
     });
 
     menuToggle.addEventListener("click", () => {

@@ -52,6 +52,9 @@ create table if not exists public.product_drafts (
   store_name text not null,
   whatsapp_phone text not null,
   image_url text,
+  sizes text[] not null default '{}',
+  colors text[] not null default '{}',
+  stock_status text not null default 'متوفر',
   raw_payload jsonb,
   status text not null default 'pending_review' check (status in ('pending_review', 'approved', 'rejected')),
   created_at timestamptz not null default now(),
@@ -73,10 +76,23 @@ create table if not exists public.products (
   image_url text,
   source_url text,
   badge text,
+  sizes text[] not null default '{}',
+  colors text[] not null default '{}',
+  stock_status text not null default 'متوفر',
   status text not null default 'published' check (status in ('published', 'hidden', 'sold')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table if exists public.product_drafts
+  add column if not exists sizes text[] not null default '{}',
+  add column if not exists colors text[] not null default '{}',
+  add column if not exists stock_status text not null default 'متوفر';
+
+alter table if exists public.products
+  add column if not exists sizes text[] not null default '{}',
+  add column if not exists colors text[] not null default '{}',
+  add column if not exists stock_status text not null default 'متوفر';
 
 create index if not exists idx_products_status on public.products(status);
 create index if not exists idx_products_city on public.products(city);
