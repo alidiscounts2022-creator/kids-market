@@ -279,6 +279,21 @@
       flex-wrap: wrap;
       gap: 8px;
     }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: .85rem;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+    }
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--purple);
+    }
     .manual-card {
       margin-top: 16px;
       align-items: stretch;
@@ -350,6 +365,10 @@
           <label for="adminKey">مفتاح الإدارة</label>
           <input id="adminKey" type="password" placeholder="ADMIN_API_KEY" />
         </div>
+        <label class="check-row wide" for="rememberAdminKey">
+          <input id="rememberAdminKey" type="checkbox" checked />
+          تذكر مفتاح الإدارة على هذا الجهاز
+        </label>
         <div class="config-actions">
           <button class="btn btn-primary" id="saveConfig" type="button"><i data-lucide="save"></i>حفظ وجلب المسودات</button>
           <button class="btn btn-teal" id="seedDraft" type="button"><i data-lucide="plus-circle"></i>إضافة مسودة تجريبية</button>
@@ -536,7 +555,10 @@
     const ADMIN_FUNCTION_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review";
     const MAX_IMAGE_UPLOAD_BYTES = 5 * 1024 * 1024;
     const MAX_IMAGE_SIDE = 1400;
+    const ADMIN_KEY_STORAGE = "tafli_admin_key";
+    const ADMIN_KEY_REMEMBER_STORAGE = "tafli_admin_key_remember";
     const adminKeyInput = document.getElementById("adminKey");
+    const rememberAdminKey = document.getElementById("rememberAdminKey");
     const saveConfig = document.getElementById("saveConfig");
     const seedDraftBtn = document.getElementById("seedDraft");
     const refreshBtn = document.getElementById("refreshBtn");
@@ -548,8 +570,16 @@
 
     function getConfig() {
       return {
-        adminKey: sessionStorage.getItem("tafli_admin_key") || "",
+        adminKey: getStoredAdminKey(),
       };
+    }
+
+    function getStoredAdminKey() {
+      return localStorage.getItem(ADMIN_KEY_STORAGE) || sessionStorage.getItem(ADMIN_KEY_STORAGE) || "";
+    }
+
+    function normalizeAdminKey(value) {
+      return String(value || "").replace(/\s+/g, "");
     }
 
     function setStatus(message, type = "") {
@@ -588,7 +618,19 @@
     }
 
     function saveCurrentConfig() {
-      sessionStorage.setItem("tafli_admin_key", adminKeyInput.value.trim());
+      const adminKey = normalizeAdminKey(adminKeyInput.value);
+      adminKeyInput.value = adminKey;
+
+      if (rememberAdminKey.checked) {
+        localStorage.setItem(ADMIN_KEY_STORAGE, adminKey);
+        localStorage.setItem(ADMIN_KEY_REMEMBER_STORAGE, "1");
+        sessionStorage.removeItem(ADMIN_KEY_STORAGE);
+        return;
+      }
+
+      localStorage.removeItem(ADMIN_KEY_STORAGE);
+      localStorage.setItem(ADMIN_KEY_REMEMBER_STORAGE, "0");
+      sessionStorage.setItem(ADMIN_KEY_STORAGE, adminKey);
     }
 
     async function api(path = "", options = {}) {
@@ -886,6 +928,11 @@
       saveCurrentConfig();
       loadDrafts();
     });
+    adminKeyInput.addEventListener("input", () => {
+      const cleaned = normalizeAdminKey(adminKeyInput.value);
+      if (cleaned !== adminKeyInput.value) adminKeyInput.value = cleaned;
+    });
+    rememberAdminKey.addEventListener("change", saveCurrentConfig);
     document.addEventListener("change", async (event) => {
       const input = event.target?.closest?.("[data-image-upload]");
       if (input) await handleImageUpload(input);
@@ -900,6 +947,7 @@
 
     const config = getConfig();
     adminKeyInput.value = config.adminKey;
+    rememberAdminKey.checked = localStorage.getItem(ADMIN_KEY_REMEMBER_STORAGE) !== "0";
     lucide.createIcons();
   </script>
 </body>
