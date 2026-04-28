@@ -7,7 +7,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const ADMIN_API_KEY = Deno.env.get("ADMIN_API_KEY") ?? "";
+const ADMIN_API_KEY = (Deno.env.get("ADMIN_API_KEY") ?? "").trim();
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -17,8 +17,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    if (!isAuthorized(req)) {
-      return json({ error: "Unauthorized" }, 401);
+    const authError = getAuthError(req);
+    if (authError) {
+      return json({ error: authError.message }, authError.status);
     }
 
     const url = new URL(req.url);
@@ -61,9 +62,30 @@ Deno.serve(async (req) => {
   }
 });
 
-function isAuthorized(req: Request): boolean {
-  const header = req.headers.get("x-admin-key");
-  return Boolean(ADMIN_API_KEY && header && header === ADMIN_API_KEY);
+function getAuthError(req: Request): { message: string; status: number } | null {
+  if (!ADMIN_API_KEY) {
+    return {
+      message: "ADMIN_API_KEY غير محفوظ في Supabase Edge Function Secrets.",
+      status: 500,
+    };
+  }
+
+  const header = (req.headers.get("x-admin-key") ?? "").trim();
+  if (!header) {
+    return {
+      message: "أدخل مفتاح الإدارة ADMIN_API_KEY أولا.",
+      status: 401,
+    };
+  }
+
+  if (header !== ADMIN_API_KEY) {
+    return {
+      message: "مفتاح الإدارة غير صحيح. تأكد أن Name هو ADMIN_API_KEY وأن Value هي القيمة نفسها بدون مسافات.",
+      status: 401,
+    };
+  }
+
+  return null;
 }
 
 async function approveDraft(payload: Record<string, unknown>): Promise<Response> {
