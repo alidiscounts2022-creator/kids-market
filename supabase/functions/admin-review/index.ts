@@ -38,6 +38,11 @@ Deno.serve(async (req) => {
       return await approveDraft(payload);
     }
 
+    if (req.method === "POST" && action === "manual-product") {
+      const payload = await req.json();
+      return await createManualProduct(payload);
+    }
+
     if (req.method === "POST" && action === "seed") {
       return await createDemoDraft();
     }
@@ -212,6 +217,64 @@ async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<an
   return data;
 }
 
+async function getOrCreateMerchant(payload: Record<string, unknown>): Promise<any> {
+  const merchantInfo = {
+    store_name: requiredString(payload.store_name, "اسم المحل مطلوب."),
+    owner_name: cleanString(payload.owner_name, ""),
+    city: requiredString(payload.city, "المدينة مطلوبة."),
+    whatsapp_phone: requiredString(payload.whatsapp_phone, "رقم واتساب مطلوب."),
+    facebook_page_url: cleanString(payload.facebook_page_url, ""),
+    status: "active",
+  };
+
+  const { data: existingMerchant, error: lookupError } = await supabase
+    .from("merchants")
+    .select("*")
+    .eq("store_name", merchantInfo.store_name)
+    .eq("whatsapp_phone", merchantInfo.whatsapp_phone)
+    .maybeSingle();
+
+  if (lookupError) throw lookupError;
+  return existingMerchant ?? await insertMerchant(merchantInfo);
+}
+
+async function createManualProduct(payload: Record<string, unknown>): Promise<Response> {
+  const merchant = await getOrCreateMerchant(payload);
+  const title = requiredString(payload.title, "اسم المنتج مطلوب.");
+  const category = cleanString(payload.category, "غير مصنف") || "غير مصنف";
+  const description = buildProductDescription(
+    payload.description,
+    payload.sizes,
+    payload.colors,
+    payload.stock_status
+  );
+
+  const product = {
+    merchant_id: merchant.id,
+    draft_id: null,
+    title,
+    description,
+    price_lyd: normalizePrice(payload.price_lyd, null),
+    city: cleanString(payload.city, merchant.city),
+    category,
+    store_name: cleanString(payload.store_name, merchant.store_name),
+    whatsapp_phone: cleanString(payload.whatsapp_phone, merchant.whatsapp_phone),
+    image_url: cleanString(payload.image_url, ""),
+    source_url: cleanString(payload.source_url, ""),
+    badge: cleanString(payload.badge, category === "مواليد" ? "مواليد" : "جديد"),
+    status: "published",
+  };
+
+  const { data: inserted, error } = await supabase
+    .from("products")
+    .insert(product)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, product: inserted });
+}
+
 async function approveDraft(payload: Record<string, unknown>): Promise<Response> {
   const id = String(payload.id ?? "");
   if (!id) return json({ error: "id is required" }, 400);
@@ -282,6 +345,12 @@ function cleanString(value: unknown, fallback: unknown): string | null {
   const resolved = typeof value === "string" && value.trim() ? value : fallback;
   if (resolved === null || resolved === undefined) return null;
   return String(resolved).trim();
+}
+
+function requiredString(value: unknown, message: string): string {
+  const resolved = cleanString(value, "");
+  if (!resolved) throw new Error(message);
+  return resolved;
 }
 
 function normalizePrice(value: unknown, fallback: unknown): number | null {
