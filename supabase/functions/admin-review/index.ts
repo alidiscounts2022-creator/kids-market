@@ -121,6 +121,7 @@ async function getStats(): Promise<Response> {
       rejected_drafts: rejectedDrafts,
       published_products: publishedProducts,
       latest_product: latestProduct,
+      manual_publish_enabled: true,
     },
   });
 }
