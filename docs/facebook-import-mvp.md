@@ -45,11 +45,24 @@
 3. أنشئ Meta App من لوحة Meta for Developers.
 4. أضف Redirect URI الخاص بوظيفة `facebook-oauth`.
 5. انشر وظائف Supabase:
+   - `admin-review`
    - `facebook-oauth`
    - `facebook-import`
 6. ضع القيم السرية من `.env.example` داخل Supabase Edge Function secrets.
 
+## لوحة الإدارة
+
+تمت إضافة ملف `admin.html` كمراجعة أولية للمسودات. بعد نشر دالة `admin-review` في Supabase:
+
+1. افتح `admin.html`.
+2. أدخل رابط الدالة:
+   `https://YOUR_PROJECT_ID.supabase.co/functions/v1/admin-review`
+3. أدخل قيمة `ADMIN_API_KEY`.
+4. اضغط حفظ وجلب المسودات.
+5. عدل بيانات المنتج ثم اضغط اعتماد ونشر.
+
+دالة `admin-review` تستخدم `SUPABASE_SERVICE_ROLE_KEY` داخل Supabase فقط، لذلك لا تضع هذا المفتاح داخل `admin.html`.
+
 ## ملاحظة أمان
 
-لا تضع `FACEBOOK_APP_SECRET` أو `SUPABASE_SERVICE_ROLE_KEY` داخل `index.html`. هذه القيم مكانها Backend فقط.
-
+لا تضع `FACEBOOK_APP_SECRET` أو `SUPABASE_SERVICE_ROLE_KEY` داخل `index.html` أو `admin.html`. هذه القيم مكانها Backend فقط.
