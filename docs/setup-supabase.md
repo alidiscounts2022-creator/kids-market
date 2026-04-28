@@ -29,11 +29,16 @@
 
 ## 3. إضافة الأسرار إلى Supabase
 
-من إعدادات المشروع أو عبر CLI أضف القيم التالية:
+مهم: لا تضف أي Secret يبدأ بـ `SUPABASE_`. هذه القيم موجودة تلقائياً داخل Supabase Edge Functions:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_DB_URL`
+
+من إعدادات المشروع أو عبر CLI أضف القيم المخصصة فقط:
 
 ```bash
-SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_OR_SECRET_KEY
 FACEBOOK_APP_ID=YOUR_FACEBOOK_APP_ID
 FACEBOOK_APP_SECRET=YOUR_FACEBOOK_APP_SECRET
 FACEBOOK_REDIRECT_URI=https://YOUR_PROJECT_ID.supabase.co/functions/v1/facebook-oauth/callback
@@ -41,7 +46,14 @@ FACEBOOK_GRAPH_VERSION=v20.0
 ADMIN_API_KEY=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
 ```
 
-لا تضع هذه القيم داخل `index.html` أو `admin.html`.
+في البداية، قبل إنشاء Meta App، يكفي أن تضيف:
+
+```bash
+FACEBOOK_GRAPH_VERSION=v20.0
+ADMIN_API_KEY=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
+```
+
+لا تضع أي مفاتيح سرية داخل `index.html` أو `admin.html`.
 
 ## 4. نشر دوال Supabase
 
