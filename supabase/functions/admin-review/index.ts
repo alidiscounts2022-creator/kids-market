@@ -36,6 +36,10 @@ Deno.serve(async (req) => {
       return await getStats();
     }
 
+    if (req.method === "GET" && action === "products") {
+      return await listProducts();
+    }
+
     if (req.method === "GET") {
       return await listDrafts(url);
     }
@@ -53,6 +57,21 @@ Deno.serve(async (req) => {
     if (req.method === "POST" && action === "upload-image") {
       const payload = await req.json();
       return await uploadProductImage(payload);
+    }
+
+    if (req.method === "POST" && action === "update-product") {
+      const payload = await req.json();
+      return await updateProduct(payload);
+    }
+
+    if (req.method === "POST" && action === "hide-product") {
+      const payload = await req.json();
+      return await setProductStatus(payload, "hidden");
+    }
+
+    if (req.method === "POST" && action === "delete-product") {
+      const payload = await req.json();
+      return await deleteProduct(payload);
     }
 
     if (req.method === "POST" && action === "seed") {
@@ -159,6 +178,17 @@ async function getLatestProduct(): Promise<Record<string, unknown> | null> {
 
   if (error) throw error;
   return data ?? null;
+}
+
+async function listProducts(): Promise<Response> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  if (error) throw error;
+  return json({ products: data ?? [] });
 }
 
 async function createDemoDraft(): Promise<Response> {
@@ -323,6 +353,64 @@ async function uploadProductImage(payload: Record<string, unknown>): Promise<Res
   return json({ ok: true, url: data.publicUrl, path: filePath });
 }
 
+async function updateProduct(payload: Record<string, unknown>): Promise<Response> {
+  const id = requiredString(payload.id, "معرف المنتج مطلوب.");
+  const category = cleanString(payload.category, "غير مصنف") || "غير مصنف";
+  const description = buildProductDescription(
+    payload.description,
+    payload.sizes,
+    payload.colors,
+    payload.stock_status
+  );
+
+  const updates = {
+    title: requiredString(payload.title, "اسم المنتج مطلوب."),
+    description,
+    price_lyd: normalizePrice(payload.price_lyd, null),
+    city: requiredString(payload.city, "المدينة مطلوبة."),
+    category,
+    store_name: requiredString(payload.store_name, "اسم المحل مطلوب."),
+    whatsapp_phone: requiredString(payload.whatsapp_phone, "رقم واتساب مطلوب."),
+    image_url: cleanString(payload.image_url, ""),
+    badge: cleanString(payload.badge, category === "مواليد" ? "مواليد" : "جديد"),
+    status: normalizeProductStatus(payload.status),
+  };
+
+  const { data, error } = await supabase
+    .from("products")
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, product: data });
+}
+
+async function setProductStatus(payload: Record<string, unknown>, status: "published" | "hidden" | "sold"): Promise<Response> {
+  const id = requiredString(payload.id, "معرف المنتج مطلوب.");
+  const { data, error } = await supabase
+    .from("products")
+    .update({ status })
+    .eq("id", id)
+    .select("id,status")
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, product: data });
+}
+
+async function deleteProduct(payload: Record<string, unknown>): Promise<Response> {
+  const id = requiredString(payload.id, "معرف المنتج مطلوب.");
+  const { error } = await supabase
+    .from("products")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+  return json({ ok: true });
+}
+
 async function approveDraft(payload: Record<string, unknown>): Promise<Response> {
   const id = String(payload.id ?? "");
   if (!id) return json({ error: "id is required" }, 400);
@@ -406,6 +494,11 @@ function normalizePrice(value: unknown, fallback: unknown): number | null {
   if (resolved === "" || resolved === null || resolved === undefined) return null;
   const number = Number(resolved);
   return Number.isFinite(number) ? number : null;
+}
+
+function normalizeProductStatus(value: unknown): "published" | "hidden" | "sold" {
+  const status = cleanString(value, "published");
+  return status === "hidden" || status === "sold" || status === "published" ? status : "published";
 }
 
 function buildProductDescription(
