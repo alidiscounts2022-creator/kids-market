@@ -56,11 +56,9 @@
 تمت إضافة ملف `admin.html` كمراجعة أولية للمسودات. بعد نشر دالة `admin-review` في Supabase:
 
 1. افتح `admin.html`.
-2. أدخل رابط الدالة:
-   `https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review`
-3. أدخل قيمة `ADMIN_API_KEY`.
-4. اضغط حفظ وجلب المسودات.
-5. عدل بيانات المنتج ثم اضغط اعتماد ونشر.
+2. أدخل قيمة `ADMIN_API_KEY` فقط.
+3. اضغط حفظ وجلب المسودات.
+4. عدل بيانات المنتج ثم اضغط اعتماد ونشر.
 
 دالة `admin-review` تستخدم `SUPABASE_SERVICE_ROLE_KEY` داخل Supabase فقط، لذلك لا تضع هذا المفتاح داخل `admin.html`.
 

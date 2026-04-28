@@ -97,10 +97,10 @@ supabase functions deploy facebook-oauth --no-verify-jwt
 ## 5. اختبار لوحة الإدارة
 
 1. افتح `admin.html`.
-2. أدخل رابط الدالة:
-   `https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review`
-3. أدخل قيمة `ADMIN_API_KEY`.
-4. اضغط `حفظ وجلب المسودات`.
+2. أدخل قيمة `ADMIN_API_KEY` فقط.
+3. اضغط `حفظ وجلب المسودات`.
+
+لا تدخل `SUPABASE_ANON_KEY` أو `SUPABASE_SERVICE_ROLE_KEY` في لوحة الإدارة. رابط الدالة مضبوط داخل الصفحة.
 
 لو لم تكن هناك مسودات، ستظهر رسالة فارغة وهذا طبيعي.
 

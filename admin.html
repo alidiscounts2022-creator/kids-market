@@ -114,6 +114,12 @@
       padding: 18px;
       margin-top: 18px;
     }
+    .helper-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 800;
+    }
     .field label {
       display: block;
       margin-bottom: 7px;
@@ -236,7 +242,8 @@
     }
 
     @media (min-width: 760px) {
-      .config-card { grid-template-columns: 1.2fr .8fr auto; align-items: end; }
+      .config-card { grid-template-columns: 1fr auto; align-items: end; }
+      .config-card .wide { grid-column: 1 / -1; }
       .draft-card { grid-template-columns: 280px 1fr; }
       .draft-image { height: 100%; min-height: 310px; aspect-ratio: auto; }
       .draft-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -263,11 +270,8 @@
       </section>
 
       <section class="config-card" aria-label="إعداد الاتصال">
-        <div class="field">
-          <label for="functionUrl">رابط دالة الإدارة في Supabase</label>
-          <input id="functionUrl" type="url" value="https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review" placeholder="https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review" />
-        </div>
-        <div class="field">
+        <p class="helper-note wide">أدخل مفتاح الإدارة فقط. لا تدخل مفاتيح Supabase مثل anon أو service role هنا.</p>
+        <div class="field wide">
           <label for="adminKey">مفتاح الإدارة</label>
           <input id="adminKey" type="password" placeholder="ADMIN_API_KEY" />
         </div>
@@ -349,7 +353,7 @@
   </template>
 
   <script>
-    const functionUrlInput = document.getElementById("functionUrl");
+    const ADMIN_FUNCTION_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/admin-review";
     const adminKeyInput = document.getElementById("adminKey");
     const saveConfig = document.getElementById("saveConfig");
     const refreshBtn = document.getElementById("refreshBtn");
@@ -359,7 +363,6 @@
 
     function getConfig() {
       return {
-        functionUrl: sessionStorage.getItem("tafli_admin_function_url") || "",
         adminKey: sessionStorage.getItem("tafli_admin_key") || "",
       };
     }
@@ -370,16 +373,15 @@
     }
 
     function saveCurrentConfig() {
-      sessionStorage.setItem("tafli_admin_function_url", functionUrlInput.value.trim());
       sessionStorage.setItem("tafli_admin_key", adminKeyInput.value.trim());
     }
 
     async function api(path = "", options = {}) {
-      const { functionUrl, adminKey } = getConfig();
-      if (!functionUrl || !adminKey) {
-        throw new Error("أدخل رابط دالة Supabase ومفتاح الإدارة أولاً.");
+      const { adminKey } = getConfig();
+      if (!adminKey) {
+        throw new Error("أدخل مفتاح الإدارة ADMIN_API_KEY أولاً.");
       }
-      const response = await fetch(`${functionUrl}${path}`, {
+      const response = await fetch(`${ADMIN_FUNCTION_URL}${path}`, {
         ...options,
         headers: {
           "Content-Type": "application/json",
@@ -492,7 +494,6 @@
     refreshBtn.addEventListener("click", loadDrafts);
 
     const config = getConfig();
-    functionUrlInput.value = config.functionUrl;
     adminKeyInput.value = config.adminKey;
     lucide.createIcons();
   </script>
