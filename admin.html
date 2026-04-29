@@ -144,6 +144,32 @@
     .admin-section[hidden] {
       display: none !important;
     }
+    .dashboard-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .metric-card {
+      display: grid;
+      gap: 5px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(31, 41, 55, .07);
+    }
+    .metric-card span {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 900;
+    }
+    .metric-card strong {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+    .export-actions {
+      display: grid;
+      gap: 10px;
+    }
     .helper-note {
       margin: 0;
       color: var(--muted);
@@ -269,6 +295,12 @@
       overflow: hidden;
       display: grid;
     }
+    .draft-card.is-collapsed .draft-form {
+      display: none;
+    }
+    .draft-card.is-collapsed .draft-image {
+      max-height: 190px;
+    }
     .draft-image {
       width: 100%;
       aspect-ratio: 1.4 / 1;
@@ -285,6 +317,12 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
+    }
+    .draft-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
     }
     .draft-head h3 { margin: 0; font-size: 1.08rem; line-height: 1.45; }
     .pill {
@@ -365,11 +403,14 @@
     @media (min-width: 760px) {
       .config-card { grid-template-columns: 1fr auto; align-items: end; }
       .config-card .wide { grid-column: 1 / -1; }
+      .dashboard-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .export-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .manual-card { grid-template-columns: 1fr; align-items: stretch; }
       .manual-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .manual-form .wide { grid-column: 1 / -1; }
       .draft-card { grid-template-columns: 280px 1fr; }
       .draft-image { height: 100%; min-height: 310px; aspect-ratio: auto; }
+      .draft-card.is-collapsed .draft-image { height: 160px; min-height: 160px; }
       .draft-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .draft-form .wide { grid-column: 1 / -1; }
     }
@@ -394,14 +435,35 @@
       </section>
 
       <nav class="admin-tabs" aria-label="أقسام لوحة الإدارة">
-        <button class="btn admin-tab active" type="button" data-admin-tab="config"><i data-lucide="key-round"></i>الإعداد</button>
+        <button class="btn admin-tab active" type="button" data-admin-tab="dashboard"><i data-lucide="layout-dashboard"></i>الرئيسية</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="config"><i data-lucide="key-round"></i>الإعداد</button>
         <button class="btn admin-tab" type="button" data-admin-tab="drafts"><i data-lucide="clipboard-list"></i>المسودات</button>
         <button class="btn admin-tab" type="button" data-admin-tab="products"><i data-lucide="package-search"></i>المنتجات</button>
         <button class="btn admin-tab" type="button" data-admin-tab="manual"><i data-lucide="package-plus"></i>إضافة يدوي</button>
         <button class="btn admin-tab" type="button" data-admin-tab="facebook"><i data-lucide="file-input"></i>فيسبوك</button>
       </nav>
 
-      <section class="config-card admin-section" data-admin-section="config" aria-label="إعداد الاتصال">
+      <section class="config-card admin-section" data-admin-section="dashboard" aria-label="الرئيسية">
+        <div class="panel-head wide">
+          <h2>نظرة عامة</h2>
+          <p>ملخص سريع للمنتجات والمسودات، مع تصدير جاهز لجداول Google Sheets.</p>
+        </div>
+        <div class="dashboard-grid wide" id="dashboardMetrics">
+          <div class="metric-card"><span>منشور</span><strong>0</strong></div>
+          <div class="metric-card"><span>مسودات</span><strong>0</strong></div>
+          <div class="metric-card"><span>استفسارات واتساب</span><strong>0</strong></div>
+          <div class="metric-card"><span>تجار</span><strong>0</strong></div>
+        </div>
+        <div class="export-actions wide">
+          <button class="btn btn-teal" id="exportProductsCsv" type="button"><i data-lucide="download"></i>تصدير المنتجات CSV</button>
+          <button class="btn btn-primary" id="copyProductsSheets" type="button"><i data-lucide="table"></i>نسخ المنتجات وفتح Google Sheets</button>
+          <button class="btn btn-light" id="exportDraftsCsv" type="button"><i data-lucide="download"></i>تصدير المسودات CSV</button>
+          <button class="btn btn-light" id="copyDraftsSheets" type="button"><i data-lucide="clipboard-copy"></i>نسخ المسودات لجوجل شيت</button>
+        </div>
+        <p class="helper-note wide" id="dashboardStatus">احفظ مفتاح الإدارة ثم اضغط حفظ وجلب المسودات لتحديث البيانات.</p>
+      </section>
+
+      <section class="config-card admin-section" data-admin-section="config" aria-label="إعداد الاتصال" hidden>
         <p class="helper-note wide">أدخل مفتاح الإدارة فقط. لا تدخل مفاتيح Supabase مثل anon أو service role هنا.</p>
         <div class="field wide">
           <label for="adminKey">مفتاح الإدارة</label>
@@ -669,7 +731,10 @@
       <div class="draft-body">
         <div class="draft-head">
           <h3 data-field="titleText"></h3>
-          <span class="pill" data-field="categoryPill"></span>
+          <div class="draft-head-actions">
+            <span class="pill" data-field="categoryPill"></span>
+            <button class="btn btn-light" type="button" data-action="toggle-form"><i data-lucide="pencil"></i>مراجعة</button>
+          </div>
         </div>
 
         <form class="draft-form">
@@ -766,6 +831,7 @@
             <span class="pill" data-field="inquiryPill"></span>
             <span class="pill" data-field="statusPill"></span>
           </div>
+          <button class="btn btn-light" type="button" data-action="toggle-form"><i data-lucide="pencil"></i>تعديل</button>
         </div>
 
         <form class="draft-form">
@@ -883,6 +949,12 @@
     const statusEl = document.getElementById("status");
     const productsStatusEl = document.getElementById("productsStatus");
     const statsStrip = document.getElementById("statsStrip");
+    const dashboardMetrics = document.getElementById("dashboardMetrics");
+    const dashboardStatus = document.getElementById("dashboardStatus");
+    const exportProductsCsv = document.getElementById("exportProductsCsv");
+    const copyProductsSheets = document.getElementById("copyProductsSheets");
+    const exportDraftsCsv = document.getElementById("exportDraftsCsv");
+    const copyDraftsSheets = document.getElementById("copyDraftsSheets");
     const draftsEl = document.getElementById("drafts");
     const publishedProductsEl = document.getElementById("publishedProducts");
     const template = document.getElementById("draftTemplate");
@@ -890,6 +962,7 @@
     const adminTabs = document.querySelectorAll("[data-admin-tab]");
     const adminSections = document.querySelectorAll("[data-admin-section]");
     let allPublishedProducts = [];
+    let allDrafts = [];
 
     function showAdminSection(name) {
       adminTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.adminTab === name));
@@ -923,6 +996,11 @@
       productsStatusEl.className = `status ${type}`.trim();
     }
 
+    function setDashboardStatus(message, type = "") {
+      dashboardStatus.textContent = message;
+      dashboardStatus.className = `helper-note wide ${type}`.trim();
+    }
+
     function setStats(stats) {
       if (!statsStrip) return;
 
@@ -946,6 +1024,14 @@
         <span class="stat-chip">معتمد: <strong>${Number(stats.approved_drafts || 0)}</strong></span>
         ${latest}
       `;
+
+      dashboardMetrics.innerHTML = `
+        <div class="metric-card"><span>منشور</span><strong>${Number(stats.published_products || 0)}</strong></div>
+        <div class="metric-card"><span>مسودات</span><strong>${Number(stats.pending_drafts || 0)}</strong></div>
+        <div class="metric-card"><span>استفسارات واتساب</span><strong>${Number(stats.whatsapp_inquiries || 0)}</strong></div>
+        <div class="metric-card"><span>تجار</span><strong>${Number(stats.merchants || 0)}</strong></div>
+      `;
+      setDashboardStatus("آخر تحديث للبيانات تم بنجاح.", "ok");
     }
 
     function escapeHtml(value) {
@@ -1137,8 +1223,9 @@
           api("?status=pending_review"),
           loadStats(),
         ]);
-        renderDrafts(payload.drafts || []);
-        setStatus(`تم جلب ${payload.drafts?.length || 0} مسودة.`, "ok");
+        allDrafts = payload.drafts || [];
+        renderDrafts(allDrafts);
+        setStatus(`تم جلب ${allDrafts.length} مسودة.`, "ok");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1216,6 +1303,11 @@
         if (draft.source_url) sourceUrl.href = draft.source_url;
 
         fill(form, draft);
+        card.classList.add("is-collapsed");
+        form.querySelector('[data-action="toggle-form"]')?.remove();
+        card.querySelector('[data-action="toggle-form"]').addEventListener("click", () => {
+          card.classList.toggle("is-collapsed");
+        });
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
           await approveDraft(form, card);
@@ -1254,6 +1346,10 @@
         inquiryPill.textContent = `واتساب: ${Number(product.inquiry_count || 0)}`;
 
         fillProduct(form, product);
+        card.classList.add("is-collapsed");
+        card.querySelector('[data-action="toggle-form"]').addEventListener("click", () => {
+          card.classList.toggle("is-collapsed");
+        });
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
           await updatePublishedProduct(form, card);
@@ -1351,6 +1447,97 @@
         .split(/[,،\n]/)
         .map(item => item.trim())
         .filter(Boolean);
+    }
+
+    function productExportRows(products = allPublishedProducts) {
+      return products.map(product => ({
+        "كود المنتج": productCode(product),
+        "اسم المنتج": product.title || "",
+        "السعر": product.price_lyd ?? "",
+        "المدينة": product.city || "",
+        "التصنيف": product.category || "",
+        "المحل": product.store_name || "",
+        "واتساب": product.whatsapp_phone || "",
+        "الحالة": productStatusLabel(product.status),
+        "استفسارات واتساب": Number(product.inquiry_count || 0),
+        "الصورة": product.image_url || "",
+        "رابط المصدر": product.source_url || "",
+        "تاريخ الإضافة": product.created_at || "",
+      }));
+    }
+
+    function draftExportRows(drafts = allDrafts) {
+      return drafts.map(draft => ({
+        "اسم المنتج": draft.title || "",
+        "السعر": draft.price_lyd ?? "",
+        "المدينة": draft.city || "",
+        "التصنيف": draft.category || "",
+        "المحل": draft.store_name || "",
+        "واتساب": draft.whatsapp_phone || "",
+        "المصدر": draft.source_platform || "",
+        "رابط المصدر": draft.source_url || "",
+        "الحالة": draft.status || "",
+        "تاريخ الإضافة": draft.created_at || "",
+      }));
+    }
+
+    function tableText(rows, separator) {
+      if (!rows.length) return "";
+      const headers = Object.keys(rows[0]);
+      const escapeCell = value => {
+        const text = String(value ?? "").replace(/\r?\n/g, " ").trim();
+        if (separator === ",") return `"${text.replace(/"/g, '""')}"`;
+        return text.replace(/\t/g, " ");
+      };
+      return [
+        headers.map(escapeCell).join(separator),
+        ...rows.map(row => headers.map(header => escapeCell(row[header])).join(separator))
+      ].join("\n");
+    }
+
+    function downloadCsv(rows, fileName) {
+      if (!rows.length) {
+        setDashboardStatus("لا توجد بيانات للتصدير حالياً.", "error");
+        return;
+      }
+      const csv = `\uFEFF${tableText(rows, ",")}`;
+      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setDashboardStatus(`تم تجهيز ملف ${fileName}.`, "ok");
+    }
+
+    async function copyRowsForSheets(rows, label) {
+      if (!rows.length) {
+        setDashboardStatus("لا توجد بيانات للنسخ حالياً.", "error");
+        return;
+      }
+      const tsv = tableText(rows, "\t");
+      try {
+        await navigator.clipboard.writeText(tsv);
+      } catch {
+        const textarea = document.createElement("textarea");
+        textarea.value = tsv;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+      setDashboardStatus(`تم نسخ ${label}. افتح Google Sheets والصق البيانات في أول خلية.`, "ok");
+      window.open("https://sheets.new", "_blank", "noopener");
+    }
+
+    async function ensureProductsLoaded() {
+      if (!allPublishedProducts.length) await loadProducts();
+    }
+
+    async function ensureDraftsLoaded() {
+      if (!allDrafts.length) await loadDrafts();
     }
 
     async function approveDraft(form, card) {
@@ -1518,6 +1705,42 @@
     adminTabs.forEach(tab => {
       tab.addEventListener("click", () => showAdminSection(tab.dataset.adminTab));
     });
+    exportProductsCsv.addEventListener("click", async () => {
+      try {
+        saveCurrentConfig();
+        await ensureProductsLoaded();
+        downloadCsv(productExportRows(filterPublishedProducts()), `tafli-products-${new Date().toISOString().slice(0, 10)}.csv`);
+      } catch (error) {
+        setDashboardStatus(error.message, "error");
+      }
+    });
+    copyProductsSheets.addEventListener("click", async () => {
+      try {
+        saveCurrentConfig();
+        await ensureProductsLoaded();
+        await copyRowsForSheets(productExportRows(filterPublishedProducts()), "بيانات المنتجات");
+      } catch (error) {
+        setDashboardStatus(error.message, "error");
+      }
+    });
+    exportDraftsCsv.addEventListener("click", async () => {
+      try {
+        saveCurrentConfig();
+        await ensureDraftsLoaded();
+        downloadCsv(draftExportRows(), `tafli-drafts-${new Date().toISOString().slice(0, 10)}.csv`);
+      } catch (error) {
+        setDashboardStatus(error.message, "error");
+      }
+    });
+    copyDraftsSheets.addEventListener("click", async () => {
+      try {
+        saveCurrentConfig();
+        await ensureDraftsLoaded();
+        await copyRowsForSheets(draftExportRows(), "بيانات المسودات");
+      } catch (error) {
+        setDashboardStatus(error.message, "error");
+      }
+    });
     adminKeyInput.addEventListener("input", () => {
       const cleaned = normalizeAdminKey(adminKeyInput.value);
       if (cleaned !== adminKeyInput.value) adminKeyInput.value = cleaned;
@@ -1555,6 +1778,9 @@
     const config = getConfig();
     adminKeyInput.value = config.adminKey;
     rememberAdminKey.checked = localStorage.getItem(ADMIN_KEY_REMEMBER_STORAGE) !== "0";
+    if (config.adminKey) {
+      loadStats().catch(() => setDashboardStatus("اضغط حفظ وجلب المسودات لتحديث البيانات.", "error"));
+    }
     lucide.createIcons();
   </script>
 </body>
