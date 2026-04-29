@@ -288,13 +288,14 @@
     }
 
     function parseDescriptionAttributes(description) {
-      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [], merchantCode: "" };
       String(description || "").split(/\r?\n/).forEach(line => {
         const trimmed = line.trim();
-        const match = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
+        const match = trimmed.match(/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
         if (!match) return;
         const label = match[1];
         const value = match[2];
+        if (label.includes("كود")) attributes.merchantCode = value.trim();
         if (label.includes("مقاس")) attributes.sizes = splitList(value);
         if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
         if (label === "التوفر") attributes.stockStatus = value.trim();
@@ -306,7 +307,7 @@
     function stripDescriptionAttributes(description) {
       return String(description || "")
         .split(/\r?\n/)
-        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
+        .filter(line => !/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
         .join("\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
@@ -357,6 +358,7 @@
         sizes: attributes.sizes,
         colors: attributes.colors,
         availability: attributes.stockStatus || "حسب تأكيد التاجر",
+        merchantCode: attributes.merchantCode || row.merchant_code || "",
         code: productCode(row),
       };
     }
@@ -366,6 +368,7 @@
       const code = product.code || productCode(product);
       const details = [
         `كود المنتج: ${code}`,
+        product.merchantCode ? `كود التاجر: ${product.merchantCode}` : "",
         `الاسم: ${product.name}`,
         selected.size ? `المقاس: ${selected.size}` : "",
         selected.color ? `اللون: ${selected.color}` : "",
@@ -402,6 +405,7 @@
       if (!summary || !whatsapp) return;
       summary.innerHTML = `
         <span class="meta-line product-code"><i data-lucide="scan-line"></i>كود المنتج: ${escapeHtml(product.code || productCode(product))}</span>
+        ${product.merchantCode ? `<span class="meta-line"><i data-lucide="barcode"></i>كود التاجر: ${escapeHtml(product.merchantCode)}</span>` : ""}
         <span class="meta-line"><i data-lucide="ruler"></i>${selected.size ? `المقاس: ${escapeHtml(selected.size)}` : "المقاس: يتم تأكيده مع التاجر"}</span>
         <span class="meta-line"><i data-lucide="palette"></i>${selected.color ? `اللون: ${escapeHtml(selected.color)}` : "اللون: يتم تأكيده مع التاجر"}</span>
         <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${escapeHtml(product.availability)}</span>

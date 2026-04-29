@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
 
     let query = supabase
       .from("products")
-      .select("id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at")
+      .select("id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,sizes,colors,stock_status,created_at")
       .eq("status", "published");
 
     if (id) query = query.eq("id", id);

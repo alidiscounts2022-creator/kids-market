@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة التاجر | طفلي ماركت</title>
-  <meta name="description" content="لوحة تاجر بسيطة لعرض منتجات المحل وإرسال تعديلات للمراجعة في طفلي ماركت." />
+  <meta name="description" content="لوحة تاجر طفلي ماركت لمتابعة المنتجات والمسودات وتصدير البيانات." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -19,30 +19,39 @@
       --text: #1F2937;
       --muted: #667085;
       --line: #E5EAF1;
+      --danger: #EF4444;
+      --soft-purple: #F3E8FF;
+      --soft-teal: #E6FFFB;
       --shadow: 0 22px 56px rgba(31, 41, 55, .12);
-      --container: min(1140px, calc(100% - 28px));
+      --container: min(1180px, calc(100% - 28px));
     }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "Cairo", system-ui, sans-serif;
       color: var(--text);
-      background: linear-gradient(135deg, rgba(168,85,247,.09), rgba(20,184,166,.08)), var(--bg);
+      background:
+        radial-gradient(circle at 88% 8%, rgba(56, 189, 248, .16), transparent 30%),
+        radial-gradient(circle at 8% 18%, rgba(168, 85, 247, .14), transparent 32%),
+        var(--bg);
       line-height: 1.7;
     }
     a { color: inherit; text-decoration: none; }
     button, input { font: inherit; }
     img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
     .container { width: var(--container); margin-inline: auto; }
+
     .header {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(255,255,255,.86);
-      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid rgba(229,234,241,.84);
       backdrop-filter: blur(18px);
     }
-    .nav, .brand, .btn, .meta-line, .chip {
+    .nav, .brand, .nav-links, .btn, .chip, .meta-line {
       display: inline-flex;
       align-items: center;
     }
@@ -61,27 +70,30 @@
       color: white;
       border-radius: 14px;
       background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 15px 32px rgba(168,85,247,.22);
     }
+    .nav-links { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .btn {
+      min-height: 42px;
       justify-content: center;
       gap: 8px;
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 0;
+      padding: 9px 14px;
+      border: 1px solid var(--line);
       border-radius: 999px;
+      background: white;
+      color: var(--text);
       font-weight: 900;
       cursor: pointer;
-      background: white;
-      border: 1px solid var(--line);
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--purple), var(--teal));
-      border-color: transparent;
-      box-shadow: 0 16px 32px rgba(168,85,247,.22);
-    }
-    main { padding-block: 24px 58px; }
-    .hero, .panel, .card, .empty {
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,41,55,.09); }
+    .btn-primary { color: white; border-color: transparent; background: linear-gradient(135deg, var(--purple), var(--teal)); }
+    .btn-teal { color: white; border-color: transparent; background: var(--teal); }
+    .btn-danger { color: white; border-color: transparent; background: var(--danger); }
+    .btn:disabled { opacity: .62; cursor: not-allowed; transform: none; }
+
+    main { padding: 24px 0 58px; }
+    .hero, .panel, .card, .auth-card, .metric {
       border: 1px solid var(--line);
       border-radius: 28px;
       box-shadow: var(--shadow);
@@ -89,25 +101,43 @@
       overflow: hidden;
     }
     .hero {
-      padding: 24px;
+      padding: 28px;
       color: white;
       background: linear-gradient(135deg, #1F2937, var(--purple) 54%, var(--teal));
     }
-    .hero span {
+    .eyebrow {
       width: fit-content;
       display: inline-flex;
-      gap: 8px;
       align-items: center;
+      gap: 8px;
       padding: 8px 12px;
       border-radius: 999px;
       background: rgba(255,255,255,.16);
       font-weight: 900;
     }
-    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 7vw, 3.8rem); line-height: 1.16; }
-    .hero p { margin: 0; color: rgba(255,255,255,.86); font-weight: 800; }
-    .panel { display: grid; gap: 12px; margin-top: 18px; padding: 16px; }
-    .search-form { display: grid; gap: 10px; }
-    input {
+    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 7vw, 4rem); line-height: 1.15; }
+    .hero p { margin: 0; max-width: 780px; color: rgba(255,255,255,.88); font-weight: 800; }
+
+    .auth-card, .panel { margin-top: 18px; padding: 18px; }
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .panel h2, .auth-card h2 { margin: 0 0 6px; font-size: 1.34rem; line-height: 1.35; }
+    .panel p, .auth-card p { margin: 0; color: var(--muted); font-weight: 700; }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .field { display: grid; gap: 7px; }
+    .field label { font-size: .92rem; font-weight: 900; color: #344054; }
+    .field input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -115,42 +145,114 @@
       outline: none;
       font-weight: 800;
     }
-    input:focus {
-      border-color: rgba(168,85,247,.55);
-      box-shadow: 0 0 0 4px rgba(168,85,247,.12);
+    .field input:focus { border-color: rgba(168,85,247,.55); box-shadow: 0 0 0 4px rgba(168,85,247,.12); }
+
+    .toolbar {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
     }
-    .status { color: var(--muted); font-weight: 900; }
-    .grid { display: grid; gap: 16px; margin-top: 18px; }
+    .toolbar-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .search {
+      flex: 1 1 240px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 800;
+      outline: none;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab.active { color: white; border-color: transparent; background: linear-gradient(135deg, var(--purple), var(--teal)); }
+
+    .metrics {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .metric {
+      padding: 16px;
+      box-shadow: 0 16px 40px rgba(31,41,55,.08);
+    }
+    .metric span { display: block; color: var(--muted); font-weight: 800; }
+    .metric strong { display: block; font-size: 2rem; line-height: 1.1; font-weight: 900; }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
     .card img {
       width: 100%;
-      aspect-ratio: 1 / .74;
+      aspect-ratio: 1 / .72;
       object-fit: cover;
       background: #EAF8FF;
     }
-    .card-body { display: grid; gap: 10px; padding: 14px; }
-    .card h2 { margin: 0; font-size: 1.08rem; line-height: 1.35; }
+    .card-body {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+    }
+    .card h3 { margin: 0; font-size: 1.08rem; line-height: 1.35; }
     .price { color: var(--teal); font-size: 1.18rem; font-weight: 900; }
     .meta { display: flex; flex-wrap: wrap; gap: 8px; }
-    .meta-line, .chip {
+    .chip, .meta-line {
       gap: 7px;
-      color: #475467;
-      background: #F8FAFC;
+      min-height: 34px;
+      padding: 7px 10px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 7px 10px;
-      font-weight: 850;
-      font-size: .9rem;
+      background: #F8FAFC;
+      color: #475467;
+      font-size: .88rem;
+      font-weight: 900;
     }
-    .chip.code { color: #5B21B6; background: #F3E8FF; border-color: #E9D5FF; }
-    .actions { display: grid; gap: 9px; }
-    .empty { margin-top: 18px; padding: 24px; text-align: center; }
-    @media (min-width: 720px) {
-      .search-form { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+    .chip.code { color: #5B21B6; background: var(--soft-purple); border-color: #E9D5FF; }
+    .chip.ok { color: #047857; background: #ECFDF3; border-color: #ABEFC6; }
+    .chip.warn { color: #B54708; background: #FFFAEB; border-color: #FEDF89; }
+    .chip.muted { color: #475467; background: #F8FAFC; }
+    .actions {
+      display: grid;
+      gap: 8px;
+    }
+    .empty {
+      padding: 26px;
+      border: 1px dashed var(--line);
+      border-radius: 24px;
+      background: #FBFDFF;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .status {
+      min-height: 26px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .status.ok { color: #047857; }
+    .status.error { color: #B42318; }
+
+    @media (min-width: 760px) {
+      .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wide { grid-column: 1 / -1; }
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    @media (min-width: 1040px) {
+    @media (min-width: 1060px) {
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .auth-card, .panel { padding: 24px; }
     }
   </style>
 </head>
@@ -161,39 +263,188 @@
         <span class="brand-mark"><i data-lucide="baby"></i></span>
         <span>طفلي ماركت</span>
       </a>
-      <a class="btn" href="merchant.html"><i data-lucide="badge-plus"></i>إضافة منتج</a>
+      <nav class="nav-links">
+        <a class="btn" href="merchant.html"><i data-lucide="badge-plus"></i>إضافة منتج</a>
+        <a class="btn" href="index.html"><i data-lucide="arrow-right"></i>الموقع</a>
+        <button class="btn btn-danger" id="logoutBtn" type="button" hidden><i data-lucide="log-out"></i>خروج</button>
+      </nav>
     </div>
   </header>
 
   <main>
     <div class="container">
       <section class="hero">
-        <span><i data-lucide="store"></i>لوحة التاجر التجريبية</span>
-        <h1>شوف منتجاتك واطلب تعديلها</h1>
-        <p>اكتب رقم واتساب المحل، وستظهر المنتجات المنشورة بنفس الرقم. أي تعديل يذهب للإدارة كمسودة قبل النشر.</p>
+        <span class="eyebrow"><i data-lucide="layout-dashboard"></i>لوحة التاجر</span>
+        <h1>تابع منتجاتك ومسوداتك من مكان واحد</h1>
+        <p>كل تاجر يرى بياناته فقط: المنتجات المنشورة، التعديلات قيد المراجعة، وإمكانية تصدير بياناته إلى CSV أو Google Sheets.</p>
       </section>
 
-      <section class="panel">
-        <form class="search-form" id="searchForm">
-          <div>
-            <label for="phoneInput">رقم واتساب المحل</label>
-            <input id="phoneInput" inputmode="tel" placeholder="2189XXXXXXXX" required />
+      <section class="auth-card" id="authSection">
+        <h2>سجل دخولك للوصول للوحة</h2>
+        <p>لو ما عندكش حساب بعد، افتح صفحة إضافة المنتج واختر تسجيل جديد.</p>
+        <form class="form-grid" id="loginForm">
+          <div class="field">
+            <label>البريد الإلكتروني</label>
+            <input name="email" type="email" autocomplete="email" required placeholder="merchant@example.com" />
           </div>
-          <button class="btn btn-primary" type="submit"><i data-lucide="search"></i>عرض منتجاتي</button>
+          <div class="field">
+            <label>كلمة المرور</label>
+            <input name="password" type="password" autocomplete="current-password" required />
+          </div>
+          <div class="wide">
+            <button class="btn btn-primary" type="submit"><i data-lucide="log-in"></i>دخول</button>
+            <a class="btn" href="merchant.html"><i data-lucide="user-plus"></i>تسجيل جديد</a>
+          </div>
         </form>
-        <div class="status" id="status">أدخل رقم واتساب المستخدم في المنتجات المنشورة.</div>
+        <div class="status" id="authStatus"></div>
       </section>
 
-      <section class="grid" id="productsGrid"></section>
+      <section id="dashboardApp" hidden>
+        <div class="metrics" id="metrics"></div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>بيانات المحل</h2>
+              <p>هذه البيانات تظهر مع المنتجات ورسائل واتساب.</p>
+            </div>
+            <button class="btn btn-teal" id="refreshBtn" type="button"><i data-lucide="refresh-cw"></i>تحديث</button>
+          </div>
+          <form class="form-grid" id="profileForm">
+            <div class="field">
+              <label>اسم المحل</label>
+              <input name="store_name" required />
+            </div>
+            <div class="field">
+              <label>اسم المسؤول</label>
+              <input name="owner_name" />
+            </div>
+            <div class="field">
+              <label>المدينة</label>
+              <input name="city" required />
+            </div>
+            <div class="field">
+              <label>واتساب</label>
+              <input name="whatsapp_phone" required inputmode="tel" />
+            </div>
+            <div class="field wide">
+              <label>رابط صفحة فيسبوك أو إنستغرام</label>
+              <input name="facebook_page_url" type="url" />
+            </div>
+            <button class="btn btn-primary wide" type="submit"><i data-lucide="save"></i>حفظ بيانات المحل</button>
+          </form>
+          <div class="status" id="profileStatus"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>منتجاتي وطلبات المراجعة</h2>
+              <p>فلتر سريع بين المنشور والمسودات، مع تصدير البيانات لشيت خاص.</p>
+            </div>
+            <a class="btn btn-primary" href="merchant.html"><i data-lucide="plus-circle"></i>إضافة منتج</a>
+          </div>
+
+          <div class="toolbar">
+            <div class="toolbar-row">
+              <div class="tabs">
+                <button class="btn tab active" type="button" data-view="products"><i data-lucide="package"></i>المنتجات</button>
+                <button class="btn tab" type="button" data-view="drafts"><i data-lucide="clipboard-list"></i>المسودات</button>
+              </div>
+              <input class="search" id="searchInput" placeholder="بحث باسم المنتج أو الكود أو التصنيف..." />
+            </div>
+            <div class="toolbar-row">
+              <div class="tabs">
+                <button class="btn" id="exportCsv" type="button"><i data-lucide="download"></i>CSV</button>
+                <button class="btn" id="copySheets" type="button"><i data-lucide="clipboard-copy"></i>نسخ لجوجل شيت</button>
+                <a class="btn" href="https://sheets.new" target="_blank" rel="noopener"><i data-lucide="table-2"></i>فتح Google Sheets</a>
+              </div>
+              <span class="status" id="listStatus"></span>
+            </div>
+          </div>
+
+          <section class="grid" id="itemsGrid"></section>
+        </section>
+      </section>
     </div>
   </main>
 
   <script>
-    const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
-    const form = document.getElementById("searchForm");
-    const phoneInput = document.getElementById("phoneInput");
-    const statusEl = document.getElementById("status");
-    const productsGrid = document.getElementById("productsGrid");
+    const AUTH_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-auth";
+    const DASHBOARD_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-dashboard";
+    const SESSION_STORAGE = "tafli_merchant_session";
+
+    const authSection = document.getElementById("authSection");
+    const dashboardApp = document.getElementById("dashboardApp");
+    const loginForm = document.getElementById("loginForm");
+    const profileForm = document.getElementById("profileForm");
+    const authStatus = document.getElementById("authStatus");
+    const profileStatus = document.getElementById("profileStatus");
+    const listStatus = document.getElementById("listStatus");
+    const metrics = document.getElementById("metrics");
+    const itemsGrid = document.getElementById("itemsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const tabs = document.querySelectorAll("[data-view]");
+    const exportCsvBtn = document.getElementById("exportCsv");
+    const copySheetsBtn = document.getElementById("copySheets");
+
+    let session = readSession();
+    let merchant = null;
+    let products = [];
+    let drafts = [];
+    let activeView = "products";
+
+    function readSession() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(SESSION_STORAGE) || "null");
+        return parsed?.access_token ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveSession(nextSession) {
+      session = nextSession?.access_token ? nextSession : null;
+      if (session) localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_STORAGE);
+    }
+
+    function setStatus(target, message, type = "") {
+      target.textContent = message;
+      target.className = `status ${type}`.trim();
+    }
+
+    function requireSession() {
+      if (!session?.access_token) throw new Error("سجل الدخول كتاجر أولاً.");
+      return session.access_token;
+    }
+
+    async function authRequest(path, data) {
+      const response = await fetch(`${AUTH_URL}/${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "تعذر تسجيل الدخول.");
+      return payload;
+    }
+
+    async function dashboardRequest(path = "", options = {}) {
+      const response = await fetch(`${DASHBOARD_URL}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${requireSession()}`,
+          ...(options.headers || {}),
+        },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "تعذر تحميل بيانات التاجر.");
+      return payload;
+    }
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -207,6 +458,21 @@
 
     function normalizePhone(value) {
       return String(value || "").replace(/[^\d+]/g, "").replace(/^\+/, "");
+    }
+
+    function splitList(value) {
+      return String(value || "").split(/[,،\n]/).map(item => item.trim()).filter(Boolean);
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { merchantCode: "", extraImages: [] };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const match = line.trim().match(/^(كود التاجر|كود المنتج عند التاجر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
+        if (!match) return;
+        if (match[1].includes("كود")) attributes.merchantCode = match[2].trim();
+        if (match[1].includes("صور")) attributes.extraImages = splitList(match[2]).filter(item => /^https?:\/\//i.test(item));
+      });
+      return attributes;
     }
 
     function safeImage(value) {
@@ -226,68 +492,241 @@
       return `${number.toLocaleString("ar-LY")} د.ل`;
     }
 
-    function productCode(product) {
-      const clean = String(product?.id || product?.title || "product").replace(/[^a-z0-9]/gi, "").toUpperCase();
-      return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
+    function statusLabel(value) {
+      const map = {
+        published: "منشور",
+        hidden: "مخفي",
+        sold: "مباع",
+        pending_review: "بانتظار المراجعة",
+        approved: "معتمد",
+        rejected: "مرفوض",
+      };
+      return map[value] || value || "غير محدد";
     }
 
-    function productCard(product) {
-      const code = productCode(product);
+    function statusClass(value) {
+      if (value === "published" || value === "approved") return "ok";
+      if (value === "pending_review") return "warn";
+      return "muted";
+    }
+
+    function fillProfileForm() {
+      for (const name of ["store_name", "owner_name", "city", "whatsapp_phone", "facebook_page_url"]) {
+        profileForm.elements[name].value = merchant?.[name] || "";
+      }
+    }
+
+    function renderMetrics(stats = {}) {
+      metrics.innerHTML = `
+        <div class="metric"><span>منشور</span><strong>${Number(stats.published || 0)}</strong></div>
+        <div class="metric"><span>مخفي</span><strong>${Number(stats.hidden || 0)}</strong></div>
+        <div class="metric"><span>قيد المراجعة</span><strong>${Number(stats.pending_review || 0)}</strong></div>
+        <div class="metric"><span>مرفوض</span><strong>${Number(stats.rejected || 0)}</strong></div>
+      `;
+    }
+
+    function itemCard(item, type) {
+      const attrs = parseDescriptionAttributes(item.description || "");
+      const merchantCode = item.merchant_code || attrs.merchantCode || "";
+      const title = item.title || "منتج بدون اسم";
+      const code = item.product_code || "";
+      const viewLink = type === "products" && item.status === "published"
+        ? `<a class="btn" href="product.html?id=${encodeURIComponent(item.id)}"><i data-lucide="external-link"></i>عرض</a>`
+        : "";
+      const editLink = type === "products"
+        ? `<a class="btn btn-primary" href="merchant.html?edit=${encodeURIComponent(item.id)}"><i data-lucide="pencil"></i>طلب تعديل</a>`
+        : "";
+
       return `
-        <article class="card">
-          <img src="${safeImage(product.image_url)}" alt="${escapeHtml(product.title || "منتج")}" loading="lazy" />
+        <article class="card" data-search="${escapeHtml(`${title} ${item.category || ""} ${item.city || ""} ${code} ${merchantCode}`.toLowerCase())}">
+          <img src="${safeImage(item.image_url)}" alt="${escapeHtml(title)}" loading="lazy" />
           <div class="card-body">
-            <span class="chip code"><i data-lucide="scan-line"></i>${code}</span>
-            <h2>${escapeHtml(product.title || "منتج بدون اسم")}</h2>
-            <span class="price">${escapeHtml(formatPrice(product.price_lyd))}</span>
             <div class="meta">
-              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(product.city || "غير محدد")}</span>
-              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category || "غير مصنف")}</span>
+              ${code ? `<span class="chip code"><i data-lucide="scan-line"></i>${escapeHtml(code)}</span>` : ""}
+              ${merchantCode ? `<span class="chip"><i data-lucide="barcode"></i>${escapeHtml(merchantCode)}</span>` : ""}
+              <span class="chip ${statusClass(item.status)}">${escapeHtml(statusLabel(item.status))}</span>
+            </div>
+            <h3>${escapeHtml(title)}</h3>
+            <span class="price">${escapeHtml(formatPrice(item.price_lyd))}</span>
+            <div class="meta">
+              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(item.city || "غير محدد")}</span>
+              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(item.category || "غير مصنف")}</span>
             </div>
             <div class="actions">
-              <a class="btn" href="product.html?id=${encodeURIComponent(product.id)}"><i data-lucide="external-link"></i>عرض</a>
-              <a class="btn btn-primary" href="merchant.html?edit=${encodeURIComponent(product.id)}"><i data-lucide="pencil"></i>طلب تعديل</a>
+              ${viewLink}
+              ${editLink}
             </div>
           </div>
         </article>
       `;
     }
 
-    async function loadProducts(phone) {
-      statusEl.textContent = "جاري جلب المنتجات...";
-      productsGrid.innerHTML = "";
-      const response = await fetch(`${PRODUCTS_URL}?phone=${encodeURIComponent(phone)}&limit=100`);
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || "تعذر تحميل المنتجات.");
-      const products = Array.isArray(payload.products) ? payload.products : [];
-      statusEl.textContent = products.length
-        ? `تم العثور على ${products.length} منتج منشور لهذا الرقم.`
-        : "لا توجد منتجات منشورة بهذا الرقم حالياً.";
-      productsGrid.innerHTML = products.length
-        ? products.map(productCard).join("")
-        : `<div class="empty"><h2>لا توجد منتجات بعد</h2><p>يمكنك إضافة أول منتج من زر إضافة منتج.</p></div>`;
+    function currentRows() {
+      return activeView === "products" ? products : drafts;
+    }
+
+    function renderItems() {
+      tabs.forEach(tab => tab.classList.toggle("active", tab.dataset.view === activeView));
+      const query = searchInput.value.trim().toLowerCase();
+      const rows = currentRows().filter(item => {
+        const attrs = parseDescriptionAttributes(item.description || "");
+        const haystack = `${item.title || ""} ${item.category || ""} ${item.city || ""} ${item.product_code || ""} ${item.merchant_code || ""} ${attrs.merchantCode || ""}`.toLowerCase();
+        return !query || haystack.includes(query);
+      });
+
+      listStatus.textContent = rows.length ? `${rows.length} عنصر` : "لا توجد نتائج";
+      itemsGrid.innerHTML = rows.length
+        ? rows.map(item => itemCard(item, activeView)).join("")
+        : `<div class="empty">لا توجد عناصر مطابقة حالياً.</div>`;
       lucide.createIcons();
     }
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const phone = normalizePhone(phoneInput.value);
-      if (!/^218\d{8,10}$/.test(phone)) {
-        statusEl.textContent = "رقم واتساب لازم يبدأ بـ 218. مثال: 218912345678";
+    async function loadDashboard() {
+      setStatus(listStatus, "جاري تحميل البيانات...");
+      const payload = await dashboardRequest("");
+      merchant = payload.merchant;
+      products = payload.products || [];
+      drafts = payload.drafts || [];
+      dashboardApp.hidden = false;
+      authSection.hidden = true;
+      logoutBtn.hidden = false;
+      fillProfileForm();
+      renderMetrics(payload.stats || {});
+      renderItems();
+      setStatus(profileStatus, `مرحباً ${merchant.store_name || "تاجر طفلي ماركت"}.`, "ok");
+    }
+
+    function showAuth(message = "") {
+      dashboardApp.hidden = true;
+      authSection.hidden = false;
+      logoutBtn.hidden = true;
+      if (message) setStatus(authStatus, message, "error");
+    }
+
+    function rowsForExport() {
+      return currentRows().map(item => {
+        const attrs = parseDescriptionAttributes(item.description || "");
+        return {
+          "اسم المنتج": item.title || "",
+          "كود طفلي": item.product_code || "",
+          "كود التاجر": item.merchant_code || attrs.merchantCode || "",
+          "السعر": item.price_lyd ?? "",
+          "المدينة": item.city || "",
+          "التصنيف": item.category || "",
+          "الحالة": statusLabel(item.status),
+          "رابط الصورة": item.image_url || "",
+          "تاريخ الإضافة": item.created_at || "",
+        };
+      });
+    }
+
+    function rowsToDelimited(rows, delimiter = ",") {
+      if (!rows.length) return "";
+      const headers = Object.keys(rows[0]);
+      const escapeCell = value => {
+        const text = String(value ?? "");
+        if (delimiter === "\t") return text.replace(/\t/g, " ").replace(/\r?\n/g, " ");
+        return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+      };
+      return [
+        headers.map(escapeCell).join(delimiter),
+        ...rows.map(row => headers.map(header => escapeCell(row[header])).join(delimiter)),
+      ].join("\n");
+    }
+
+    function downloadCsv() {
+      const rows = rowsForExport();
+      if (!rows.length) {
+        setStatus(listStatus, "لا توجد بيانات للتصدير.", "error");
         return;
       }
+      const csv = "\uFEFF" + rowsToDelimited(rows, ",");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `tafli-${activeView}-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setStatus(listStatus, "تم تجهيز ملف CSV.", "ok");
+    }
+
+    async function copyForSheets() {
+      const rows = rowsForExport();
+      if (!rows.length) {
+        setStatus(listStatus, "لا توجد بيانات للنسخ.", "error");
+        return;
+      }
+      await navigator.clipboard.writeText(rowsToDelimited(rows, "\t"));
+      setStatus(listStatus, "تم نسخ البيانات. افتح Google Sheets والصقها مباشرة.", "ok");
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = loginForm.querySelector("button[type='submit']");
+      const data = Object.fromEntries(new FormData(loginForm).entries());
       try {
-        localStorage.setItem("tafli_merchant_phone", phone);
-        await loadProducts(phone);
+        button.disabled = true;
+        setStatus(authStatus, "جاري تسجيل الدخول...");
+        const payload = await authRequest("login", data);
+        saveSession(payload.session);
+        setStatus(authStatus, "");
+        await loadDashboard();
       } catch (error) {
-        statusEl.textContent = error.message;
+        setStatus(authStatus, error.message, "error");
+      } finally {
+        button.disabled = false;
       }
     });
 
-    const storedPhone = localStorage.getItem("tafli_merchant_phone") || "";
-    if (storedPhone) {
-      phoneInput.value = storedPhone;
-      loadProducts(storedPhone).catch(error => { statusEl.textContent = error.message; });
+    profileForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = profileForm.querySelector("button[type='submit']");
+      const data = Object.fromEntries(new FormData(profileForm).entries());
+      data.whatsapp_phone = normalizePhone(data.whatsapp_phone);
+      try {
+        button.disabled = true;
+        setStatus(profileStatus, "جاري حفظ بيانات المحل...");
+        const payload = await dashboardRequest("/profile", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        merchant = payload.merchant;
+        fillProfileForm();
+        setStatus(profileStatus, payload.message || "تم الحفظ.", "ok");
+      } catch (error) {
+        setStatus(profileStatus, error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    refreshBtn.addEventListener("click", () => loadDashboard().catch(error => setStatus(listStatus, error.message, "error")));
+    searchInput.addEventListener("input", renderItems);
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+      activeView = tab.dataset.view;
+      renderItems();
+    }));
+    exportCsvBtn.addEventListener("click", downloadCsv);
+    copySheetsBtn.addEventListener("click", () => copyForSheets().catch(error => setStatus(listStatus, error.message, "error")));
+    logoutBtn.addEventListener("click", () => {
+      saveSession(null);
+      merchant = null;
+      products = [];
+      drafts = [];
+      showAuth();
+      setStatus(authStatus, "تم تسجيل الخروج.", "ok");
+    });
+
+    if (session?.access_token) {
+      loadDashboard().catch(error => {
+        saveSession(null);
+        showAuth(error.message);
+      });
+    } else {
+      showAuth();
     }
 
     lucide.createIcons();

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>أضف منتجاتك | طفلي ماركت</title>
-  <meta name="description" content="صفحة تسجيل التاجر وإرسال منتجات الأطفال للمراجعة في طفلي ماركت." />
+  <title>إضافة منتج | طفلي ماركت</title>
+  <meta name="description" content="بوابة تجار طفلي ماركت لإضافة منتجات الأطفال بعد تسجيل الدخول." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -19,55 +19,49 @@
       --text: #1F2937;
       --muted: #667085;
       --line: #E5EAF1;
-      --shadow: 0 22px 56px rgba(31, 41, 55, 0.12);
-      --container: min(1120px, calc(100% - 28px));
+      --danger: #EF4444;
+      --soft-purple: #F3E8FF;
+      --soft-teal: #E6FFFB;
+      --shadow: 0 22px 56px rgba(31, 41, 55, .12);
+      --container: min(1160px, calc(100% - 28px));
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: "Cairo", system-ui, sans-serif;
       color: var(--text);
       background:
-        linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(56, 189, 248, 0.10) 46%, rgba(20, 184, 166, 0.09)),
+        radial-gradient(circle at 88% 8%, rgba(56, 189, 248, .16), transparent 30%),
+        radial-gradient(circle at 10% 18%, rgba(168, 85, 247, .14), transparent 32%),
         var(--bg);
       line-height: 1.7;
     }
-
-    button, input, select, textarea { font: inherit; }
     a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
     img { display: block; max-width: 100%; }
     .container { width: var(--container); margin-inline: auto; }
+    [hidden] { display: none !important; }
 
     .header {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(255, 255, 255, 0.86);
-      border-bottom: 1px solid rgba(229, 234, 241, 0.82);
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid rgba(229,234,241,.84);
       backdrop-filter: blur(18px);
     }
-
-    .nav {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .brand, .nav-links, .btn, .pill, .feature {
+    .nav, .brand, .nav-links, .btn, .chip, .profile-pill {
       display: inline-flex;
       align-items: center;
     }
-
-    .brand {
-      gap: 10px;
-      font-weight: 900;
-      white-space: nowrap;
+    .nav {
+      min-height: 72px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
     }
-
+    .brand { gap: 10px; font-weight: 900; white-space: nowrap; }
     .brand-mark {
       width: 42px;
       height: 42px;
@@ -76,246 +70,248 @@
       color: white;
       border-radius: 14px;
       background: linear-gradient(135deg, var(--purple), var(--teal));
-      box-shadow: 0 16px 30px rgba(168, 85, 247, 0.24);
+      box-shadow: 0 15px 32px rgba(168,85,247,.22);
     }
-
-    .nav-links {
-      display: none;
-      gap: 8px;
-      color: #4B5563;
-      font-weight: 800;
-    }
-
-    .nav-links a {
-      padding: 9px 12px;
-      border-radius: 999px;
-    }
-
-    .nav-links a:hover { background: #F3E8FF; color: var(--purple); }
+    .nav-links { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
     .btn {
+      min-height: 44px;
       justify-content: center;
       gap: 8px;
-      min-height: 46px;
-      padding: 11px 18px;
-      border: 0;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
       border-radius: 999px;
+      background: white;
+      color: var(--text);
       font-weight: 900;
       cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
-
-    .btn:hover { transform: translateY(-1px); }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(31,41,55,.09); }
     .btn-primary {
       color: white;
+      border-color: transparent;
       background: linear-gradient(135deg, var(--purple), var(--teal));
-      box-shadow: 0 16px 32px rgba(168, 85, 247, 0.24);
+      box-shadow: 0 18px 34px rgba(168,85,247,.24);
     }
-    .btn-light {
-      color: var(--text);
-      background: white;
+    .btn-teal { color: white; background: var(--teal); border-color: transparent; }
+    .btn-danger { color: white; background: var(--danger); border-color: transparent; }
+    .btn-light { background: rgba(255,255,255,.82); }
+    .btn:disabled { opacity: .62; cursor: not-allowed; transform: none; }
+
+    main { padding: 24px 0 58px; }
+    .hero, .panel, .auth-card {
       border: 1px solid var(--line);
-    }
-
-    main { padding-block: 24px 58px; }
-
-    .hero {
-      display: grid;
-      gap: 18px;
-      overflow: hidden;
-      padding: 24px;
       border-radius: 28px;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.96);
+      overflow: hidden;
+    }
+    .hero {
+      position: relative;
+      padding: 28px;
       color: white;
       background:
-        linear-gradient(135deg, rgba(31, 41, 55, 0.96), rgba(168, 85, 247, 0.94) 54%, rgba(20, 184, 166, 0.95)),
+        linear-gradient(135deg, rgba(31,41,55,.96), rgba(168,85,247,.92) 54%, rgba(20,184,166,.9)),
         url("https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=1200&q=80") center/cover;
-      box-shadow: var(--shadow);
-      position: relative;
     }
-
     .hero::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(31, 41, 55, .60), rgba(31, 41, 55, .15));
+      background: linear-gradient(90deg, rgba(31,41,55,.18), rgba(31,41,55,.48));
       pointer-events: none;
     }
-
     .hero > * { position: relative; z-index: 1; }
-    .eyebrow, .pill {
+    .eyebrow {
       width: fit-content;
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
+      padding: 8px 12px;
       border-radius: 999px;
+      background: rgba(255,255,255,.16);
       font-weight: 900;
     }
-    .eyebrow {
-      padding: 8px 12px;
-      background: rgba(255, 255, 255, .16);
-      border: 1px solid rgba(255, 255, 255, .25);
-    }
-    h1 {
-      margin: 0;
-      max-width: 760px;
-      font-size: clamp(2rem, 7vw, 4rem);
-      line-height: 1.16;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 720px;
-      color: rgba(255, 255, 255, .88);
-      font-weight: 800;
-    }
+    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 7vw, 4rem); line-height: 1.15; }
+    .hero p { max-width: 760px; margin: 0; color: rgba(255,255,255,.88); font-weight: 800; }
 
     .layout {
       display: grid;
       gap: 18px;
       margin-top: 18px;
     }
+    .panel, .auth-card { padding: 18px; }
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .panel h2, .auth-card h2 { margin: 0 0 6px; font-size: 1.35rem; line-height: 1.35; }
+    .panel p, .auth-card p { margin: 0; color: var(--muted); font-weight: 700; }
 
-    .panel {
-      padding: 18px;
+    .auth-grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 20px;
+      background: #F8FAFC;
       border: 1px solid var(--line);
-      border-radius: 24px;
-      background: rgba(255, 255, 255, .96);
-      box-shadow: var(--shadow);
     }
-
-    .panel h2 {
-      margin: 0 0 6px;
-      font-size: clamp(1.35rem, 5vw, 2rem);
-      line-height: 1.25;
+    .auth-tab {
+      border-radius: 15px;
+      border: 0;
+      padding: 11px;
+      background: transparent;
+      font-weight: 900;
+      cursor: pointer;
     }
-
-    .panel p {
-      margin: 0;
-      color: var(--muted);
-      font-weight: 800;
+    .auth-tab.active {
+      color: white;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 12px 26px rgba(20,184,166,.18);
     }
 
     .form-grid {
       display: grid;
-      gap: 14px;
-      margin-top: 16px;
+      gap: 13px;
     }
-
-    .field {
-      display: grid;
-      gap: 7px;
-    }
-
-    .field label {
-      font-weight: 900;
-      color: #344054;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
+    .field { display: grid; gap: 7px; }
+    .field label { font-size: .92rem; font-weight: 900; color: #344054; }
+    .field input, .field select, .field textarea {
       width: 100%;
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: 16px;
-      background: #fff;
       padding: 13px 14px;
+      background: white;
       color: var(--text);
       outline: none;
-      font-weight: 700;
+      font-weight: 800;
+    }
+    .field textarea { min-height: 124px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: rgba(168,85,247,.55);
+      box-shadow: 0 0 0 4px rgba(168,85,247,.12);
     }
 
-    .field textarea { min-height: 128px; resize: vertical; }
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      border-color: rgba(168, 85, 247, .55);
-      box-shadow: 0 0 0 4px rgba(168, 85, 247, .12);
+    .profile-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
     }
+    .profile-pill, .chip {
+      gap: 7px;
+      min-height: 36px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #F8FAFC;
+      color: #475467;
+      font-size: .9rem;
+      font-weight: 900;
+    }
+    .chip.code { color: #5B21B6; background: var(--soft-purple); border-color: #E9D5FF; }
 
+    .upload-panel {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px dashed rgba(168,85,247,.45);
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(168,85,247,.06), rgba(20,184,166,.06));
+    }
     .upload-row {
       display: grid;
       gap: 10px;
-      align-items: start;
-      padding: 12px;
-      border-radius: 18px;
-      background: #F8FAFC;
-      border: 1px dashed #CBD5E1;
     }
-
+    .upload-row input[type="file"] {
+      padding: 12px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    .upload-note { color: var(--muted); font-weight: 800; font-size: .9rem; }
     .image-preview {
       display: none;
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      max-height: 320px;
       object-fit: cover;
-      border-radius: 18px;
       border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #EAF8FF;
     }
-
     .gallery-preview {
       display: none;
-      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      margin-top: 10px;
     }
-
     .gallery-preview img {
       width: 100%;
       aspect-ratio: 1;
       object-fit: cover;
-      border-radius: 14px;
+      border-radius: 16px;
       border: 1px solid var(--line);
       background: #EAF8FF;
     }
 
-    .status {
-      display: none;
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 16px;
-      font-weight: 900;
-    }
-    .status.show { display: block; }
-    .status.ok { color: #05603A; background: #ECFDF3; }
-    .status.error { color: #B42318; background: #FEF3F2; }
-
-    .side-list {
-      display: grid;
-      gap: 12px;
-    }
-
+    .side-list { display: grid; gap: 12px; }
     .feature {
-      gap: 12px;
-      padding: 14px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 13px;
       border: 1px solid var(--line);
       border-radius: 20px;
-      background: white;
+      background: #FBFDFF;
     }
-
     .feature i {
-      width: 40px;
-      height: 40px;
-      padding: 9px;
+      width: 42px;
+      height: 42px;
+      padding: 10px;
       color: white;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--teal), var(--sky));
-      flex: 0 0 auto;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
     }
-
-    .feature b { display: block; line-height: 1.35; }
-    .feature span { color: var(--muted); font-size: .92rem; font-weight: 800; }
-
+    .feature b { display: block; font-weight: 900; }
+    .feature span { display: block; color: var(--muted); font-weight: 700; }
+    .status {
+      min-height: 26px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .status.ok { color: #047857; }
+    .status.error { color: #B42318; }
     .fine-print {
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 14px;
-      color: #475467;
       border-radius: 18px;
       background: #F8FAFC;
+      color: var(--muted);
       font-weight: 800;
+      font-size: .92rem;
     }
 
     @media (min-width: 760px) {
-      .nav-links { display: inline-flex; }
-      .layout { grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); align-items: start; }
       .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .wide { grid-column: 1 / -1; }
-      .upload-row { grid-template-columns: minmax(0, 1fr) auto; }
+      .auth-grid { grid-template-columns: .85fr 1.15fr; align-items: start; }
+      .upload-row { grid-template-columns: 1fr auto; align-items: center; }
+    }
+    @media (min-width: 1040px) {
+      .layout { grid-template-columns: minmax(0, 1.45fr) minmax(320px, .55fr); align-items: start; }
+      .panel, .auth-card { padding: 24px; }
     }
   </style>
 </head>
@@ -326,56 +322,107 @@
         <span class="brand-mark"><i data-lucide="baby"></i></span>
         <span>طفلي ماركت</span>
       </a>
-      <nav class="nav-links" aria-label="روابط سريعة">
-        <a href="index.html#products">المنتجات</a>
-        <a href="index.html#categories">التصنيفات</a>
-        <a href="merchant-dashboard.html">لوحة التاجر</a>
-        <a href="terms.html">الشروط</a>
+      <nav class="nav-links">
+        <a class="btn btn-light" href="merchant-dashboard.html"><i data-lucide="layout-dashboard"></i>لوحة التاجر</a>
+        <a class="btn btn-light" href="index.html"><i data-lucide="arrow-right"></i>الموقع</a>
+        <button class="btn btn-danger" id="logoutBtn" type="button" hidden><i data-lucide="log-out"></i>خروج</button>
       </nav>
-      <a class="btn btn-light" href="index.html"><i data-lucide="arrow-right"></i>رجوع للموقع</a>
     </div>
   </header>
 
   <main>
     <div class="container">
       <section class="hero">
-        <span class="eyebrow"><i data-lucide="store"></i>بوابة التجار التجريبية</span>
-        <h1>أرسل منتجك كمسودة، والإدارة تراجعه وتنشره</h1>
-        <p>املأ بيانات المحل والمنتج مرة واحدة. المنتج لن يظهر مباشرة في الموقع إلا بعد اعتماد الإدارة، وهذا يحافظ على جودة العرض وثقة الزوار.</p>
+        <span class="eyebrow"><i data-lucide="store"></i>بوابة التجار</span>
+        <h1>سجل دخولك وأضف منتجاتك للمراجعة</h1>
+        <p>كل منتج يذهب للإدارة كمسودة قبل النشر. بعد الاعتماد يظهر للزوار برسالة واتساب جاهزة فيها كود طفلي ماركت وكودك الخاص.</p>
       </section>
 
-      <div class="layout">
+      <section class="auth-card" id="authSection">
+        <div class="auth-grid">
+          <div>
+            <h2>دخول التاجر</h2>
+            <p>استخدم بريدك وكلمة المرور للوصول لإضافة المنتجات ولوحة المتابعة.</p>
+            <div class="auth-tabs">
+              <button class="auth-tab active" type="button" data-auth-tab="login">دخول</button>
+              <button class="auth-tab" type="button" data-auth-tab="register">تسجيل جديد</button>
+            </div>
+            <div class="fine-print">لو هذا أول دخول لك، اختر تسجيل جديد وأدخل بيانات المحل مرة واحدة.</div>
+          </div>
+
+          <div>
+            <form class="form-grid" id="loginForm" data-auth-panel="login">
+              <div class="field wide">
+                <label>البريد الإلكتروني</label>
+                <input name="email" type="email" autocomplete="email" required placeholder="merchant@example.com" />
+              </div>
+              <div class="field wide">
+                <label>كلمة المرور</label>
+                <input name="password" type="password" autocomplete="current-password" required placeholder="8 أحرف على الأقل" />
+              </div>
+              <button class="btn btn-primary wide" type="submit"><i data-lucide="log-in"></i>دخول للوحة التاجر</button>
+            </form>
+
+            <form class="form-grid" id="registerForm" data-auth-panel="register" hidden>
+              <div class="field">
+                <label>البريد الإلكتروني</label>
+                <input name="email" type="email" autocomplete="email" required placeholder="merchant@example.com" />
+              </div>
+              <div class="field">
+                <label>كلمة المرور</label>
+                <input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 أحرف على الأقل" />
+              </div>
+              <div class="field">
+                <label>اسم المحل</label>
+                <input name="store_name" required placeholder="مثال: بيبي ستور ليبيا" />
+              </div>
+              <div class="field">
+                <label>اسم المسؤول</label>
+                <input name="owner_name" placeholder="اختياري" />
+              </div>
+              <div class="field">
+                <label>المدينة</label>
+                <input name="city" required placeholder="طرابلس" />
+              </div>
+              <div class="field">
+                <label>رقم واتساب</label>
+                <input name="whatsapp_phone" required inputmode="tel" placeholder="2189XXXXXXXX" />
+              </div>
+              <div class="field wide">
+                <label>رابط صفحة فيسبوك أو إنستغرام</label>
+                <input name="facebook_page_url" type="url" placeholder="اختياري" />
+              </div>
+              <button class="btn btn-primary wide" type="submit"><i data-lucide="user-plus"></i>إنشاء حساب التاجر</button>
+            </form>
+            <div class="status" id="authStatus"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="layout" id="merchantApp" hidden>
         <section class="panel">
-          <h2>بيانات المنتج والمحل</h2>
-          <p>كل البيانات هنا مؤقتة للنسخة التجريبية، والزبائن يتواصلون معك مباشرة عبر واتساب.</p>
+          <div class="panel-head">
+            <div>
+              <h2 id="formTitle">بيانات المنتج</h2>
+              <p>الصورة الرئيسية أولاً، وبعدها الصور الإضافية اختيارية. كل الصور تحميل مباشر من الهاتف أو الكمبيوتر.</p>
+            </div>
+            <a class="btn btn-light" href="merchant-dashboard.html"><i data-lucide="package-search"></i>منتجاتي</a>
+          </div>
+
+          <div class="profile-strip" id="profileStrip"></div>
 
           <form class="form-grid" id="merchantForm">
             <input type="hidden" name="edit_product_id" />
             <input type="hidden" name="image_url" />
-            <div class="field">
-              <label>اسم المحل</label>
-              <input name="store_name" required placeholder="مثال: بيبي ستور ليبيا" />
-            </div>
-            <div class="field">
-              <label>اسم المسؤول</label>
-              <input name="owner_name" placeholder="اختياري" />
-            </div>
-            <div class="field">
-              <label>المدينة</label>
-              <input name="city" required placeholder="طرابلس" />
-            </div>
-            <div class="field">
-              <label>رقم واتساب</label>
-              <input name="whatsapp_phone" required inputmode="tel" placeholder="2189XXXXXXXX" />
-            </div>
-            <div class="field wide">
-              <label>رابط صفحة فيسبوك أو إنستغرام</label>
-              <input name="facebook_page_url" type="url" placeholder="https://facebook.com/..." />
-            </div>
+            <input type="hidden" name="extra_images" />
 
             <div class="field wide">
               <label>اسم المنتج</label>
               <input name="title" required placeholder="مثال: طقم مواليد قطني - 5 قطع" />
+            </div>
+            <div class="field">
+              <label>كود المنتج عندك</label>
+              <input name="merchant_code" placeholder="مثال: BB-102 أو رقم الرف" />
             </div>
             <div class="field">
               <label>السعر بالدينار الليبي</label>
@@ -392,6 +439,33 @@
                 <option>غير مصنف</option>
               </select>
             </div>
+            <div class="field">
+              <label>مدينة توفر المنتج</label>
+              <input name="city" required placeholder="طرابلس" />
+            </div>
+
+            <div class="field wide">
+              <label>الصورة الرئيسية للمنتج</label>
+              <div class="upload-panel">
+                <div class="upload-row">
+                  <input id="imageInput" type="file" accept="image/*" />
+                  <span class="upload-note">هذه هي الصورة التي تظهر أولاً في البطاقة وصفحة المنتج.</span>
+                </div>
+                <img class="image-preview" id="imagePreview" alt="معاينة الصورة الرئيسية" />
+              </div>
+            </div>
+
+            <div class="field wide">
+              <label>صور إضافية للمعرض</label>
+              <div class="upload-panel">
+                <div class="upload-row">
+                  <input id="extraImagesInput" type="file" accept="image/*" multiple />
+                  <span class="upload-note">اختياري. اختر حتى 6 صور إضافية لنفس المنتج.</span>
+                </div>
+                <div class="gallery-preview" id="extraImagesPreview"></div>
+              </div>
+            </div>
+
             <div class="field">
               <label>المقاسات</label>
               <input name="sizes" placeholder="0-3 أشهر، 3-6 أشهر" />
@@ -418,25 +492,10 @@
               <textarea name="description" placeholder="اكتب وصف مختصر: الخامة، العمر المناسب، المميزات..."></textarea>
             </div>
             <div class="field wide">
-              <label>صور إضافية للمعرض</label>
-              <input type="hidden" name="extra_images" />
-              <div class="upload-row">
-                <input id="extraImagesInput" type="file" accept="image/*" multiple />
-                <span>اختر صور إضافية من الهاتف/الكمبيوتر وسيتم رفعها مع المنتج.</span>
-              </div>
-              <div class="gallery-preview" id="extraImagesPreview"></div>
-            </div>
-            <div class="field wide">
               <label>نص منشور فيسبوك إن وجد</label>
-              <textarea name="facebook_text" placeholder="اختياري: الصق نص منشور فيسبوك هنا ليساعد الإدارة في المراجعة"></textarea>
+              <textarea name="facebook_text" placeholder="اختياري: الصق نص المنشور ليساعد الإدارة في المراجعة"></textarea>
             </div>
-            <div class="field wide">
-              <label>صورة المنتج</label>
-              <div class="upload-row">
-                <input id="imageInput" type="file" accept="image/*" />
-                <img class="image-preview" id="imagePreview" alt="معاينة الصورة" />
-              </div>
-            </div>
+
             <div class="wide">
               <button class="btn btn-primary" type="submit"><i data-lucide="send"></i>إرسال المنتج للمراجعة</button>
               <div class="status" id="formStatus"></div>
@@ -448,20 +507,20 @@
           <h2>شن يصير بعد الإرسال؟</h2>
           <div class="side-list">
             <div class="feature">
+              <i data-lucide="shield-check"></i>
+              <div><b>حساب تاجر محمي</b><span>المنتجات الجديدة والتعديلات تربط بحسابك فقط.</span></div>
+            </div>
+            <div class="feature">
+              <i data-lucide="scan-line"></i>
+              <div><b>كودك في رسالة واتساب</b><span>لو كتبت كود خاص، يظهر للزبون في الرسالة حتى تعرف المنتج بسرعة.</span></div>
+            </div>
+            <div class="feature">
               <i data-lucide="clipboard-check"></i>
-              <div><b>مراجعة سريعة</b><span>المنتج يدخل كمسودة في لوحة الإدارة.</span></div>
-            </div>
-            <div class="feature">
-              <i data-lucide="image"></i>
-              <div><b>تنسيق الصورة والوصف</b><span>نراجع الاسم والسعر والصورة قبل النشر.</span></div>
-            </div>
-            <div class="feature">
-              <i data-lucide="message-circle"></i>
-              <div><b>واتساب مباشر</b><span>كل استفسار يفتح على رقم المحل برسالة جاهزة.</span></div>
+              <div><b>مراجعة قبل النشر</b><span>الإدارة تعتمد المنتج قبل ظهوره في الموقع.</span></div>
             </div>
           </div>
           <div class="fine-print">
-            طفلي ماركت يعرض المنتجات فقط في هذه المرحلة. الدفع، التوصيل، والاستلام يتم الاتفاق عليها مباشرة بين الزبون والتاجر.
+            الدفع والتوصيل خارج طفلي ماركت حالياً. المنصة تعرض المنتجات وتربط الزبون بالتاجر عبر واتساب.
           </div>
         </aside>
       </div>
@@ -469,22 +528,58 @@
   </main>
 
   <script>
+    const AUTH_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-auth";
+    const DASHBOARD_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-dashboard";
     const SUBMIT_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-submit";
-    const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    const SESSION_STORAGE = "tafli_merchant_session";
     const MAX_IMAGE_SIDE = 1400;
     const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
-    const form = document.getElementById("merchantForm");
+
+    const authSection = document.getElementById("authSection");
+    const merchantApp = document.getElementById("merchantApp");
+    const authStatus = document.getElementById("authStatus");
+    const formStatus = document.getElementById("formStatus");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const authTabs = document.querySelectorAll("[data-auth-tab]");
+    const authPanels = document.querySelectorAll("[data-auth-panel]");
+    const merchantForm = document.getElementById("merchantForm");
     const imageInput = document.getElementById("imageInput");
     const extraImagesInput = document.getElementById("extraImagesInput");
     const imagePreview = document.getElementById("imagePreview");
     const extraImagesPreview = document.getElementById("extraImagesPreview");
-    const formStatus = document.getElementById("formStatus");
+    const profileStrip = document.getElementById("profileStrip");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const formTitle = document.getElementById("formTitle");
+
+    let session = readSession();
+    let merchant = null;
     let preparedImage = null;
     let preparedExtraImages = [];
 
-    function setStatus(message, type = "") {
+    function readSession() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(SESSION_STORAGE) || "null");
+        return parsed?.access_token ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveSession(nextSession) {
+      session = nextSession?.access_token ? nextSession : null;
+      if (session) localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_STORAGE);
+    }
+
+    function setAuthStatus(message, type = "") {
+      authStatus.textContent = message;
+      authStatus.className = `status ${type}`.trim();
+    }
+
+    function setFormStatus(message, type = "") {
       formStatus.textContent = message;
-      formStatus.className = `status show ${type}`.trim();
+      formStatus.className = `status ${type}`.trim();
     }
 
     function normalizePhone(value) {
@@ -496,13 +591,14 @@
     }
 
     function parseDescriptionAttributes(description) {
-      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [], merchantCode: "" };
       String(description || "").split(/\r?\n/).forEach(line => {
         const trimmed = line.trim();
-        const match = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
+        const match = trimmed.match(/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
         if (!match) return;
         const label = match[1];
         const value = match[2];
+        if (label.includes("كود")) attributes.merchantCode = value.trim();
         if (label.includes("مقاس")) attributes.sizes = splitList(value);
         if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
         if (label === "التوفر") attributes.stockStatus = value.trim();
@@ -514,53 +610,90 @@
     function stripDescriptionAttributes(description) {
       return String(description || "")
         .split(/\r?\n/)
-        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
+        .filter(line => !/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
         .join("\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
     }
 
     function fillField(name, value) {
-      if (form.elements[name]) form.elements[name].value = value ?? "";
+      if (merchantForm.elements[name]) merchantForm.elements[name].value = value ?? "";
     }
 
-    async function loadProductForEdit() {
-      const editId = new URLSearchParams(location.search).get("edit");
-      if (!editId) return;
+    function switchAuthTab(tabName) {
+      authTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.authTab === tabName));
+      authPanels.forEach(panel => { panel.hidden = panel.dataset.authPanel !== tabName; });
+      setAuthStatus("");
+    }
 
-      try {
-        setStatus("جاري تحميل المنتج للتعديل...");
-        const response = await fetch(`${PRODUCTS_URL}?id=${encodeURIComponent(editId)}&limit=1`);
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(payload.error || "تعذر تحميل المنتج.");
-        const product = Array.isArray(payload.products) ? payload.products[0] : null;
-        if (!product) throw new Error("المنتج غير موجود أو غير منشور.");
+    function requireSession() {
+      if (!session?.access_token) throw new Error("سجل الدخول كتاجر أولاً.");
+      return session.access_token;
+    }
 
-        const attributes = parseDescriptionAttributes(product.description || "");
-        fillField("edit_product_id", product.id);
-        fillField("store_name", product.store_name);
-        fillField("city", product.city);
-        fillField("whatsapp_phone", product.whatsapp_phone);
-        fillField("title", product.title);
-        fillField("price_lyd", product.price_lyd);
-        fillField("category", product.category);
-        fillField("sizes", attributes.sizes.join("، "));
-        fillField("colors", attributes.colors.join("، "));
-        fillField("stock_status", attributes.stockStatus || "متوفر");
-        fillField("description", stripDescriptionAttributes(product.description || ""));
-        fillField("extra_images", attributes.extraImages.join("\n"));
-        fillField("image_url", product.image_url || "");
-        if (product.image_url) {
-          imagePreview.src = product.image_url;
-          imagePreview.style.display = "block";
-        }
-        renderExtraImagesPreview(attributes.extraImages);
-        setStatus("عدّل البيانات ثم أرسلها للمراجعة. الإدارة ستعتمد التغيير قبل ظهوره.", "ok");
-        form.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال التعديل للمراجعة';
-        lucide.createIcons();
-      } catch (error) {
-        setStatus(error.message, "error");
-      }
+    async function authRequest(path, data) {
+      const response = await fetch(`${AUTH_URL}/${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "تعذر إكمال العملية.");
+      return payload;
+    }
+
+    async function dashboardRequest(path = "", options = {}) {
+      const response = await fetch(`${DASHBOARD_URL}${path}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${requireSession()}`,
+          ...(options.headers || {}),
+        },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "تعذر تحميل بيانات التاجر.");
+      return payload;
+    }
+
+    function showMerchantApp(profile) {
+      merchant = profile;
+      authSection.hidden = true;
+      merchantApp.hidden = false;
+      logoutBtn.hidden = false;
+      profileStrip.innerHTML = `
+        <span class="profile-pill"><i data-lucide="store"></i>${escapeHtml(merchant.store_name || "محل")}</span>
+        <span class="profile-pill"><i data-lucide="map-pin"></i>${escapeHtml(merchant.city || "غير محدد")}</span>
+        <span class="profile-pill"><i data-lucide="message-circle"></i>${escapeHtml(merchant.whatsapp_phone || "")}</span>
+      `;
+      fillField("city", merchant.city || "");
+      lucide.createIcons();
+    }
+
+    function showAuth() {
+      authSection.hidden = false;
+      merchantApp.hidden = true;
+      logoutBtn.hidden = true;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function resetImageState() {
+      preparedImage = null;
+      preparedExtraImages = [];
+      imageInput.value = "";
+      extraImagesInput.value = "";
+      imagePreview.removeAttribute("src");
+      imagePreview.style.display = "none";
+      renderExtraImagesPreview([]);
     }
 
     async function readAsDataUrl(file) {
@@ -610,6 +743,117 @@
       };
     }
 
+    function renderExtraImagesPreview(images) {
+      const list = (images || []).filter(Boolean);
+      extraImagesPreview.innerHTML = list.map((src, index) => `<img src="${escapeHtml(src)}" alt="صورة إضافية ${index + 1}" />`).join("");
+      extraImagesPreview.style.display = list.length ? "grid" : "none";
+    }
+
+    async function loadProductForEdit() {
+      const editId = new URLSearchParams(location.search).get("edit");
+      if (!editId || !session?.access_token) return;
+
+      try {
+        setFormStatus("جاري تحميل المنتج للتعديل...");
+        const payload = await dashboardRequest("");
+        const product = (payload.products || []).find(item => item.id === editId);
+        if (!product) throw new Error("المنتج غير موجود في حسابك أو لا يمكن تعديله.");
+
+        const attributes = parseDescriptionAttributes(product.description || "");
+        fillField("edit_product_id", product.id);
+        fillField("title", product.title);
+        fillField("merchant_code", attributes.merchantCode || product.merchant_code || "");
+        fillField("price_lyd", product.price_lyd);
+        fillField("category", product.category);
+        fillField("city", product.city || merchant?.city || "");
+        fillField("sizes", product.sizes?.length ? product.sizes.join("، ") : attributes.sizes.join("، "));
+        fillField("colors", product.colors?.length ? product.colors.join("، ") : attributes.colors.join("، "));
+        fillField("stock_status", product.stock_status || attributes.stockStatus || "متوفر");
+        fillField("description", stripDescriptionAttributes(product.description || ""));
+        fillField("extra_images", attributes.extraImages.join("\n"));
+        fillField("image_url", product.image_url || "");
+        if (product.image_url) {
+          imagePreview.src = product.image_url;
+          imagePreview.style.display = "block";
+        }
+        renderExtraImagesPreview(attributes.extraImages);
+        formTitle.textContent = "طلب تعديل منتج منشور";
+        merchantForm.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال التعديل للمراجعة';
+        setFormStatus("عدّل البيانات ثم أرسلها للمراجعة. التغيير يظهر بعد اعتماد الإدارة.", "ok");
+        lucide.createIcons();
+      } catch (error) {
+        setFormStatus(error.message, "error");
+      }
+    }
+
+    async function boot() {
+      if (!session?.access_token) {
+        showAuth();
+        return;
+      }
+
+      try {
+        const payload = await dashboardRequest("");
+        showMerchantApp(payload.merchant);
+        await loadProductForEdit();
+      } catch (error) {
+        saveSession(null);
+        showAuth();
+        setAuthStatus(error.message, "error");
+      }
+    }
+
+    authTabs.forEach(tab => {
+      tab.addEventListener("click", () => switchAuthTab(tab.dataset.authTab));
+    });
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = loginForm.querySelector("button[type='submit']");
+      const data = Object.fromEntries(new FormData(loginForm).entries());
+      try {
+        button.disabled = true;
+        setAuthStatus("جاري تسجيل الدخول...");
+        const payload = await authRequest("login", data);
+        saveSession(payload.session);
+        showMerchantApp(payload.merchant);
+        setAuthStatus("");
+        await loadProductForEdit();
+      } catch (error) {
+        setAuthStatus(error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = registerForm.querySelector("button[type='submit']");
+      const data = Object.fromEntries(new FormData(registerForm).entries());
+      data.whatsapp_phone = normalizePhone(data.whatsapp_phone);
+      try {
+        button.disabled = true;
+        setAuthStatus("جاري إنشاء حساب التاجر...");
+        const payload = await authRequest("register", data);
+        saveSession(payload.session);
+        showMerchantApp(payload.merchant);
+        setAuthStatus("");
+      } catch (error) {
+        setAuthStatus(error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      saveSession(null);
+      merchant = null;
+      merchantForm.reset();
+      resetImageState();
+      showAuth();
+      setAuthStatus("تم تسجيل الخروج.", "ok");
+    });
+
     imageInput.addEventListener("change", async () => {
       try {
         const file = imageInput.files?.[0];
@@ -617,14 +861,12 @@
         if (preparedImage) {
           imagePreview.src = preparedImage.preview;
           imagePreview.style.display = "block";
-        } else {
-          imagePreview.removeAttribute("src");
-          imagePreview.style.display = "none";
+          setFormStatus("تم تجهيز الصورة الرئيسية، سيتم رفعها عند الإرسال.", "ok");
         }
       } catch (error) {
         preparedImage = null;
         imageInput.value = "";
-        setStatus(error.message, "error");
+        setFormStatus(error.message, "error");
       }
     });
 
@@ -632,37 +874,33 @@
       try {
         const files = Array.from(extraImagesInput.files || []);
         preparedExtraImages = [];
-        if (!files.length) return;
-
-        setStatus(`جاري تجهيز ${files.length} صورة إضافية...`);
+        if (!files.length) {
+          renderExtraImagesPreview([]);
+          return;
+        }
+        setFormStatus(`جاري تجهيز ${files.length} صورة إضافية...`);
         for (const file of files.slice(0, 6)) {
           preparedExtraImages.push(await prepareImage(file));
         }
         renderExtraImagesPreview(preparedExtraImages.map(image => image.preview));
-        setStatus(`تم تجهيز ${preparedExtraImages.length} صورة إضافية، سيتم رفعها عند الإرسال.`, "ok");
+        setFormStatus(`تم تجهيز ${preparedExtraImages.length} صورة إضافية.`, "ok");
       } catch (error) {
         preparedExtraImages = [];
         extraImagesInput.value = "";
         renderExtraImagesPreview([]);
-        setStatus(error.message, "error");
+        setFormStatus(error.message, "error");
       }
     });
 
-    function renderExtraImagesPreview(images) {
-      const list = (images || []).filter(Boolean);
-      extraImagesPreview.innerHTML = list.map((src, index) => `<img src="${src}" alt="صورة إضافية ${index + 1}" />`).join("");
-      extraImagesPreview.style.display = list.length ? "grid" : "none";
-    }
-
-    form.addEventListener("submit", async (event) => {
+    merchantForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const button = form.querySelector("button[type='submit']");
-      const data = Object.fromEntries(new FormData(form).entries());
-      data.whatsapp_phone = normalizePhone(data.whatsapp_phone);
+      const button = merchantForm.querySelector("button[type='submit']");
+      const data = Object.fromEntries(new FormData(merchantForm).entries());
+      const isEdit = Boolean(data.edit_product_id);
       data.price_lyd = data.price_lyd ? Number(data.price_lyd) : null;
 
-      if (!/^218\d{8,10}$/.test(data.whatsapp_phone)) {
-        setStatus("رقم واتساب لازم يبدأ بـ 218. مثال: 218912345678", "error");
+      if (!isEdit && !preparedImage && !data.image_url) {
+        setFormStatus("الصورة الرئيسية مطلوبة للمنتج الجديد.", "error");
         return;
       }
 
@@ -672,7 +910,7 @@
         data.image_data = preparedImage.image_data;
       }
       if (preparedExtraImages.length) {
-        data.extra_image_files = preparedExtraImages.map((image) => ({
+        data.extra_image_files = preparedExtraImages.map(image => ({
           image_file_name: image.image_file_name,
           image_mime_type: image.image_mime_type,
           image_data: image.image_data,
@@ -681,30 +919,34 @@
 
       try {
         button.disabled = true;
-        setStatus("جاري إرسال المنتج للمراجعة...");
+        setFormStatus("جاري إرسال المنتج للمراجعة...");
         const response = await fetch(SUBMIT_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${requireSession()}`,
+          },
           body: JSON.stringify(data),
         });
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "تعذر إرسال المنتج.");
 
-        form.reset();
-        preparedImage = null;
-        preparedExtraImages = [];
-        renderExtraImagesPreview([]);
-        imagePreview.removeAttribute("src");
-        imagePreview.style.display = "none";
-        setStatus(payload.message || "تم إرسال المنتج للمراجعة.", "ok");
+        merchantForm.reset();
+        fillField("city", merchant?.city || "");
+        resetImageState();
+        formTitle.textContent = "بيانات المنتج";
+        merchantForm.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال المنتج للمراجعة';
+        history.replaceState(null, "", "merchant.html");
+        setFormStatus(payload.message || "تم إرسال المنتج للمراجعة.", "ok");
+        lucide.createIcons();
       } catch (error) {
-        setStatus(error.message, "error");
+        setFormStatus(error.message, "error");
       } finally {
         button.disabled = false;
       }
     });
 
-    loadProductForEdit();
+    boot();
     lucide.createIcons();
   </script>
 </body>

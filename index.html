@@ -2198,12 +2198,13 @@
     }
 
     function parseDescriptionAttributes(description) {
-      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [], merchantCode: "" };
       String(description || "").split(/\r?\n/).forEach(line => {
         const trimmed = line.trim();
-        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/) || [];
+        const [, label, value] = trimmed.match(/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/) || [];
         if (!label || !value) return;
 
+        if (label.includes("كود")) attributes.merchantCode = value.trim();
         if (label.includes("مقاس")) attributes.sizes = splitList(value);
         if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
         if (label === "التوفر") attributes.stockStatus = value.trim();
@@ -2215,7 +2216,7 @@
     function stripDescriptionAttributes(description) {
       return String(description || "")
         .split(/\r?\n/)
-        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
+        .filter(line => !/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
         .join("\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
@@ -2268,6 +2269,7 @@
         availability: product.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
         whatsapp: product.whatsapp_phone || "218912345678",
         sourceUrl: product.source_url || "",
+        merchantCode: attributes.merchantCode || product.merchant_code || "",
         code: productCode({ id: productId, name: baseProduct.name })
       };
     }
@@ -2277,6 +2279,7 @@
       const code = product.code || productCode(product);
       const details = [
         `كود المنتج: ${code}`,
+        product.merchantCode ? `كود التاجر: ${product.merchantCode}` : "",
         `الاسم: ${product.name}`,
         options.size ? `المقاس: ${options.size}` : "",
         options.color ? `اللون: ${options.color}` : "",
@@ -2296,6 +2299,7 @@
       const badgeClass = escapeHtml(product.badgeClass);
       const image = safeImage(product.image);
       const code = escapeHtml(product.code || productCode(product));
+      const merchantCode = escapeHtml(product.merchantCode || "");
       const sizes = splitList(product.sizes);
       const colors = splitList(product.colors);
       const availability = escapeHtml(product.availability || "حسب تأكيد التاجر");
@@ -2303,6 +2307,7 @@
       const storeUrl = product.store ? `store.html?store=${encodeURIComponent(product.store)}` : "#products";
       const tags = [
         `<span class="mini-chip product-code"><i data-lucide="scan-line"></i>${code}</span>`,
+        merchantCode ? `<span class="mini-chip"><i data-lucide="barcode"></i>${merchantCode}</span>` : "",
         sizes.length ? `<span class="mini-chip"><i data-lucide="ruler"></i>${escapeHtml(sizes[0])}${sizes.length > 1 ? ` +${sizes.length - 1}` : ""}</span>` : "",
         colors.length ? `<span class="mini-chip"><i data-lucide="palette"></i>${escapeHtml(colors[0])}${colors.length > 1 ? ` +${colors.length - 1}` : ""}</span>` : "",
         `<span class="mini-chip"><i data-lucide="check-circle-2"></i>${availability}</span>`
@@ -2435,6 +2440,7 @@
       const availability = escapeHtml(selectedProduct.availability || "حسب تأكيد التاجر");
       modalSummary.innerHTML = `
         <span class="meta-line"><i data-lucide="scan-line"></i>كود المنتج: ${escapeHtml(selectedProduct.code || productCode(selectedProduct))}</span>
+        ${selectedProduct.merchantCode ? `<span class="meta-line"><i data-lucide="barcode"></i>كود التاجر: ${escapeHtml(selectedProduct.merchantCode)}</span>` : ""}
         <span class="meta-line"><i data-lucide="ruler"></i>${sizeLine}</span>
         <span class="meta-line"><i data-lucide="palette"></i>${colorLine}</span>
         <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${availability}</span>

@@ -15,7 +15,9 @@ const ALLOWED_IMAGE_TYPES: Record<string, string> = {
   "image/webp": "webp",
 };
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,8 +29,8 @@ Deno.serve(async (req) => {
       return json({ error: "Method not allowed" }, 405);
     }
 
+    const merchant = await requireMerchant(req);
     const payload = await req.json();
-    const merchant = await getOrCreateMerchant(payload);
     const imageUrl = await resolveImageUrl(payload);
     const extraImageUrls = await resolveExtraImageUrls(payload);
     const draft = await createDraft(payload, merchant, imageUrl, extraImageUrls);
@@ -39,38 +41,36 @@ Deno.serve(async (req) => {
       message: "تم إرسال المنتج للمراجعة. سيظهر في الموقع بعد اعتماد الإدارة.",
     });
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unknown error" }, 500);
+    const status = error instanceof HttpError ? error.status : 500;
+    return json({ error: error instanceof Error ? error.message : "Unknown error" }, status);
   }
 });
 
-async function getOrCreateMerchant(payload: Record<string, unknown>): Promise<any> {
-  const merchantInfo = {
-    store_name: requiredString(payload.store_name, "اسم المحل مطلوب."),
-    owner_name: cleanString(payload.owner_name, ""),
-    city: requiredString(payload.city, "المدينة مطلوبة."),
-    whatsapp_phone: normalizePhone(requiredString(payload.whatsapp_phone, "رقم واتساب مطلوب.")),
-    facebook_page_url: cleanString(payload.facebook_page_url, ""),
-    status: "pending",
-  };
+async function requireMerchant(req: Request): Promise<any> {
+  const token = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+  if (!token) {
+    throw new HttpError("سجل الدخول كتاجر قبل إرسال المنتج.", 401);
+  }
 
-  const { data: existing, error: lookupError } = await supabase
+  const { data: userData, error: userError } = await supabase.auth.getUser(token);
+  if (userError || !userData.user) {
+    throw new HttpError("جلسة التاجر غير صالحة. سجل الدخول من جديد.", 401);
+  }
+
+  const merchantId = cleanString(userData.user.user_metadata?.merchant_id, "");
+  if (!merchantId) {
+    throw new HttpError("هذا الحساب غير مربوط بملف تاجر.", 403);
+  }
+
+  const { data: merchant, error } = await supabase
     .from("merchants")
     .select("*")
-    .eq("store_name", merchantInfo.store_name)
-    .eq("whatsapp_phone", merchantInfo.whatsapp_phone)
+    .eq("id", merchantId)
     .maybeSingle();
 
-  if (lookupError) throw lookupError;
-  if (existing) return existing;
-
-  const { data, error } = await supabase
-    .from("merchants")
-    .insert(merchantInfo)
-    .select()
-    .single();
-
   if (error) throw error;
-  return data;
+  if (!merchant) throw new HttpError("تعذر العثور على بيانات التاجر.", 404);
+  return merchant;
 }
 
 async function createDraft(
@@ -81,11 +81,16 @@ async function createDraft(
 ): Promise<any> {
   const title = requiredString(payload.title, "اسم المنتج مطلوب.");
   const editProductId = cleanString(payload.edit_product_id, "");
+  if (editProductId) {
+    await assertProductBelongsToMerchant(editProductId, merchant.id);
+  }
+
   const description = buildProductDescription(
     cleanString(payload.description, "") || cleanString(payload.facebook_text, ""),
     payload.sizes,
     payload.colors,
     payload.stock_status,
+    payload.merchant_code,
     mergeExtraImages(payload.extra_images, extraImageUrls)
   );
   const sourceUrl = cleanString(payload.source_url, "") || cleanString(payload.facebook_page_url, "");
@@ -100,12 +105,13 @@ async function createDraft(
     price_lyd: normalizePrice(payload.price_lyd),
     city: cleanString(payload.city, merchant.city),
     category: cleanString(payload.category, "غير مصنف") || "غير مصنف",
-    store_name: cleanString(payload.store_name, merchant.store_name),
-    whatsapp_phone: cleanString(payload.whatsapp_phone, merchant.whatsapp_phone),
+    store_name: merchant.store_name,
+    whatsapp_phone: merchant.whatsapp_phone,
     image_url: imageUrl || cleanString(payload.image_url, ""),
     raw_payload: {
       source: "public merchant form",
       edit_product_id: editProductId,
+      merchant_code: cleanString(payload.merchant_code, ""),
       facebook_text: cleanString(payload.facebook_text, ""),
     },
     status: "pending_review",
@@ -119,6 +125,18 @@ async function createDraft(
 
   if (error) throw error;
   return data;
+}
+
+async function assertProductBelongsToMerchant(productId: string, merchantId: string): Promise<void> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,merchant_id")
+    .eq("id", productId)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) throw new HttpError("المنتج المطلوب تعديله غير موجود.", 404);
+  if (data.merchant_id !== merchantId) throw new HttpError("لا يمكنك تعديل منتج لا يتبع حسابك.", 403);
 }
 
 async function resolveImageUrl(payload: Record<string, unknown>): Promise<string | null> {
@@ -191,15 +209,18 @@ function buildProductDescription(
   sizesValue: unknown,
   colorsValue: unknown,
   stockStatusValue: unknown,
+  merchantCodeValue: unknown,
   extraImagesValue: unknown
 ): string | null {
   const base = cleanString(value, "") || "";
   const sizes = splitList(sizesValue);
   const colors = splitList(colorsValue);
   const stockStatus = cleanString(stockStatusValue, "");
+  const merchantCode = cleanString(merchantCodeValue, "");
   const extraImages = splitList(extraImagesValue).filter((item) => /^https?:\/\//i.test(item));
   const lines = [base];
 
+  if (merchantCode) lines.push(`كود التاجر: ${merchantCode}`);
   if (sizes.length) lines.push(`المقاسات المتوفرة: ${sizes.join("، ")}`);
   if (colors.length) lines.push(`الألوان: ${colors.join("، ")}`);
   if (stockStatus) lines.push(`التوفر: ${stockStatus}`);
@@ -219,14 +240,6 @@ function requiredString(value: unknown, message: string): string {
   const resolved = cleanString(value, "");
   if (!resolved) throw new Error(message);
   return resolved;
-}
-
-function normalizePhone(value: string): string {
-  const phone = value.replace(/[^\d+]/g, "").replace(/^\+/, "");
-  if (!/^218\d{8,10}$/.test(phone)) {
-    throw new Error("رقم واتساب لازم يبدأ بـ 218 ويكون بصيغة ليبية صحيحة.");
-  }
-  return phone;
 }
 
 function normalizePrice(value: unknown): number | null {
@@ -295,4 +308,13 @@ function json(payload: unknown, status = 200): Response {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
+}
+
+class HttpError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
 }
