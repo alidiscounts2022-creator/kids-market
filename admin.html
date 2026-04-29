@@ -454,6 +454,86 @@
         </form>
       </section>
 
+      <section class="config-card manual-card" aria-label="استيراد منشور فيسبوك">
+        <div class="panel-head wide">
+          <h2>استيراد منشور فيسبوك كنص</h2>
+          <p>الصق نص المنشور ورابطه، وسنحوله لمسودة منتج بانتظار المراجعة بدل الإدخال من الصفر.</p>
+        </div>
+
+        <form class="manual-form wide" id="facebookDraftForm">
+          <div class="field">
+            <label>اسم المحل</label>
+            <input name="store_name" required placeholder="اسم المحل" />
+          </div>
+          <div class="field">
+            <label>المدينة</label>
+            <input name="city" required placeholder="طرابلس" />
+          </div>
+          <div class="field">
+            <label>واتساب التاجر</label>
+            <input name="whatsapp_phone" required placeholder="2189XXXXXXXX" />
+          </div>
+          <div class="field">
+            <label>رابط المنشور</label>
+            <input name="source_url" type="url" placeholder="https://facebook.com/..." />
+          </div>
+          <div class="field">
+            <label>اسم المنتج إن رغبت</label>
+            <input name="title" placeholder="اتركه فارغاً ليتم تخمينه من النص" />
+          </div>
+          <div class="field">
+            <label>السعر إن رغبت</label>
+            <input name="price_lyd" type="number" step="0.01" min="0" placeholder="يتم تخمينه من النص إن وجد" />
+          </div>
+          <div class="field">
+            <label>التصنيف</label>
+            <select name="category">
+              <option value="">تخمين تلقائي</option>
+              <option>مواليد</option>
+              <option>ملابس أطفال</option>
+              <option>ألعاب</option>
+              <option>أحذية</option>
+              <option>عربات وكراسي</option>
+              <option>غير مصنف</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>رابط الصورة</label>
+            <input name="image_url" type="url" placeholder="https://..." />
+            <div class="upload-tools">
+              <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
+              <span class="upload-note">أو ارفع صورة المنتج من الجهاز، وسيتم استخدامها في المسودة.</span>
+              <img class="image-preview" data-image-preview alt="معاينة الصورة" />
+            </div>
+          </div>
+          <div class="field">
+            <label>المقاسات</label>
+            <input name="sizes" placeholder="اختياري" />
+          </div>
+          <div class="field">
+            <label>الألوان</label>
+            <input name="colors" placeholder="اختياري" />
+          </div>
+          <div class="field">
+            <label>حالة التوفر</label>
+            <select name="stock_status">
+              <option>متوفر</option>
+              <option>كمية محدودة</option>
+              <option>حسب تأكيد التاجر</option>
+              <option>نفد مؤقتاً</option>
+            </select>
+          </div>
+          <div class="field wide">
+            <label>نص منشور فيسبوك</label>
+            <textarea name="facebook_text" required placeholder="الصق النص الكامل للمنشور هنا..."></textarea>
+          </div>
+          <div class="actions wide">
+            <button class="btn btn-primary" type="submit"><i data-lucide="file-plus-2"></i>إنشاء مسودة من فيسبوك</button>
+            <button class="btn btn-light" type="reset"><i data-lucide="eraser"></i>مسح الحقول</button>
+          </div>
+        </form>
+      </section>
+
       <div class="toolbar">
         <div>
           <h2>المسودات بانتظار المراجعة</h2>
@@ -472,6 +552,38 @@
         </div>
         <button class="btn btn-teal" id="refreshProductsBtn" type="button"><i data-lucide="package-search"></i>تحديث المنتجات</button>
       </div>
+
+      <section class="config-card" aria-label="فلاتر المنتجات المنشورة">
+        <div class="field">
+          <label for="productSearch">بحث داخل المنتجات</label>
+          <input id="productSearch" type="search" placeholder="اسم المنتج أو المحل أو المدينة" />
+        </div>
+        <div class="field">
+          <label for="productStatusFilter">الحالة</label>
+          <select id="productStatusFilter">
+            <option value="all">كل الحالات</option>
+            <option value="published">منشور</option>
+            <option value="hidden">مخفي</option>
+            <option value="sold">مباع</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="productCategoryFilter">التصنيف</label>
+          <select id="productCategoryFilter">
+            <option value="all">كل التصنيفات</option>
+            <option>مواليد</option>
+            <option>ملابس أطفال</option>
+            <option>ألعاب</option>
+            <option>أحذية</option>
+            <option>عربات وكراسي</option>
+            <option>غير مصنف</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="productCityFilter">المدينة</label>
+          <input id="productCityFilter" placeholder="كل المدن" />
+        </div>
+      </section>
 
       <section class="drafts" id="publishedProducts"></section>
     </div>
@@ -668,6 +780,11 @@
     const refreshBtn = document.getElementById("refreshBtn");
     const refreshProductsBtn = document.getElementById("refreshProductsBtn");
     const manualProductForm = document.getElementById("manualProductForm");
+    const facebookDraftForm = document.getElementById("facebookDraftForm");
+    const productSearch = document.getElementById("productSearch");
+    const productStatusFilter = document.getElementById("productStatusFilter");
+    const productCategoryFilter = document.getElementById("productCategoryFilter");
+    const productCityFilter = document.getElementById("productCityFilter");
     const statusEl = document.getElementById("status");
     const productsStatusEl = document.getElementById("productsStatus");
     const statsStrip = document.getElementById("statsStrip");
@@ -675,6 +792,7 @@
     const publishedProductsEl = document.getElementById("publishedProducts");
     const template = document.getElementById("draftTemplate");
     const productTemplate = document.getElementById("productTemplate");
+    let allPublishedProducts = [];
 
     function getConfig() {
       return {
@@ -714,6 +832,10 @@
 
       statsStrip.innerHTML = `
         <span class="stat-chip">منشور: <strong>${Number(stats.published_products || 0)}</strong></span>
+        <span class="stat-chip">مخفي: <strong>${Number(stats.hidden_products || 0)}</strong></span>
+        <span class="stat-chip">مباع: <strong>${Number(stats.sold_products || 0)}</strong></span>
+        <span class="stat-chip">كل المنتجات: <strong>${Number(stats.all_products || 0)}</strong></span>
+        <span class="stat-chip">التجار: <strong>${Number(stats.merchants || 0)}</strong></span>
         <span class="stat-chip">بانتظار المراجعة: <strong>${Number(stats.pending_drafts || 0)}</strong></span>
         <span class="stat-chip">معتمد: <strong>${Number(stats.approved_drafts || 0)}</strong></span>
         ${latest}
@@ -884,11 +1006,40 @@
         setProductsStatus("جاري جلب المنتجات المنشورة...");
         publishedProductsEl.innerHTML = "";
         const payload = await api("/products");
-        renderPublishedProducts(payload.products || []);
-        setProductsStatus(`تم جلب ${payload.products?.length || 0} منتج.`, "ok");
+        allPublishedProducts = payload.products || [];
+        renderPublishedProducts(filterPublishedProducts());
+        setProductsStatus(`تم جلب ${allPublishedProducts.length} منتج.`, "ok");
       } catch (error) {
         setProductsStatus(error.message, "error");
       }
+    }
+
+    function filterPublishedProducts() {
+      const query = (productSearch?.value || "").trim().toLowerCase();
+      const status = productStatusFilter?.value || "all";
+      const category = productCategoryFilter?.value || "all";
+      const city = (productCityFilter?.value || "").trim().toLowerCase();
+
+      return allPublishedProducts.filter(product => {
+        const haystack = [
+          product.title,
+          product.store_name,
+          product.city,
+          product.category,
+          product.whatsapp_phone,
+        ].join(" ").toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const matchesStatus = status === "all" || product.status === status;
+        const matchesCategory = category === "all" || product.category === category;
+        const matchesCity = !city || String(product.city || "").toLowerCase().includes(city);
+        return matchesQuery && matchesStatus && matchesCategory && matchesCity;
+      });
+    }
+
+    function applyProductFilters() {
+      const filtered = filterPublishedProducts();
+      renderPublishedProducts(filtered);
+      setProductsStatus(`عرض ${filtered.length} من ${allPublishedProducts.length} منتج.`, "ok");
     }
 
     function renderDrafts(drafts) {
@@ -1108,6 +1259,23 @@
       }
     }
 
+    async function createFacebookDraft(form) {
+      try {
+        saveCurrentConfig();
+        setStatus("جاري إنشاء مسودة من منشور فيسبوك...");
+        await api("/facebook-draft", {
+          method: "POST",
+          body: JSON.stringify(formData(form)),
+        });
+        form.reset();
+        updateImagePreview(form, "");
+        setStatus("تم إنشاء مسودة من منشور فيسبوك. راجعها في قائمة المسودات.", "ok");
+        await loadDrafts();
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    }
+
     async function updatePublishedProduct(form, card) {
       try {
         setProductsStatus("جاري حفظ تعديل المنتج...");
@@ -1182,6 +1350,17 @@
     });
     manualProductForm.addEventListener("reset", () => {
       setTimeout(() => updateImagePreview(manualProductForm, ""), 0);
+    });
+    facebookDraftForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await createFacebookDraft(facebookDraftForm);
+    });
+    facebookDraftForm.addEventListener("reset", () => {
+      setTimeout(() => updateImagePreview(facebookDraftForm, ""), 0);
+    });
+    [productSearch, productStatusFilter, productCategoryFilter, productCityFilter].forEach(element => {
+      element.addEventListener("input", applyProductFilters);
+      element.addEventListener("change", applyProductFilters);
     });
 
     const config = getConfig();

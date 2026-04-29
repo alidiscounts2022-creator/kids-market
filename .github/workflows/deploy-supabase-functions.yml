@@ -40,3 +40,6 @@ jobs:
 
       - name: Deploy public products function
         run: supabase functions deploy public-products --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy merchant submit function
+        run: supabase functions deploy merchant-submit --project-ref "$PROJECT_ID" --no-verify-jwt

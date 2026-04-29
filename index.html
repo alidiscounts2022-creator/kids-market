@@ -1501,11 +1501,11 @@
         <a href="#home">الرئيسية</a>
         <a href="#categories">التصنيفات</a>
         <a href="#products">المنتجات</a>
-        <a href="#merchant">أضف منتجاتك</a>
+        <a href="merchant.html">أضف منتجاتك</a>
       </nav>
 
       <div class="header-actions">
-        <a class="btn btn-primary btn-compact" href="#merchant">
+        <a class="btn btn-primary btn-compact" href="merchant.html">
           <i data-lucide="store"></i>
           سجّل كتاجر
         </a>
@@ -1520,7 +1520,7 @@
         <a href="#home">الرئيسية</a>
         <a href="#categories">التصنيفات</a>
         <a href="#products">المنتجات</a>
-        <a href="#merchant">أضف منتجاتك</a>
+        <a href="merchant.html">أضف منتجاتك</a>
       </div>
     </nav>
   </header>
@@ -1542,7 +1542,7 @@
               <i data-lucide="shopping-bag"></i>
               تصفح المنتجات
             </a>
-            <a class="btn btn-ghost" href="#merchant">
+            <a class="btn btn-ghost" href="merchant.html">
               <i data-lucide="badge-plus"></i>
               سجّل كتاجر
             </a>
@@ -1805,7 +1805,7 @@
             <h2>عندك محل منتجات أطفال؟</h2>
             <p>اعرض منتجاتك مجاناً في النسخة التجريبية، واجعل الزبائن يصلون لك مباشرة عبر واتساب من صفحة منتج منظمة واحترافية.</p>
             <div class="hero-actions">
-              <a class="btn btn-light" href="https://wa.me/218912345678?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%86%D8%A8%D9%8A%20%D9%86%D8%B6%D9%8A%D9%81%20%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA%D9%8A%20%D9%81%D9%8A%20%D8%B7%D9%81%D9%84%D9%8A%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA" target="_blank" rel="noopener">
+              <a class="btn btn-light" href="merchant.html">
                 <i data-lucide="badge-plus"></i>
                 أضف منتجاتك الآن
               </a>
@@ -1897,7 +1897,8 @@
             <a href="#home">الرئيسية</a>
             <a href="#categories">التصنيفات</a>
             <a href="#products">المنتجات</a>
-            <a href="#merchant">أضف منتجاتك</a>
+            <a href="merchant.html">أضف منتجاتك</a>
+            <a href="terms.html">الشروط والتنبيه</a>
           </div>
         </div>
 
@@ -2173,6 +2174,7 @@
 
       return {
         id: product.id || crypto.randomUUID?.() || String(Date.now()),
+        merchantId: product.merchant_id || "",
         name: baseProduct.name,
         price: formatPrice(product.price_lyd),
         city: product.city || "غير محدد",
@@ -2185,7 +2187,8 @@
         sizes: splitList(product.sizes).length ? splitList(product.sizes) : (attributes.sizes.length ? attributes.sizes : fallbacks.sizes),
         colors: splitList(product.colors).length ? splitList(product.colors) : (attributes.colors.length ? attributes.colors : fallbacks.colors),
         availability: product.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
-        whatsapp: product.whatsapp_phone || "218912345678"
+        whatsapp: product.whatsapp_phone || "218912345678",
+        sourceUrl: product.source_url || ""
       };
     }
 
@@ -2213,6 +2216,8 @@
       const sizes = splitList(product.sizes);
       const colors = splitList(product.colors);
       const availability = escapeHtml(product.availability || "حسب تأكيد التاجر");
+      const detailsUrl = product.id ? `product.html?id=${encodeURIComponent(product.id)}` : "#products";
+      const storeUrl = product.store ? `store.html?store=${encodeURIComponent(product.store)}` : "#products";
       const tags = [
         sizes.length ? `<span class="mini-chip"><i data-lucide="ruler"></i>${escapeHtml(sizes[0])}${sizes.length > 1 ? ` +${sizes.length - 1}` : ""}</span>` : "",
         colors.length ? `<span class="mini-chip"><i data-lucide="palette"></i>${escapeHtml(colors[0])}${colors.length > 1 ? ` +${colors.length - 1}` : ""}</span>` : "",
@@ -2232,7 +2237,7 @@
             </div>
             <div class="product-meta">
               <span class="meta-line"><i data-lucide="map-pin"></i>${city}</span>
-              <span class="meta-line"><i data-lucide="store"></i>${store}</span>
+              <a class="meta-line" href="${storeUrl}"><i data-lucide="store"></i>${store}</a>
             </div>
             <div class="product-tags">${tags}</div>
             <div class="product-actions">
@@ -2240,6 +2245,10 @@
                 <i data-lucide="list-checks"></i>
                 تفاصيل واختيار
               </button>
+              <a class="btn details-btn" href="${detailsUrl}">
+                <i data-lucide="external-link"></i>
+                صفحة المنتج
+              </a>
               <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener">
                 <i data-lucide="message-circle"></i>
                 واتساب سريع

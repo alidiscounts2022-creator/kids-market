@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     }
 
     if (req.method === "GET" && action === "products") {
-      return await listProducts();
+      return await listProducts(url);
     }
 
     if (req.method === "GET") {
@@ -52,6 +52,11 @@ Deno.serve(async (req) => {
     if (req.method === "POST" && action === "manual-product") {
       const payload = await req.json();
       return await createManualProduct(payload);
+    }
+
+    if (req.method === "POST" && action === "facebook-draft") {
+      const payload = await req.json();
+      return await createFacebookDraft(payload);
     }
 
     if (req.method === "POST" && action === "upload-image") {
@@ -137,11 +142,25 @@ async function listDrafts(url: URL): Promise<Response> {
 }
 
 async function getStats(): Promise<Response> {
-  const [pendingDrafts, approvedDrafts, rejectedDrafts, publishedProducts, latestProduct] = await Promise.all([
+  const [
+    pendingDrafts,
+    approvedDrafts,
+    rejectedDrafts,
+    publishedProducts,
+    hiddenProducts,
+    soldProducts,
+    allProducts,
+    merchants,
+    latestProduct,
+  ] = await Promise.all([
     countRows("product_drafts", "pending_review"),
     countRows("product_drafts", "approved"),
     countRows("product_drafts", "rejected"),
     countRows("products", "published"),
+    countRows("products", "hidden"),
+    countRows("products", "sold"),
+    countAllRows("products"),
+    countAllRows("merchants"),
     getLatestProduct(),
   ]);
 
@@ -151,6 +170,10 @@ async function getStats(): Promise<Response> {
       approved_drafts: approvedDrafts,
       rejected_drafts: rejectedDrafts,
       published_products: publishedProducts,
+      hidden_products: hiddenProducts,
+      sold_products: soldProducts,
+      all_products: allProducts,
+      merchants,
       latest_product: latestProduct,
       manual_publish_enabled: true,
     },
@@ -162,6 +185,15 @@ async function countRows(table: string, status: string): Promise<number> {
     .from(table)
     .select("id", { count: "exact", head: true })
     .eq("status", status);
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
+async function countAllRows(table: string): Promise<number> {
+  const { count, error } = await supabase
+    .from(table)
+    .select("id", { count: "exact", head: true });
 
   if (error) throw error;
   return count ?? 0;
@@ -180,10 +212,20 @@ async function getLatestProduct(): Promise<Record<string, unknown> | null> {
   return data ?? null;
 }
 
-async function listProducts(): Promise<Response> {
-  const { data, error } = await supabase
+async function listProducts(url: URL): Promise<Response> {
+  const status = cleanString(url.searchParams.get("status"), "");
+  const city = cleanString(url.searchParams.get("city"), "");
+  const category = cleanString(url.searchParams.get("category"), "");
+
+  let query = supabase
     .from("products")
-    .select("*")
+    .select("*");
+
+  if (status && status !== "all") query = query.eq("status", status);
+  if (city && city !== "all") query = query.eq("city", city);
+  if (category && category !== "all") query = query.eq("category", category);
+
+  const { data, error } = await query
     .order("created_at", { ascending: false })
     .limit(200);
 
@@ -316,6 +358,51 @@ async function createManualProduct(payload: Record<string, unknown>): Promise<Re
 
   if (error) throw error;
   return json({ ok: true, product: inserted });
+}
+
+async function createFacebookDraft(payload: Record<string, unknown>): Promise<Response> {
+  const merchant = await getOrCreateMerchant(payload);
+  const postText = requiredString(payload.facebook_text ?? payload.description, "نص منشور فيسبوك مطلوب.");
+  const title = cleanString(payload.title, "") || guessTitle(postText);
+  const category = cleanString(payload.category, "") || guessCategory(postText);
+  const description = buildProductDescription(
+    postText,
+    payload.sizes,
+    payload.colors,
+    payload.stock_status
+  );
+  const sourceUrl = cleanString(payload.source_url, "");
+  const sourcePostId = sourceUrl || `manual-facebook-${Date.now()}-${crypto.randomUUID()}`;
+
+  const draft = {
+    merchant_id: merchant.id,
+    source_platform: "facebook",
+    source_post_id: sourcePostId,
+    source_url: sourceUrl,
+    title,
+    description,
+    price_lyd: normalizePrice(payload.price_lyd, guessPrice(postText)),
+    city: cleanString(payload.city, merchant.city),
+    category,
+    store_name: cleanString(payload.store_name, merchant.store_name),
+    whatsapp_phone: cleanString(payload.whatsapp_phone, merchant.whatsapp_phone),
+    image_url: cleanString(payload.image_url, ""),
+    raw_payload: {
+      manual_import: true,
+      source: "admin facebook text import",
+      text: postText,
+    },
+    status: "pending_review",
+  };
+
+  const { data, error } = await supabase
+    .from("product_drafts")
+    .upsert(draft, { onConflict: "merchant_id,source_platform,source_post_id" })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, draft: data });
 }
 
 async function uploadProductImage(payload: Record<string, unknown>): Promise<Response> {
@@ -499,6 +586,35 @@ function normalizePrice(value: unknown, fallback: unknown): number | null {
 function normalizeProductStatus(value: unknown): "published" | "hidden" | "sold" {
   const status = cleanString(value, "published");
   return status === "hidden" || status === "sold" || status === "published" ? status : "published";
+}
+
+function guessTitle(message: string): string {
+  const cleanLines = message
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^\d+/.test(line) && !/(دينار|د\.?\s*ل|lyd|السعر)/i.test(line));
+
+  const candidate = cleanLines[0] || message.replace(/\s+/g, " ").trim();
+  return candidate ? candidate.slice(0, 90) : "منتج من فيسبوك";
+}
+
+function guessPrice(message: string): number | null {
+  const match = message.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:د\.?\s*ل|دينار|lyd)/i)
+    || message.match(/(?:السعر|سعر)\s*[:：-]?\s*(\d+(?:[.,]\d{1,2})?)/i);
+  if (!match) return null;
+  const number = Number(match[1].replace(",", "."));
+  return Number.isFinite(number) ? number : null;
+}
+
+function guessCategory(message: string): string {
+  const text = message.toLowerCase();
+  if (/(عربة|كراسي|كرسي|stroller|car seat)/i.test(text)) return "عربات وكراسي";
+  if (/(حذاء|أحذية|احذية|كوتشي|shoe)/i.test(text)) return "أحذية";
+  if (/(مولود|مواليد|رضاعة|بطانية|newborn)/i.test(text)) return "مواليد";
+  if (/(لعبة|ألعاب|العاب|toy|puzzle)/i.test(text)) return "ألعاب";
+  if (/(ملابس|طقم|بيجامة|فستان|shirt|dress)/i.test(text)) return "ملابس أطفال";
+  return "غير مصنف";
 }
 
 function buildProductDescription(

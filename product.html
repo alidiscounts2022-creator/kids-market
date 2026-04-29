@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تفاصيل المنتج | طفلي ماركت</title>
+  <meta name="description" content="صفحة تفاصيل منتج في طفلي ماركت مع المقاسات والألوان وزر واتساب جاهز." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --purple: #A855F7;
+      --teal: #14B8A6;
+      --sky: #38BDF8;
+      --bg: #F5F7FA;
+      --white: #FFFFFF;
+      --text: #1F2937;
+      --muted: #667085;
+      --line: #E5EAF1;
+      --shadow: 0 22px 56px rgba(31, 41, 55, 0.12);
+      --container: min(1120px, calc(100% - 28px));
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Cairo", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(245, 247, 250, .88), var(--bg) 380px),
+        radial-gradient(circle at 15% 0%, rgba(168, 85, 247, .18), transparent 32%),
+        radial-gradient(circle at 90% 12%, rgba(20, 184, 166, .16), transparent 30%),
+        var(--bg);
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    img { display: block; max-width: 100%; }
+    .container { width: var(--container); margin-inline: auto; }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .86);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .brand, .btn, .meta-line, .chip {
+      display: inline-flex;
+      align-items: center;
+    }
+    .brand {
+      gap: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: white;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 16px 30px rgba(168, 85, 247, .24);
+    }
+    .btn {
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--teal), var(--purple));
+      box-shadow: 0 16px 32px rgba(20, 184, 166, .24);
+    }
+    .btn-light {
+      background: white;
+      border: 1px solid var(--line);
+    }
+    main { padding-block: 24px 58px; }
+    .product-shell {
+      display: grid;
+      gap: 18px;
+      align-items: start;
+    }
+    .media-card, .details-card, .notice-card, .empty-card {
+      background: rgba(255,255,255,.96);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .product-image {
+      width: 100%;
+      aspect-ratio: 1 / .86;
+      object-fit: cover;
+      background: #EAF8FF;
+    }
+    .details-card { padding: 18px; }
+    .kicker {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      width: fit-content;
+      color: var(--purple);
+      background: #F3E8FF;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-weight: 900;
+    }
+    h1 {
+      margin: 14px 0 8px;
+      font-size: clamp(1.9rem, 7vw, 3.8rem);
+      line-height: 1.16;
+    }
+    .price {
+      display: block;
+      color: var(--teal);
+      font-size: clamp(1.6rem, 6vw, 2.5rem);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 12px 0;
+    }
+    .meta-line, .chip {
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #F8FAFC;
+      padding: 8px 11px;
+      color: #475467;
+      font-weight: 850;
+    }
+    .description {
+      margin: 16px 0;
+      color: #475467;
+      font-weight: 750;
+      white-space: pre-line;
+    }
+    .option-group {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .option-group h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .option-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .option {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      padding: 9px 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .option.active {
+      color: white;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+    }
+    .summary {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #F8FAFC;
+    }
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .notice-card { padding: 16px; }
+    .notice-card h2 { margin: 0 0 8px; }
+    .notice-card p { margin: 0; color: var(--muted); font-weight: 800; }
+    .empty-card {
+      padding: 28px;
+      text-align: center;
+    }
+    .empty-card h1 { margin-top: 0; }
+    @media (min-width: 860px) {
+      .product-shell { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
+      .media-card { position: sticky; top: 92px; }
+      .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i data-lucide="baby"></i></span>
+        <span>طفلي ماركت</span>
+      </a>
+      <a class="btn btn-light" href="index.html#products"><i data-lucide="arrow-right"></i>كل المنتجات</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" id="app">
+      <article class="empty-card">
+        <h1>جاري تحميل تفاصيل المنتج...</h1>
+        <p>ثواني ونجهز لك الصفحة.</p>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    const app = document.getElementById("app");
+    const params = new URLSearchParams(location.search);
+    const productId = params.get("id");
+    let product = null;
+    let selected = { size: "", color: "" };
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function splitList(value) {
+      if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);
+      return String(value || "").split(/[,،\n]/).map(item => item.trim()).filter(Boolean);
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { sizes: [], colors: [], stockStatus: "" };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        const match = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]\s*(.+)$/);
+        if (!match) return;
+        const label = match[1];
+        const value = match[2];
+        if (label.includes("مقاس")) attributes.sizes = splitList(value);
+        if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
+        if (label === "التوفر") attributes.stockStatus = value.trim();
+      });
+      return attributes;
+    }
+
+    function stripDescriptionAttributes(description) {
+      return String(description || "")
+        .split(/\r?\n/)
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(line.trim()))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function safeImage(value) {
+      const fallback = "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=1200&q=80";
+      if (!value) return fallback;
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function formatPrice(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || number <= 0) return "السعر عند التاجر";
+      return `${number.toLocaleString("ar-LY")} د.ل`;
+    }
+
+    function normalizeProduct(row) {
+      const attributes = parseDescriptionAttributes(row.description);
+      return {
+        id: row.id,
+        merchantId: row.merchant_id || "",
+        name: row.title || "منتج بدون اسم",
+        price: formatPrice(row.price_lyd),
+        city: row.city || "غير محدد",
+        category: row.category || "غير مصنف",
+        store: row.store_name || "محل محلي",
+        whatsapp: row.whatsapp_phone || "218912345678",
+        image: safeImage(row.image_url),
+        badge: row.badge || row.category || "جديد",
+        sourceUrl: row.source_url || "",
+        description: stripDescriptionAttributes(row.description) || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.",
+        sizes: attributes.sizes,
+        colors: attributes.colors,
+        availability: attributes.stockStatus || "حسب تأكيد التاجر",
+      };
+    }
+
+    function whatsappUrl() {
+      const phone = String(product.whatsapp || "218912345678").replace(/\D/g, "") || "218912345678";
+      const details = [
+        selected.size ? `المقاس: ${selected.size}` : "",
+        selected.color ? `اللون: ${selected.color}` : ""
+      ].filter(Boolean).join("، ");
+      const text = details
+        ? `السلام عليكم، نبي نستفسر على ${product.name}، ${details}`
+        : `السلام عليكم، نبي نستفسر على ${product.name}`;
+      return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    }
+
+    function optionGroup(title, key, options) {
+      if (!options.length) {
+        return `
+          <div class="option-group">
+            <h2>${title}</h2>
+            <div class="option-list"><span class="chip">يتم تأكيد ${title} مع التاجر</span></div>
+          </div>
+        `;
+      }
+      return `
+        <div class="option-group">
+          <h2>${title}</h2>
+          <div class="option-list">
+            ${options.map(option => `
+              <button class="option ${selected[key] === option ? "active" : ""}" type="button" data-key="${key}" data-value="${escapeHtml(option)}">${escapeHtml(option)}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSummary() {
+      const summary = document.getElementById("summary");
+      const whatsapp = document.getElementById("whatsapp");
+      if (!summary || !whatsapp) return;
+      summary.innerHTML = `
+        <span class="meta-line"><i data-lucide="ruler"></i>${selected.size ? `المقاس: ${escapeHtml(selected.size)}` : "المقاس: يتم تأكيده مع التاجر"}</span>
+        <span class="meta-line"><i data-lucide="palette"></i>${selected.color ? `اللون: ${escapeHtml(selected.color)}` : "اللون: يتم تأكيده مع التاجر"}</span>
+        <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${escapeHtml(product.availability)}</span>
+      `;
+      whatsapp.href = whatsappUrl();
+      lucide.createIcons();
+    }
+
+    function renderProduct() {
+      document.title = `${product.name} | طفلي ماركت`;
+      selected.size = product.sizes[0] || "";
+      selected.color = product.colors[0] || "";
+      const storeUrl = `store.html?store=${encodeURIComponent(product.store)}`;
+      app.innerHTML = `
+        <div class="product-shell">
+          <aside class="media-card">
+            <img class="product-image" src="${product.image}" alt="${escapeHtml(product.name)}" />
+          </aside>
+          <section class="details-card">
+            <span class="kicker"><i data-lucide="tag"></i>${escapeHtml(product.badge)}</span>
+            <h1>${escapeHtml(product.name)}</h1>
+            <span class="price">${escapeHtml(product.price)}</span>
+            <div class="meta">
+              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(product.city)}</span>
+              <a class="meta-line" href="${storeUrl}"><i data-lucide="store"></i>${escapeHtml(product.store)}</a>
+              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category)}</span>
+            </div>
+            <p class="description">${escapeHtml(product.description)}</p>
+            <div id="options">
+              ${optionGroup("المقاس", "size", product.sizes)}
+              ${optionGroup("اللون", "color", product.colors)}
+            </div>
+            <div class="summary" id="summary"></div>
+            <div class="actions">
+              <a class="btn btn-primary" id="whatsapp" href="#" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>استفسار واتساب</a>
+              <a class="btn btn-light" href="${storeUrl}"><i data-lucide="store"></i>كل منتجات المحل</a>
+            </div>
+          </section>
+          <section class="notice-card">
+            <h2>تنبيه مهم</h2>
+            <p>طفلي ماركت يعرض المنتج فقط. الدفع، التوصيل، والحجز يتم الاتفاق عليها مباشرة مع التاجر.</p>
+          </section>
+        </div>
+      `;
+      renderSummary();
+    }
+
+    function renderError(message) {
+      app.innerHTML = `
+        <article class="empty-card">
+          <h1>تعذر فتح المنتج</h1>
+          <p>${escapeHtml(message)}</p>
+          <p><a class="btn btn-primary" href="index.html#products"><i data-lucide="shopping-bag"></i>تصفح المنتجات</a></p>
+        </article>
+      `;
+      lucide.createIcons();
+    }
+
+    async function loadProduct() {
+      if (!productId) {
+        renderError("رابط المنتج غير مكتمل.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${PRODUCTS_URL}?id=${encodeURIComponent(productId)}&limit=1`);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || "تعذر تحميل المنتج.");
+        const row = Array.isArray(payload.products) ? payload.products[0] : null;
+        if (!row) throw new Error("المنتج غير موجود أو غير منشور حالياً.");
+        product = normalizeProduct(row);
+        renderProduct();
+      } catch (error) {
+        renderError(error.message);
+      }
+    }
+
+    app.addEventListener("click", event => {
+      const option = event.target.closest("[data-key]");
+      if (!option || !product) return;
+      selected[option.dataset.key] = option.dataset.value;
+      document.getElementById("options").innerHTML = `${optionGroup("المقاس", "size", product.sizes)}${optionGroup("اللون", "color", product.colors)}`;
+      renderSummary();
+    });
+
+    loadProduct();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

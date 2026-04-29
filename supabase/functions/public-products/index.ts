@@ -22,13 +22,26 @@ Deno.serve(async (req) => {
   try {
     const url = new URL(req.url);
     const limit = clamp(Number(url.searchParams.get("limit") ?? 60), 1, 100);
+    const id = cleanString(url.searchParams.get("id"));
+    const merchantId = cleanString(url.searchParams.get("merchant_id"));
+    const store = cleanString(url.searchParams.get("store"));
+    const city = cleanString(url.searchParams.get("city"));
+    const category = cleanString(url.searchParams.get("category"));
 
-    const { data, error } = await supabase
+    let query = supabase
       .from("products")
-      .select("id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at")
-      .eq("status", "published")
+      .select("id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at")
+      .eq("status", "published");
+
+    if (id) query = query.eq("id", id);
+    if (merchantId) query = query.eq("merchant_id", merchantId);
+    if (store) query = query.eq("store_name", store);
+    if (city && city !== "all") query = query.eq("city", city);
+    if (category && category !== "all") query = query.eq("category", category);
+
+    const { data, error } = await query
       .order("created_at", { ascending: false })
-      .limit(limit);
+      .limit(id ? 1 : limit);
 
     if (error) throw error;
     return json({ products: data ?? [] });
@@ -40,6 +53,10 @@ Deno.serve(async (req) => {
 function clamp(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min;
   return Math.max(min, Math.min(max, Math.trunc(value)));
+}
+
+function cleanString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function json(payload: unknown, status = 200): Response {
