@@ -7,8 +7,12 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+const SUPABASE_KEY = SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
+const PRODUCT_COLUMNS = "id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,sizes,colors,stock_status,created_at";
+const PRODUCT_COLUMNS_BASIC = "id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,created_at";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -29,28 +33,76 @@ Deno.serve(async (req) => {
     const city = cleanString(url.searchParams.get("city"));
     const category = cleanString(url.searchParams.get("category"));
 
-    let query = supabase
-      .from("products")
-      .select("id,merchant_id,title,description,price_lyd,city,category,store_name,whatsapp_phone,image_url,badge,source_url,sizes,colors,stock_status,created_at")
-      .eq("status", "published");
+    let result = await buildProductsQuery(PRODUCT_COLUMNS, {
+      id,
+      merchantId,
+      store,
+      phone,
+      city,
+      category,
+      limit,
+    });
 
-    if (id) query = query.eq("id", id);
-    if (merchantId) query = query.eq("merchant_id", merchantId);
-    if (store) query = query.eq("store_name", store);
-    if (phone) query = query.eq("whatsapp_phone", phone);
-    if (city && city !== "all") query = query.eq("city", city);
-    if (category && category !== "all") query = query.eq("category", category);
+    if (result.error && shouldRetryBasicColumns(result.error)) {
+      result = await buildProductsQuery(PRODUCT_COLUMNS_BASIC, {
+        id,
+        merchantId,
+        store,
+        phone,
+        city,
+        category,
+        limit,
+      });
+    }
 
-    const { data, error } = await query
-      .order("created_at", { ascending: false })
-      .limit(id ? 1 : limit);
-
-    if (error) throw error;
-    return json({ products: data ?? [] });
+    if (result.error) throw result.error;
+    return json({ products: (result.data ?? []).map(withProductDefaults) });
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unknown error" }, 500);
+    return json({ error: errorMessage(error) }, 500);
   }
 });
+
+function buildProductsQuery(
+  columns: string,
+  filters: {
+    id: string;
+    merchantId: string;
+    store: string;
+    phone: string;
+    city: string;
+    category: string;
+    limit: number;
+  },
+) {
+  let query = supabase
+    .from("products")
+    .select(columns)
+    .eq("status", "published");
+
+  if (filters.id) query = query.eq("id", filters.id);
+  if (filters.merchantId) query = query.eq("merchant_id", filters.merchantId);
+  if (filters.store) query = query.eq("store_name", filters.store);
+  if (filters.phone) query = query.eq("whatsapp_phone", filters.phone);
+  if (filters.city && filters.city !== "all") query = query.eq("city", filters.city);
+  if (filters.category && filters.category !== "all") query = query.eq("category", filters.category);
+
+  return query
+    .order("created_at", { ascending: false })
+    .limit(filters.id ? 1 : filters.limit);
+}
+
+function shouldRetryBasicColumns(error: unknown): boolean {
+  return /column|schema|stock_status|sizes|colors/i.test(errorMessage(error));
+}
+
+function withProductDefaults(product: Record<string, unknown>): Record<string, unknown> {
+  return {
+    sizes: [],
+    colors: [],
+    stock_status: "متوفر",
+    ...product,
+  };
+}
 
 function clamp(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min;
@@ -59,6 +111,12 @@ function clamp(value: number, min: number, max: number): number {
 
 function cleanString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object" && "message" in error) return String((error as { message?: unknown }).message || "Unknown error");
+  return String(error || "Unknown error");
 }
 
 function json(payload: unknown, status = 200): Response {

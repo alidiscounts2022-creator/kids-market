@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>صفحة المحل | طفلي ماركت</title>
-  <meta name="description" content="صفحة محل في طفلي ماركت تعرض منتجات التاجر المنشورة وروابط التواصل عبر واتساب." />
+  <title>واجهة المحل | طفلي ماركت</title>
+  <meta name="description" content="واجهة محل في طفلي ماركت تعرض منتجات التاجر المنشورة وروابط التواصل عبر واتساب." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -19,18 +19,24 @@
       --text: #1F2937;
       --muted: #667085;
       --line: #E5EAF1;
+      --soft-purple: #F3E8FF;
+      --soft-teal: #E6FFFB;
       --shadow: 0 22px 56px rgba(31, 41, 55, 0.12);
+      --shadow-sm: 0 14px 34px rgba(31, 41, 55, 0.08);
       --container: min(1140px, calc(100% - 28px));
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: "Cairo", system-ui, sans-serif;
       color: var(--text);
       background:
         linear-gradient(135deg, rgba(168, 85, 247, .09), rgba(20, 184, 166, .08)),
         var(--bg);
       line-height: 1.7;
+      padding-bottom: 84px;
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
@@ -39,18 +45,18 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.88);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(18px);
     }
-    .nav, .brand, .btn, .stat, .meta-line {
+    .nav, .brand, .btn, .meta-line, .stat, .trust-line {
       display: flex;
       align-items: center;
     }
     .nav {
       min-height: 72px;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
     }
     .brand {
       gap: 10px;
@@ -67,15 +73,25 @@
       background: linear-gradient(135deg, var(--purple), var(--teal));
       box-shadow: 0 16px 30px rgba(168, 85, 247, .24);
     }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-actions::-webkit-scrollbar { display: none; }
     .btn {
       justify-content: center;
       gap: 8px;
-      min-height: 46px;
-      padding: 11px 18px;
-      border-radius: 999px;
-      font-weight: 900;
-      background: white;
+      min-height: 44px;
+      padding: 10px 15px;
       border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      background: white;
+      font-weight: 900;
+      cursor: pointer;
     }
     .btn-primary {
       color: white;
@@ -83,47 +99,101 @@
       border-color: transparent;
       box-shadow: 0 16px 32px rgba(168, 85, 247, .22);
     }
-    main { padding-block: 24px 58px; }
-    .hero {
-      display: grid;
-      gap: 16px;
-      padding: 24px;
-      border-radius: 28px;
+    .btn-whatsapp {
       color: white;
-      background: linear-gradient(135deg, #1F2937, var(--purple) 54%, var(--teal));
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
+      border-color: transparent;
+      background: linear-gradient(135deg, #22C55E, var(--teal));
+      box-shadow: 0 16px 30px rgba(20, 184, 166, .22);
     }
-    .hero::after {
+    main { padding-block: 22px 56px; }
+    .store-hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 18px;
+      padding: 22px;
+      color: white;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #202B3A 0%, var(--purple) 52%, var(--teal) 100%);
+      box-shadow: var(--shadow);
+    }
+    .store-hero::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(112deg, rgba(255,255,255,.14) 0 12%, transparent 12% 28%, rgba(255,255,255,.10) 28% 42%, transparent 42%);
+      background: linear-gradient(115deg, rgba(255,255,255,.16) 0 15%, transparent 15% 32%, rgba(255,255,255,.10) 32% 44%, transparent 44%);
       pointer-events: none;
     }
-    .hero > * { position: relative; z-index: 1; }
+    .store-hero > * { position: relative; z-index: 1; }
     .kicker {
+      width: fit-content;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      width: fit-content;
-      padding: 8px 12px;
+      padding: 7px 12px;
       border: 1px solid rgba(255,255,255,.24);
       border-radius: 999px;
-      background: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.15);
+      font-size: .86rem;
       font-weight: 900;
     }
     h1 {
       margin: 0;
-      font-size: clamp(2rem, 7vw, 4rem);
-      line-height: 1.16;
+      max-width: 12ch;
+      font-size: clamp(2.2rem, 9vw, 4.6rem);
+      line-height: 1.1;
     }
-    .hero p { margin: 0; color: rgba(255,255,255,.86); font-weight: 800; }
+    .hero-copy {
+      display: grid;
+      gap: 12px;
+      align-content: center;
+    }
+    .hero-copy p {
+      margin: 0;
+      max-width: 680px;
+      color: rgba(255,255,255,.88);
+      font-weight: 800;
+    }
+    .hero-actions, .quick-actions, .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .hero-actions .btn { border-color: rgba(255,255,255,.22); }
+    .hero-actions .btn:not(.btn-primary):not(.btn-whatsapp) {
+      color: white;
+      background: rgba(255,255,255,.15);
+    }
+    .store-visual {
+      display: grid;
+      gap: 12px;
+      align-content: end;
+    }
+    .cover-card {
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 26px;
+      background: rgba(255,255,255,.15);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, .22);
+      backdrop-filter: blur(14px);
+    }
+    .cover-card img {
+      width: 100%;
+      aspect-ratio: 1.28 / 1;
+      object-fit: cover;
+      background: #EAF8FF;
+    }
+    .cover-body {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,.92);
+      color: var(--text);
+    }
+    .cover-body b { font-size: 1.02rem; }
     .stats {
       display: grid;
       gap: 10px;
-      margin-top: 8px;
     }
     .stat {
       gap: 10px;
@@ -133,61 +203,137 @@
       background: rgba(255,255,255,.94);
       font-weight: 900;
     }
-    .toolbar {
+    .filters {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid rgba(229,234,241,.9);
+      border-radius: 24px;
+      background: rgba(255,255,255,.95);
+      box-shadow: var(--shadow-sm);
+    }
+    .field {
+      position: relative;
+      display: grid;
+      gap: 6px;
+    }
+    .field label {
+      color: #596273;
+      font-size: .8rem;
+      font-weight: 900;
+    }
+    .field i {
+      position: absolute;
+      inset-inline-start: 14px;
+      bottom: 14px;
+      color: #98A2B3;
+      pointer-events: none;
+    }
+    .field input, .field select {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 45px 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      outline: 0;
+      color: var(--text);
+      background: #FBFCFE;
+      font-weight: 800;
+    }
+    .field input:focus, .field select:focus {
+      border-color: rgba(168,85,247,.55);
+      box-shadow: 0 0 0 4px rgba(168,85,247,.12);
+    }
+    .section-head {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
       justify-content: space-between;
+      align-items: flex-end;
       gap: 12px;
-      margin: 22px 0 14px;
+      margin: 24px 0 14px;
     }
-    .toolbar h2 { margin: 0; font-size: clamp(1.3rem, 5vw, 2.2rem); }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 5vw, 2.3rem);
+      line-height: 1.25;
+    }
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-weight: 800;
+    }
     .grid {
       display: grid;
       gap: 16px;
     }
-    .card, .empty {
+    .product-card, .info-card, .empty {
       border: 1px solid var(--line);
       border-radius: 24px;
-      background: rgba(255,255,255,.96);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      background: rgba(255,255,255,.97);
+      box-shadow: var(--shadow-sm);
     }
-    .card img {
+    .product-card {
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    .product-media {
+      position: relative;
+      overflow: hidden;
+      background: #EAF8FF;
+    }
+    .product-media img {
       width: 100%;
       aspect-ratio: 1 / .76;
       object-fit: cover;
-      background: #EAF8FF;
-    }
-    .card-body {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
     }
     .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       width: fit-content;
       padding: 6px 10px;
-      color: var(--purple);
-      background: #F3E8FF;
       border-radius: 999px;
+      color: #6D28D9;
+      background: var(--soft-purple);
+      font-size: .78rem;
       font-weight: 900;
-      font-size: .84rem;
     }
-    .badge.code {
-      color: #5B21B6;
-      background: #F3E8FF;
+    .media-badge {
+      position: absolute;
+      inset-block-start: 12px;
+      inset-inline-start: 12px;
+      color: white;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 12px 24px rgba(31, 41, 55, .18);
     }
-    .card h3 {
+    .product-body {
+      display: grid;
+      gap: 11px;
+      padding: 14px;
+    }
+    .product-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .product-title-row h3 {
       margin: 0;
-      font-size: 1.08rem;
-      line-height: 1.35;
+      font-size: 1.04rem;
+      line-height: 1.42;
     }
     .price {
-      color: var(--teal);
+      color: #0F766E;
+      font-size: 1.1rem;
       font-weight: 900;
-      font-size: 1.2rem;
+      white-space: nowrap;
     }
-    .meta {
+    .meta, .product-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -195,19 +341,68 @@
     .meta-line {
       gap: 7px;
       color: #475467;
+      font-size: .86rem;
       font-weight: 850;
-      font-size: .9rem;
     }
+    .meta-line i { color: var(--teal); }
+    .product-actions .btn { flex: 1 1 140px; }
+    .info-card {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+    .info-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .trust-line {
+      gap: 9px;
+      color: #475467;
+      font-weight: 850;
+    }
+    .trust-line i { color: var(--teal); }
     .empty {
       padding: 28px;
       text-align: center;
     }
     .empty h2 { margin: 0 0 8px; }
-    @media (min-width: 620px) {
-      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .contact-bar {
+      position: fixed;
+      inset-inline: 14px;
+      inset-block-end: 14px;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.94);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .contact-bar span {
+      align-self: center;
+      overflow: hidden;
+      color: var(--muted);
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (max-width: 520px) {
+      .nav-actions .btn span { display: none; }
+      .store-hero { padding: 18px; border-radius: 26px; }
+      h1 { max-width: 11ch; }
+    }
+    @media (min-width: 680px) {
+      body { padding-bottom: 0; }
+      .filters { grid-template-columns: 1.5fr 1fr 1fr auto; align-items: end; }
+      .stats, .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .contact-bar { display: none; }
     }
     @media (min-width: 980px) {
+      .store-hero { grid-template-columns: minmax(0, 1.05fr) minmax(320px, .72fr); padding: 34px; }
+      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
   </style>
@@ -219,14 +414,17 @@
         <span class="brand-mark"><i data-lucide="baby"></i></span>
         <span>طفلي ماركت</span>
       </a>
-      <a class="btn" href="index.html#products"><i data-lucide="arrow-right"></i>كل المنتجات</a>
+      <nav class="nav-actions" aria-label="روابط الصفحة">
+        <a class="btn" href="index.html#products"><i data-lucide="shopping-bag"></i><span>كل المنتجات</span></a>
+        <a class="btn" href="merchant.html"><i data-lucide="badge-plus"></i><span>أضف منتجاتك</span></a>
+      </nav>
     </div>
   </header>
 
   <main>
     <div class="container" id="app">
       <section class="empty">
-        <h2>جاري تحميل صفحة المحل...</h2>
+        <h2>جاري تحميل واجهة المحل...</h2>
         <p>نجهز المنتجات المنشورة لهذا التاجر.</p>
       </section>
     </div>
@@ -234,10 +432,14 @@
 
   <script>
     const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    const WHATSAPP_TRACK_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/whatsapp-track";
     const app = document.getElementById("app");
     const params = new URLSearchParams(location.search);
     const storeName = params.get("store");
     const merchantId = params.get("merchant_id");
+
+    let products = [];
+    let storeProfile = null;
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -260,10 +462,45 @@
       }
     }
 
+    function splitList(value) {
+      if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);
+      return String(value || "").split(/[,،\n]/).map(item => item.trim()).filter(Boolean);
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [], merchantCode: "" };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const match = line.trim().match(/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
+        if (!match) return;
+        const label = match[1];
+        const value = match[2];
+        if (label.includes("كود")) attributes.merchantCode = value.trim();
+        if (label.includes("مقاس")) attributes.sizes = splitList(value);
+        if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
+        if (label === "التوفر") attributes.stockStatus = value.trim();
+        if (label.includes("صور")) attributes.extraImages = splitList(value).filter(item => /^https?:\/\//i.test(item));
+      });
+      return attributes;
+    }
+
+    function stripDescriptionAttributes(description) {
+      return String(description || "")
+        .split(/\r?\n/)
+        .filter(line => !/^(كود التاجر|كود المنتج عند التاجر|المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
     function formatPrice(value) {
       const number = Number(value);
       if (!Number.isFinite(number) || number <= 0) return "السعر عند التاجر";
       return `${number.toLocaleString("ar-LY")} د.ل`;
+    }
+
+    function priceValue(product) {
+      const number = Number(product.price_lyd);
+      return Number.isFinite(number) ? number : 0;
     }
 
     function productCode(product) {
@@ -271,70 +508,279 @@
       return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
     }
 
-    function whatsappStoreUrl(phone, store) {
+    function normalizeProduct(row) {
+      const attributes = parseDescriptionAttributes(row.description);
+      const sizes = splitList(row.sizes).length ? splitList(row.sizes) : attributes.sizes;
+      const colors = splitList(row.colors).length ? splitList(row.colors) : attributes.colors;
+      const gallery = [
+        safeImage(row.image_url),
+        ...attributes.extraImages.map(safeImage)
+      ].filter((item, index, list) => item && list.indexOf(item) === index);
+      return {
+        ...row,
+        title: row.title || "منتج بدون اسم",
+        store_name: row.store_name || "محل محلي",
+        city: row.city || "غير محدد",
+        category: row.category || "غير مصنف",
+        badge: row.badge || row.category || "جديد",
+        image_url: gallery[0],
+        gallery,
+        description_clean: stripDescriptionAttributes(row.description) || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.",
+        sizes,
+        colors,
+        stock_status: row.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
+        merchant_code: attributes.merchantCode || row.merchant_code || "",
+        code: productCode(row),
+      };
+    }
+
+    function storeLink() {
+      if (merchantId || storeProfile?.merchant_id) {
+        return `${location.origin}${location.pathname}?merchant_id=${encodeURIComponent(merchantId || storeProfile.merchant_id)}`;
+      }
+      return `${location.origin}${location.pathname}?store=${encodeURIComponent(storeProfile?.name || storeName || "")}`;
+    }
+
+    function whatsappUrl(phone, text) {
       const clean = String(phone || "218912345678").replace(/\D/g, "") || "218912345678";
-      const text = `السلام عليكم، نبي نستفسر على منتجات ${store}`;
       return `https://wa.me/${clean}?text=${encodeURIComponent(text)}`;
     }
 
+    function productWhatsappUrl(product) {
+      const details = [
+        `كود المنتج: ${product.code}`,
+        product.merchant_code ? `كود التاجر: ${product.merchant_code}` : "",
+        `الاسم: ${product.title}`,
+        `السعر: ${formatPrice(product.price_lyd)}`
+      ].filter(Boolean).join("، ");
+      return whatsappUrl(product.whatsapp_phone, `السلام عليكم، نبي نستفسر على المنتج من ${product.store_name}، ${details}`);
+    }
+
+    function buildStoreProfile(items) {
+      const first = items[0] || {};
+      const categories = [...new Set(items.map(item => item.category).filter(Boolean))];
+      const cities = [...new Set(items.map(item => item.city).filter(Boolean))];
+      return {
+        name: first.store_name || storeName || "محل محلي",
+        merchant_id: first.merchant_id || merchantId || "",
+        phone: first.whatsapp_phone || "218912345678",
+        cover: safeImage(first.image_url),
+        categories,
+        cities,
+      };
+    }
+
     function productCard(product) {
+      const tags = [
+        product.sizes?.length ? `<span class="badge"><i data-lucide="ruler"></i>${escapeHtml(product.sizes[0])}${product.sizes.length > 1 ? ` +${product.sizes.length - 1}` : ""}</span>` : "",
+        product.colors?.length ? `<span class="badge"><i data-lucide="palette"></i>${escapeHtml(product.colors[0])}${product.colors.length > 1 ? ` +${product.colors.length - 1}` : ""}</span>` : "",
+        `<span class="badge"><i data-lucide="check-circle-2"></i>${escapeHtml(product.stock_status)}</span>`
+      ].filter(Boolean).join("");
+
       return `
-        <article class="card">
-          <a href="product.html?id=${encodeURIComponent(product.id)}">
-            <img src="${safeImage(product.image_url)}" alt="${escapeHtml(product.title || "منتج")}" loading="lazy" />
+        <article class="product-card">
+          <a class="product-media" href="product.html?id=${encodeURIComponent(product.id)}">
+            <img src="${safeImage(product.image_url)}" alt="${escapeHtml(product.title)}" loading="lazy" />
+            <span class="badge media-badge">${escapeHtml(product.badge)}</span>
           </a>
-          <div class="card-body">
-            <span class="badge code">${escapeHtml(productCode(product))}</span>
-            <span class="badge">${escapeHtml(product.badge || product.category || "جديد")}</span>
-            <h3><a href="product.html?id=${encodeURIComponent(product.id)}">${escapeHtml(product.title || "منتج بدون اسم")}</a></h3>
-            <span class="price">${escapeHtml(formatPrice(product.price_lyd))}</span>
-            <div class="meta">
-              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(product.city || "غير محدد")}</span>
-              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category || "غير مصنف")}</span>
+          <div class="product-body">
+            <span class="badge"><i data-lucide="scan-line"></i>${escapeHtml(product.code)}</span>
+            <div class="product-title-row">
+              <h3><a href="product.html?id=${encodeURIComponent(product.id)}">${escapeHtml(product.title)}</a></h3>
+              <span class="price">${escapeHtml(formatPrice(product.price_lyd))}</span>
             </div>
-            <a class="btn btn-primary" href="product.html?id=${encodeURIComponent(product.id)}"><i data-lucide="list-checks"></i>تفاصيل المنتج</a>
+            <div class="meta">
+              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(product.city)}</span>
+              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category)}</span>
+            </div>
+            <div class="chips">${tags}</div>
+            <div class="product-actions">
+              <a class="btn" href="product.html?id=${encodeURIComponent(product.id)}"><i data-lucide="list-checks"></i>التفاصيل</a>
+              <a class="btn btn-whatsapp" href="${productWhatsappUrl(product)}" target="_blank" rel="noopener" data-track-whatsapp data-product-id="${escapeHtml(product.id || "")}" data-product-code="${escapeHtml(product.code)}" data-source="store-page"><i data-lucide="message-circle"></i>واتساب</a>
+            </div>
           </div>
         </article>
       `;
     }
 
-    function renderStore(products) {
-      if (!products.length) {
-        app.innerHTML = `
-          <section class="empty">
-            <h2>لا توجد منتجات منشورة لهذا المحل حالياً</h2>
-            <p>ربما المنتجات مازالت قيد المراجعة أو تم إخفاؤها مؤقتاً.</p>
-            <p><a class="btn btn-primary" href="index.html#products"><i data-lucide="shopping-bag"></i>تصفح المنتجات</a></p>
-          </section>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      const first = products[0];
-      const store = first.store_name || storeName || "محل محلي";
-      const categories = [...new Set(products.map(item => item.category).filter(Boolean))];
-      const cities = [...new Set(products.map(item => item.city).filter(Boolean))];
-      document.title = `${store} | طفلي ماركت`;
+    function renderShell() {
+      const categories = storeProfile.categories.length ? storeProfile.categories : ["منتجات أطفال"];
+      const cities = storeProfile.cities.length ? storeProfile.cities : ["ليبيا"];
+      const contactUrl = whatsappUrl(storeProfile.phone, `السلام عليكم، نبي نستفسر على منتجات ${storeProfile.name}`);
+      document.title = `${storeProfile.name} | طفلي ماركت`;
 
       app.innerHTML = `
-        <section class="hero">
-          <span class="kicker"><i data-lucide="store"></i>صفحة محل</span>
-          <h1>${escapeHtml(store)}</h1>
-          <p>كل المنتجات المنشورة لهذا المحل في طفلي ماركت. الاستفسارات تذهب مباشرة لواتساب التاجر.</p>
-          <div class="stats">
-            <div class="stat"><i data-lucide="package"></i>${products.length} منتج منشور</div>
-            <div class="stat"><i data-lucide="map-pin"></i>${escapeHtml(cities.join("، ") || "ليبيا")}</div>
-            <div class="stat"><i data-lucide="layers-3"></i>${escapeHtml(categories.slice(0, 3).join("، ") || "منتجات أطفال")}</div>
+        <section class="store-hero">
+          <div class="hero-copy">
+            <span class="kicker"><i data-lucide="store"></i>واجهة محل</span>
+            <h1>${escapeHtml(storeProfile.name)}</h1>
+            <p>صفحة واحدة تجمع منتجات المحل المنشورة، مع تواصل مباشر عبر واتساب. طفلي ماركت يعرض المنتجات فقط ولا يدير البيع أو التوصيل.</p>
+            <div class="hero-actions">
+              <a class="btn btn-whatsapp" href="${contactUrl}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>تواصل مع المحل</a>
+              <button class="btn" id="copyStoreLink" type="button"><i data-lucide="copy"></i>نسخ رابط المحل</button>
+            </div>
+            <div class="stats">
+              <div class="stat"><i data-lucide="package"></i>${products.length} منتج منشور</div>
+              <div class="stat"><i data-lucide="map-pin"></i>${escapeHtml(cities.join("، "))}</div>
+              <div class="stat"><i data-lucide="layers-3"></i>${escapeHtml(categories.slice(0, 3).join("، "))}</div>
+            </div>
           </div>
-          <p><a class="btn btn-primary" href="${whatsappStoreUrl(first.whatsapp_phone, store)}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>تواصل مع المحل</a></p>
+          <div class="store-visual">
+            <article class="cover-card">
+              <img src="${storeProfile.cover}" alt="${escapeHtml(storeProfile.name)}" />
+              <div class="cover-body">
+                <b>${escapeHtml(storeProfile.name)}</b>
+                <span class="meta-line"><i data-lucide="shield-check"></i>تواصل مباشر مع التاجر</span>
+              </div>
+            </article>
+          </div>
         </section>
-        <div class="toolbar">
-          <h2>منتجات المحل</h2>
-          <a class="btn" href="merchant.html"><i data-lucide="badge-plus"></i>أضف منتجاتك</a>
+
+        <form class="filters" id="filtersForm">
+          <div class="field">
+            <label for="searchInput">بحث داخل المحل</label>
+            <i data-lucide="search"></i>
+            <input id="searchInput" type="search" placeholder="اسم المنتج أو الكود..." autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="categoryFilter">التصنيف</label>
+            <i data-lucide="layers-3"></i>
+            <select id="categoryFilter"></select>
+          </div>
+          <div class="field">
+            <label for="sortFilter">الترتيب</label>
+            <i data-lucide="arrow-up-down"></i>
+            <select id="sortFilter">
+              <option value="newest">الأحدث أولاً</option>
+              <option value="price-asc">السعر من الأقل</option>
+              <option value="price-desc">السعر من الأعلى</option>
+              <option value="name">الاسم</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit"><i data-lucide="sliders-horizontal"></i>تطبيق</button>
+        </form>
+
+        <div class="section-head">
+          <div>
+            <h2>منتجات المحل</h2>
+            <p id="resultStatus">جاري ترتيب المنتجات...</p>
+          </div>
+          <a class="btn" href="index.html#products"><i data-lucide="shopping-bag"></i>كل السوق</a>
         </div>
-        <section class="grid">
-          ${products.map(productCard).join("")}
+
+        <section class="grid" id="productsGrid"></section>
+
+        <section class="info-card">
+          <h3>ملاحظات مهمة</h3>
+          <span class="trust-line"><i data-lucide="message-circle"></i>الاستفسار والاتفاق النهائي يتمان مباشرة مع التاجر.</span>
+          <span class="trust-line"><i data-lucide="credit-card"></i>لا يوجد دفع داخل الموقع حالياً.</span>
+          <span class="trust-line"><i data-lucide="truck"></i>التوصيل أو الاستلام حسب اتفاق الزبون مع المحل.</span>
+        </section>
+
+        <div class="contact-bar">
+          <span>${escapeHtml(storeProfile.name)}</span>
+          <a class="btn btn-whatsapp" href="${contactUrl}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>واتساب</a>
+        </div>
+      `;
+
+      const categoryFilter = document.getElementById("categoryFilter");
+      categoryFilter.innerHTML = [
+        `<option value="all">كل التصنيفات</option>`,
+        ...storeProfile.categories.map(category => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+      ].join("");
+
+      document.getElementById("filtersForm").addEventListener("submit", event => {
+        event.preventDefault();
+        applyFilters();
+      });
+      ["searchInput", "categoryFilter", "sortFilter"].forEach(id => {
+        const element = document.getElementById(id);
+        element.addEventListener("input", applyFilters);
+        element.addEventListener("change", applyFilters);
+      });
+      document.getElementById("copyStoreLink").addEventListener("click", copyStoreLink);
+      document.addEventListener("click", event => {
+        const whatsappLink = event.target.closest("[data-track-whatsapp]");
+        if (whatsappLink) trackWhatsappClick(whatsappLink);
+      }, { capture: true });
+
+      applyFilters();
+      lucide.createIcons();
+    }
+
+    function applyFilters() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const category = document.getElementById("categoryFilter").value;
+      const sort = document.getElementById("sortFilter").value;
+      const filtered = products.filter(product => {
+        const haystack = [product.title, product.code, product.category, product.description_clean].join(" ").toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const matchesCategory = category === "all" || product.category === category;
+        return matchesQuery && matchesCategory;
+      });
+
+      const sorted = [...filtered].sort((a, b) => {
+        if (sort === "price-asc") return priceValue(a) - priceValue(b);
+        if (sort === "price-desc") return priceValue(b) - priceValue(a);
+        if (sort === "name") return String(a.title).localeCompare(String(b.title), "ar");
+        return String(b.created_at || "").localeCompare(String(a.created_at || ""));
+      });
+
+      const grid = document.getElementById("productsGrid");
+      grid.innerHTML = sorted.length
+        ? sorted.map(productCard).join("")
+        : `<section class="empty" style="grid-column:1 / -1;"><h2>لا توجد نتائج مطابقة</h2><p>جرّب تغيير البحث أو التصنيف.</p></section>`;
+      document.getElementById("resultStatus").textContent = `عرض ${sorted.length} من ${products.length} منتج داخل المحل.`;
+      lucide.createIcons();
+    }
+
+    async function copyStoreLink() {
+      const link = storeLink();
+      try {
+        await navigator.clipboard.writeText(link);
+      } catch {
+        const textarea = document.createElement("textarea");
+        textarea.value = link;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+      const button = document.getElementById("copyStoreLink");
+      button.innerHTML = '<i data-lucide="check"></i>تم النسخ';
+      lucide.createIcons();
+      setTimeout(() => {
+        button.innerHTML = '<i data-lucide="copy"></i>نسخ رابط المحل';
+        lucide.createIcons();
+      }, 1600);
+    }
+
+    function trackWhatsappClick(link) {
+      const body = JSON.stringify({
+        product_id: link.dataset.productId || "",
+        product_code: link.dataset.productCode || "",
+        source: link.dataset.source || "store-page"
+      });
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(WHATSAPP_TRACK_URL, new Blob([body], { type: "application/json" }));
+          return;
+        }
+        fetch(WHATSAPP_TRACK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true
+        }).catch(() => {});
+      } catch {}
+    }
+
+    function renderEmpty(title, message) {
+      app.innerHTML = `
+        <section class="empty">
+          <h2>${escapeHtml(title)}</h2>
+          <p>${escapeHtml(message)}</p>
+          <p><a class="btn btn-primary" href="index.html#products"><i data-lucide="shopping-bag"></i>تصفح المنتجات</a></p>
         </section>
       `;
       lucide.createIcons();
@@ -342,13 +788,7 @@
 
     async function loadStore() {
       if (!storeName && !merchantId) {
-        app.innerHTML = `
-          <section class="empty">
-            <h2>رابط المحل غير مكتمل</h2>
-            <p>افتح صفحة المحل من بطاقة منتج منشور.</p>
-          </section>
-        `;
-        lucide.createIcons();
+        renderEmpty("رابط المحل غير مكتمل", "افتح واجهة المحل من بطاقة منتج منشور.");
         return;
       }
 
@@ -360,15 +800,15 @@
         const response = await fetch(`${PRODUCTS_URL}?${query.toString()}`);
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "تعذر تحميل منتجات المحل.");
-        renderStore(Array.isArray(payload.products) ? payload.products : []);
+        products = Array.isArray(payload.products) ? payload.products.map(normalizeProduct) : [];
+        if (!products.length) {
+          renderEmpty("لا توجد منتجات منشورة لهذا المحل حالياً", "ربما المنتجات مازالت قيد المراجعة أو تم إخفاؤها مؤقتاً.");
+          return;
+        }
+        storeProfile = buildStoreProfile(products);
+        renderShell();
       } catch (error) {
-        app.innerHTML = `
-          <section class="empty">
-            <h2>تعذر تحميل صفحة المحل</h2>
-            <p>${escapeHtml(error.message)}</p>
-          </section>
-        `;
-        lucide.createIcons();
+        renderEmpty("تعذر تحميل واجهة المحل", error.message);
       }
     }
 

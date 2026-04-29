@@ -493,7 +493,9 @@
       galleryIndex = 0;
       selected.size = product.sizes[0] || "";
       selected.color = product.colors[0] || "";
-      const storeUrl = `store.html?store=${encodeURIComponent(product.store)}`;
+      const storeUrl = product.merchantId
+        ? `store.html?merchant_id=${encodeURIComponent(product.merchantId)}`
+        : `store.html?store=${encodeURIComponent(product.store)}`;
       app.innerHTML = `
         <div class="product-shell">
           <aside class="media-card">

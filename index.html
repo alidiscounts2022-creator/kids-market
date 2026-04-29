@@ -2450,7 +2450,9 @@
       const availability = escapeHtml(product.availability || "حسب تأكيد التاجر");
       const galleryCount = Array.isArray(product.gallery) ? product.gallery.length : 0;
       const detailsUrl = product.id ? `product.html?id=${encodeURIComponent(product.id)}` : "#products";
-      const storeUrl = product.store ? `store.html?store=${encodeURIComponent(product.store)}` : "#products";
+      const storeUrl = product.merchantId
+        ? `store.html?merchant_id=${encodeURIComponent(product.merchantId)}`
+        : (product.store ? `store.html?store=${encodeURIComponent(product.store)}` : "#products");
       const tags = [
         `<span class="mini-chip product-code"><i data-lucide="scan-line"></i>${code}</span>`,
         merchantCode ? `<span class="mini-chip"><i data-lucide="barcode"></i>${merchantCode}</span>` : "",
