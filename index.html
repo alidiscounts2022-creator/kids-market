@@ -138,6 +138,10 @@
       background: var(--soft-purple);
     }
 
+    .admin-entry[hidden] {
+      display: none !important;
+    }
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -1543,6 +1547,7 @@
         <a href="#products">المنتجات</a>
         <a href="merchant.html">أضف منتجاتك</a>
         <a href="merchant-dashboard.html">لوحة التاجر</a>
+        <a class="admin-entry" href="admin.html" data-admin-entry hidden>الإدارة</a>
       </nav>
 
       <div class="header-actions">
@@ -1563,6 +1568,7 @@
         <a href="#products">المنتجات</a>
         <a href="merchant.html">أضف منتجاتك</a>
         <a href="merchant-dashboard.html">لوحة التاجر</a>
+        <a class="admin-entry" href="admin.html" data-admin-entry hidden>الإدارة</a>
       </div>
     </nav>
   </header>
@@ -1945,6 +1951,7 @@
             <a href="#products">المنتجات</a>
             <a href="merchant.html">أضف منتجاتك</a>
             <a href="merchant-dashboard.html">لوحة التاجر</a>
+            <a class="admin-entry" href="admin.html" data-admin-entry hidden>دخول الإدارة</a>
             <a href="terms.html">الشروط والتنبيه</a>
           </div>
         </div>
@@ -2114,6 +2121,7 @@
     const filterPills = document.querySelectorAll(".filter-pill");
     const menuToggle = document.getElementById("menuToggle");
     const mobileNav = document.getElementById("mobileNav");
+    const adminEntries = document.querySelectorAll("[data-admin-entry]");
     const productModal = document.getElementById("productModal");
     const modalClose = document.getElementById("modalClose");
     const modalReset = document.getElementById("modalReset");
@@ -2344,6 +2352,14 @@
             <p style="margin:0;color:#667085;font-weight:700;">جرّب تغيير المدينة أو التصنيف أو كلمة البحث.</p>
           </div>`;
       lucide.createIcons();
+    }
+
+    function syncAdminEntries() {
+      const params = new URLSearchParams(window.location.search);
+      const showAdmin = params.get("admin") === "1";
+      adminEntries.forEach(entry => {
+        entry.hidden = !showAdmin;
+      });
     }
 
     function openProductDetails(product) {
@@ -2598,6 +2614,7 @@
 
     renderProducts(products);
     loadLiveProducts();
+    syncAdminEntries();
     lucide.createIcons();
   </script>
 </body>
