@@ -72,7 +72,7 @@ async function registerMerchant(payload: Record<string, unknown>): Promise<Respo
   if (!userId) throw new HttpError("تعذر إنشاء حساب التاجر.", 500);
 
   try {
-    const merchant = await createMerchant(merchantInfo);
+    const merchant = await createOrClaimMerchant(merchantInfo);
     const { error: updateUserError } = await supabase.auth.admin.updateUserById(userId, {
       user_metadata: {
         merchant_id: merchant.id,
@@ -122,7 +122,39 @@ async function loginMerchant(payload: Record<string, unknown>): Promise<Response
   });
 }
 
-async function createMerchant(merchantInfo: Record<string, unknown>): Promise<any> {
+async function createOrClaimMerchant(merchantInfo: Record<string, unknown>): Promise<any> {
+  const { data: existing, error: lookupError } = await supabase
+    .from("merchants")
+    .select("*")
+    .eq("store_name", merchantInfo.store_name)
+    .eq("whatsapp_phone", merchantInfo.whatsapp_phone)
+    .limit(1)
+    .maybeSingle();
+
+  if (lookupError) throw lookupError;
+
+  if (existing) {
+    const claimed = await merchantIsClaimed(existing.id);
+    if (claimed) {
+      throw new HttpError("هذا المحل مربوط بحساب تاجر آخر. جرّب تسجيل الدخول أو تواصل مع الإدارة.", 409);
+    }
+
+    const { data: updated, error: updateError } = await supabase
+      .from("merchants")
+      .update({
+        owner_name: merchantInfo.owner_name,
+        city: merchantInfo.city,
+        facebook_page_url: merchantInfo.facebook_page_url,
+        status: "active",
+      })
+      .eq("id", existing.id)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+    return updated;
+  }
+
   const { data, error } = await supabase
     .from("merchants")
     .insert(merchantInfo)
@@ -131,6 +163,18 @@ async function createMerchant(merchantInfo: Record<string, unknown>): Promise<an
 
   if (error) throw error;
   return data;
+}
+
+async function merchantIsClaimed(merchantId: string): Promise<boolean> {
+  const perPage = 1000;
+  for (let page = 1; page <= 10; page += 1) {
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+    if (error) throw error;
+    const users = data.users ?? [];
+    if (users.some((user) => user.user_metadata?.merchant_id === merchantId)) return true;
+    if (users.length < perPage) return false;
+  }
+  return false;
 }
 
 async function signIn(email: string, password: string): Promise<any> {
