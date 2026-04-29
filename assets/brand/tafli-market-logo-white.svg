@@ -2,19 +2,23 @@
   <title id="title">شعار طفلي ماركت الأبيض</title>
   <desc id="desc">نسخة بيضاء من شعار طفلي ماركت للخلفيات الداكنة</desc>
   <defs>
-    <linearGradient id="whiteMark" x1="684" y1="38" x2="890" y2="244" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="692" y1="42" x2="892" y2="240" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#A855F7"/>
       <stop offset="0.52" stop-color="#38BDF8"/>
       <stop offset="1" stop-color="#14B8A6"/>
     </linearGradient>
   </defs>
-  <rect x="694" y="42" width="196" height="196" rx="58" fill="url(#whiteMark)"/>
-  <path d="M739 120c3-14 12-22 27-22h52c15 0 24 8 27 22l13 77c3 19-9 33-28 33h-76c-19 0-31-14-28-33l13-77Z" fill="#fff"/>
-  <path d="M765 109c0-22 12-37 27-37s27 15 27 37" fill="none" stroke="#F3E8FF" stroke-width="10" stroke-linecap="round"/>
-  <path d="M762 137c18 13 43 14 61 0" fill="none" stroke="#14B8A6" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="773" cy="157" r="6" fill="#A855F7"/>
-  <circle cx="812" cy="157" r="6" fill="#38BDF8"/>
-  <path d="M793 181c9-11 27-5 27 10 0 17-20 26-27 33-7-7-27-16-27-33 0-15 18-21 27-10Z" fill="#E6FFFB" stroke="#14B8A6" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="696" y="42" width="196" height="196" rx="58" fill="url(#bg)"/>
+  <path d="M862 83c7-8 22-4 22 9 0 14-16 22-22 28-6-6-22-14-22-28 0-13 15-17 22-9Z" fill="#fff" opacity="0.9"/>
+  <circle cx="794" cy="146" r="66" fill="#FFFFFF"/>
+  <g transform="rotate(-18 783 144)">
+    <ellipse cx="783" cy="157" rx="22" ry="38" fill="#A855F7"/>
+    <circle cx="767" cy="111" r="7" fill="#A855F7"/>
+    <circle cx="780" cy="106" r="7" fill="#A855F7"/>
+    <circle cx="794" cy="108" r="6" fill="#8B5CF6"/>
+    <circle cx="806" cy="116" r="6" fill="#38BDF8"/>
+  </g>
+  <path d="M824 179c11-13 32-6 32 12 0 21-23 31-32 39-9-8-32-18-32-39 0-18 21-25 32-12Z" fill="#E6FFFB" stroke="#14B8A6" stroke-width="6" stroke-linejoin="round"/>
   <g direction="rtl" unicode-bidi="plaintext">
     <text x="390" y="118" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="84" font-weight="900" fill="#FFFFFF">طفلي</text>
     <text x="390" y="178" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="54" font-weight="900" fill="#99F6E4">ماركت</text>
