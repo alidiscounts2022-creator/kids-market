@@ -32,12 +32,6 @@ jobs:
       - name: Deploy admin review function
         run: supabase functions deploy admin-review --project-ref "$PROJECT_ID" --no-verify-jwt
 
-      - name: Deploy Facebook import function
-        run: supabase functions deploy facebook-import --project-ref "$PROJECT_ID" --no-verify-jwt
-
-      - name: Deploy Facebook OAuth function
-        run: supabase functions deploy facebook-oauth --project-ref "$PROJECT_ID" --no-verify-jwt
-
       - name: Deploy public products function
         run: supabase functions deploy public-products --project-ref "$PROJECT_ID" --no-verify-jwt
 
@@ -52,3 +46,11 @@ jobs:
 
       - name: Deploy WhatsApp tracking function
         run: supabase functions deploy whatsapp-track --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy Facebook import function
+        continue-on-error: true
+        run: supabase functions deploy facebook-import --project-ref "$PROJECT_ID" --no-verify-jwt
+
+      - name: Deploy Facebook OAuth function
+        continue-on-error: true
+        run: supabase functions deploy facebook-oauth --project-ref "$PROJECT_ID" --no-verify-jwt
