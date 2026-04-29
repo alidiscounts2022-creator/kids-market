@@ -25,6 +25,7 @@ Deno.serve(async (req) => {
     const id = cleanString(url.searchParams.get("id"));
     const merchantId = cleanString(url.searchParams.get("merchant_id"));
     const store = cleanString(url.searchParams.get("store"));
+    const phone = cleanString(url.searchParams.get("phone")).replace(/\D/g, "");
     const city = cleanString(url.searchParams.get("city"));
     const category = cleanString(url.searchParams.get("category"));
 
@@ -36,6 +37,7 @@ Deno.serve(async (req) => {
     if (id) query = query.eq("id", id);
     if (merchantId) query = query.eq("merchant_id", merchantId);
     if (store) query = query.eq("store_name", store);
+    if (phone) query = query.eq("whatsapp_phone", phone);
     if (city && city !== "all") query = query.eq("city", city);
     if (category && category !== "all") query = query.eq("category", category);
 

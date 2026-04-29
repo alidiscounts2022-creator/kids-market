@@ -74,19 +74,21 @@ async function getOrCreateMerchant(payload: Record<string, unknown>): Promise<an
 
 async function createDraft(payload: Record<string, unknown>, merchant: any, imageUrl: string | null): Promise<any> {
   const title = requiredString(payload.title, "اسم المنتج مطلوب.");
+  const editProductId = cleanString(payload.edit_product_id, "");
   const description = buildProductDescription(
     cleanString(payload.description, "") || cleanString(payload.facebook_text, ""),
     payload.sizes,
     payload.colors,
-    payload.stock_status
+    payload.stock_status,
+    payload.extra_images
   );
   const sourceUrl = cleanString(payload.source_url, "") || cleanString(payload.facebook_page_url, "");
 
   const draft = {
     merchant_id: merchant.id,
-    source_platform: sourceUrl?.includes("facebook.com") ? "facebook" : "merchant_form",
-    source_post_id: `merchant-form-${Date.now()}-${crypto.randomUUID()}`,
-    source_url: sourceUrl,
+    source_platform: editProductId ? "merchant_edit" : (sourceUrl?.includes("facebook.com") ? "facebook" : "merchant_form"),
+    source_post_id: `${editProductId ? "merchant-edit" : "merchant-form"}-${Date.now()}-${crypto.randomUUID()}`,
+    source_url: editProductId ? `product.html?id=${editProductId}` : sourceUrl,
     title,
     description,
     price_lyd: normalizePrice(payload.price_lyd),
@@ -97,6 +99,7 @@ async function createDraft(payload: Record<string, unknown>, merchant: any, imag
     image_url: imageUrl || cleanString(payload.image_url, ""),
     raw_payload: {
       source: "public merchant form",
+      edit_product_id: editProductId,
       facebook_text: cleanString(payload.facebook_text, ""),
     },
     status: "pending_review",
@@ -156,17 +159,20 @@ function buildProductDescription(
   value: unknown,
   sizesValue: unknown,
   colorsValue: unknown,
-  stockStatusValue: unknown
+  stockStatusValue: unknown,
+  extraImagesValue: unknown
 ): string | null {
   const base = cleanString(value, "") || "";
   const sizes = splitList(sizesValue);
   const colors = splitList(colorsValue);
   const stockStatus = cleanString(stockStatusValue, "");
+  const extraImages = splitList(extraImagesValue).filter((item) => /^https?:\/\//i.test(item));
   const lines = [base];
 
   if (sizes.length) lines.push(`المقاسات المتوفرة: ${sizes.join("، ")}`);
   if (colors.length) lines.push(`الألوان: ${colors.join("، ")}`);
   if (stockStatus) lines.push(`التوفر: ${stockStatus}`);
+  if (extraImages.length) lines.push(`الصور الإضافية: ${extraImages.join("، ")}`);
 
   const description = lines.filter(Boolean).join("\n\n");
   return description || null;

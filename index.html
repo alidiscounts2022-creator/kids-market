@@ -895,6 +895,12 @@
       white-space: nowrap;
     }
 
+    .product-code {
+      color: #5B21B6;
+      background: #F3E8FF;
+      border-color: #E9D5FF;
+    }
+
     .product-actions {
       display: grid;
       grid-template-columns: 1fr;
@@ -976,6 +982,40 @@
       height: 100%;
       min-height: 260px;
       max-height: 420px;
+      object-fit: cover;
+    }
+
+    .modal-gallery {
+      position: absolute;
+      inset-inline: 12px;
+      bottom: 12px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px;
+    }
+
+    .gallery-thumb {
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.72);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .gallery-thumb.active {
+      border-color: var(--teal);
+      box-shadow: 0 10px 22px rgba(20, 184, 166, 0.24);
+    }
+
+    .gallery-thumb img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
       object-fit: cover;
     }
 
@@ -1389,7 +1429,7 @@
 
       .product-actions,
       .modal-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       }
     }
 
@@ -1502,6 +1542,7 @@
         <a href="#categories">التصنيفات</a>
         <a href="#products">المنتجات</a>
         <a href="merchant.html">أضف منتجاتك</a>
+        <a href="merchant-dashboard.html">لوحة التاجر</a>
       </nav>
 
       <div class="header-actions">
@@ -1521,6 +1562,7 @@
         <a href="#categories">التصنيفات</a>
         <a href="#products">المنتجات</a>
         <a href="merchant.html">أضف منتجاتك</a>
+        <a href="merchant-dashboard.html">لوحة التاجر</a>
       </div>
     </nav>
   </header>
@@ -1809,6 +1851,10 @@
                 <i data-lucide="badge-plus"></i>
                 أضف منتجاتك الآن
               </a>
+              <a class="btn btn-ghost" href="merchant-dashboard.html">
+                <i data-lucide="layout-dashboard"></i>
+                لوحة التاجر
+              </a>
             </div>
           </div>
 
@@ -1898,6 +1944,7 @@
             <a href="#categories">التصنيفات</a>
             <a href="#products">المنتجات</a>
             <a href="merchant.html">أضف منتجاتك</a>
+            <a href="merchant-dashboard.html">لوحة التاجر</a>
             <a href="terms.html">الشروط والتنبيه</a>
           </div>
         </div>
@@ -1934,6 +1981,7 @@
       </button>
       <div class="modal-media">
         <img id="modalImage" src="" alt="" />
+        <div class="modal-gallery" id="modalGallery"></div>
         <span class="badge teal" id="modalBadge"></span>
       </div>
       <div class="modal-content">
@@ -2054,6 +2102,7 @@
     ];
 
     const LIVE_PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    const WHATSAPP_TRACK_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/whatsapp-track";
     let products = [...fallbackProducts];
 
     const productsGrid = document.getElementById("productsGrid");
@@ -2069,6 +2118,7 @@
     const modalClose = document.getElementById("modalClose");
     const modalReset = document.getElementById("modalReset");
     const modalImage = document.getElementById("modalImage");
+    const modalGallery = document.getElementById("modalGallery");
     const modalBadge = document.getElementById("modalBadge");
     const modalCategory = document.getElementById("modalCategory");
     const modalProductTitle = document.getElementById("modalProductTitle");
@@ -2111,6 +2161,19 @@
       return `${number.toLocaleString("ar-LY")} د.ل`;
     }
 
+    function productCode(product) {
+      const source = String(product?.id || product?.name || product?.title || "product").replace(/[^a-z0-9\u0600-\u06FF]/gi, "");
+      let hash = 0;
+      for (let index = 0; index < source.length; index += 1) {
+        hash = ((hash << 5) - hash) + source.charCodeAt(index);
+        hash |= 0;
+      }
+      const short = product?.id
+        ? String(product.id).replace(/[^a-z0-9]/gi, "").slice(0, 6).toUpperCase()
+        : Math.abs(hash).toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
+      return `TF-${short || "000001"}`;
+    }
+
     function badgeClassFor(product) {
       const text = `${product.badge || ""} ${product.category || ""}`;
       if (text.includes("مواليد") || text.includes("عرض")) return "teal";
@@ -2127,15 +2190,16 @@
     }
 
     function parseDescriptionAttributes(description) {
-      const attributes = { sizes: [], colors: [], stockStatus: "" };
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
       String(description || "").split(/\r?\n/).forEach(line => {
         const trimmed = line.trim();
-        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]\s*(.+)$/) || [];
+        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/) || [];
         if (!label || !value) return;
 
         if (label.includes("مقاس")) attributes.sizes = splitList(value);
         if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
         if (label === "التوفر") attributes.stockStatus = value.trim();
+        if (label.includes("صور")) attributes.extraImages = splitList(value).filter(item => /^https?:\/\//i.test(item));
       });
       return attributes;
     }
@@ -2143,7 +2207,7 @@
     function stripDescriptionAttributes(description) {
       return String(description || "")
         .split(/\r?\n/)
-        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(line.trim()))
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
         .join("\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
@@ -2172,8 +2236,14 @@
       };
       const fallbacks = fallbackOptionsFor(baseProduct);
 
+      const productId = product.id || crypto.randomUUID?.() || String(Date.now());
+      const gallery = [
+        safeImage(product.image_url),
+        ...attributes.extraImages.map(safeImage)
+      ].filter((item, index, list) => item && list.indexOf(item) === index);
+
       return {
-        id: product.id || crypto.randomUUID?.() || String(Date.now()),
+        id: productId,
         merchantId: product.merchant_id || "",
         name: baseProduct.name,
         price: formatPrice(product.price_lyd),
@@ -2182,25 +2252,29 @@
         category: baseProduct.category,
         badge: product.badge || product.category || "جديد",
         badgeClass: badgeClassFor(product),
-        image: safeImage(product.image_url),
+        image: gallery[0],
+        gallery,
         description: stripDescriptionAttributes(product.description) || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.",
         sizes: splitList(product.sizes).length ? splitList(product.sizes) : (attributes.sizes.length ? attributes.sizes : fallbacks.sizes),
         colors: splitList(product.colors).length ? splitList(product.colors) : (attributes.colors.length ? attributes.colors : fallbacks.colors),
         availability: product.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
         whatsapp: product.whatsapp_phone || "218912345678",
-        sourceUrl: product.source_url || ""
+        sourceUrl: product.source_url || "",
+        code: productCode({ id: productId, name: baseProduct.name })
       };
     }
 
     function whatsappUrl(product, options = {}) {
       const phone = String(product.whatsapp || "218912345678").replace(/\D/g, "") || "218912345678";
+      const code = product.code || productCode(product);
       const details = [
+        `كود المنتج: ${code}`,
+        `الاسم: ${product.name}`,
         options.size ? `المقاس: ${options.size}` : "",
-        options.color ? `اللون: ${options.color}` : ""
+        options.color ? `اللون: ${options.color}` : "",
+        product.price ? `السعر: ${product.price}` : ""
       ].filter(Boolean).join("، ");
-      const text = details
-        ? `السلام عليكم، نبي نستفسر على ${product.name}، ${details}`
-        : `السلام عليكم، نبي نستفسر على ${product.name}`;
+      const text = `السلام عليكم، نبي نستفسر على المنتج، ${details}`;
       return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     }
 
@@ -2213,12 +2287,14 @@
       const badge = escapeHtml(product.badge);
       const badgeClass = escapeHtml(product.badgeClass);
       const image = safeImage(product.image);
+      const code = escapeHtml(product.code || productCode(product));
       const sizes = splitList(product.sizes);
       const colors = splitList(product.colors);
       const availability = escapeHtml(product.availability || "حسب تأكيد التاجر");
       const detailsUrl = product.id ? `product.html?id=${encodeURIComponent(product.id)}` : "#products";
       const storeUrl = product.store ? `store.html?store=${encodeURIComponent(product.store)}` : "#products";
       const tags = [
+        `<span class="mini-chip product-code"><i data-lucide="scan-line"></i>${code}</span>`,
         sizes.length ? `<span class="mini-chip"><i data-lucide="ruler"></i>${escapeHtml(sizes[0])}${sizes.length > 1 ? ` +${sizes.length - 1}` : ""}</span>` : "",
         colors.length ? `<span class="mini-chip"><i data-lucide="palette"></i>${escapeHtml(colors[0])}${colors.length > 1 ? ` +${colors.length - 1}` : ""}</span>` : "",
         `<span class="mini-chip"><i data-lucide="check-circle-2"></i>${availability}</span>`
@@ -2249,7 +2325,7 @@
                 <i data-lucide="external-link"></i>
                 صفحة المنتج
               </a>
-              <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener">
+              <a class="btn whatsapp-btn" href="${whatsappUrl(product)}" target="_blank" rel="noopener" data-track-whatsapp data-product-id="${escapeHtml(product.id || "")}" data-product-code="${code}" data-source="home-card">
                 <i data-lucide="message-circle"></i>
                 واتساب سريع
               </a>
@@ -2279,6 +2355,7 @@
 
       modalImage.src = safeImage(product.image);
       modalImage.alt = product.name || "صورة المنتج";
+      renderModalGallery(product.gallery?.length ? product.gallery : [product.image]);
       modalBadge.textContent = product.badge || product.category || "جديد";
       modalBadge.className = `badge ${product.badgeClass || ""}`.trim();
       modalCategory.textContent = product.category || "";
@@ -2295,6 +2372,20 @@
       productModal.setAttribute("aria-hidden", "false");
       document.body.classList.add("modal-open");
       lucide.createIcons();
+    }
+
+    function renderModalGallery(images) {
+      const gallery = (images || []).map(safeImage).filter((item, index, list) => item && list.indexOf(item) === index);
+      if (!modalGallery || gallery.length <= 1) {
+        if (modalGallery) modalGallery.innerHTML = "";
+        return;
+      }
+
+      modalGallery.innerHTML = gallery.map((image, index) => `
+        <button class="gallery-thumb ${index === 0 ? "active" : ""}" type="button" data-gallery-image="${escapeHtml(image)}">
+          <img src="${escapeHtml(image)}" alt="صورة ${index + 1}" />
+        </button>
+      `).join("");
     }
 
     function renderOptionGroup(container, title, key, options) {
@@ -2327,11 +2418,18 @@
       const colorLine = selectedOptions.color ? `اللون: ${escapeHtml(selectedOptions.color)}` : "اللون: يتم تأكيده مع التاجر";
       const availability = escapeHtml(selectedProduct.availability || "حسب تأكيد التاجر");
       modalSummary.innerHTML = `
+        <span class="meta-line"><i data-lucide="scan-line"></i>كود المنتج: ${escapeHtml(selectedProduct.code || productCode(selectedProduct))}</span>
         <span class="meta-line"><i data-lucide="ruler"></i>${sizeLine}</span>
         <span class="meta-line"><i data-lucide="palette"></i>${colorLine}</span>
         <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${availability}</span>
       `;
       modalWhatsapp.href = whatsappUrl(selectedProduct, selectedOptions);
+      modalWhatsapp.dataset.trackWhatsapp = "";
+      modalWhatsapp.dataset.productId = selectedProduct.id || "";
+      modalWhatsapp.dataset.productCode = selectedProduct.code || productCode(selectedProduct);
+      modalWhatsapp.dataset.source = "home-modal";
+      modalWhatsapp.dataset.size = selectedOptions.size || "";
+      modalWhatsapp.dataset.color = selectedOptions.color || "";
       lucide.createIcons();
     }
 
@@ -2394,6 +2492,32 @@
       renderProducts(filtered);
     }
 
+    function trackWhatsappClick(link) {
+      const payload = {
+        product_id: link.dataset.productId || "",
+        product_code: link.dataset.productCode || "",
+        source: link.dataset.source || "home",
+        size: link.dataset.size || "",
+        color: link.dataset.color || ""
+      };
+      const body = JSON.stringify(payload);
+
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(WHATSAPP_TRACK_URL, new Blob([body], { type: "application/json" }));
+          return;
+        }
+        fetch(WHATSAPP_TRACK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true
+        }).catch(() => {});
+      } catch {
+        // Tracking must never block opening WhatsApp.
+      }
+    }
+
     searchForm.addEventListener("submit", event => {
       event.preventDefault();
       applyFilters();
@@ -2423,6 +2547,14 @@
     productModal.addEventListener("click", event => {
       if (event.target === productModal) closeProductModal();
 
+      const galleryButton = event.target.closest("[data-gallery-image]");
+      if (galleryButton) {
+        modalImage.src = galleryButton.dataset.galleryImage;
+        modalGallery.querySelectorAll(".gallery-thumb").forEach(item => item.classList.remove("active"));
+        galleryButton.classList.add("active");
+        return;
+      }
+
       const option = event.target.closest("[data-option-key]");
       if (!option || !productModal.contains(option)) return;
 
@@ -2446,6 +2578,11 @@
         closeProductModal();
       }
     });
+
+    document.addEventListener("click", event => {
+      const whatsappLink = event.target.closest("[data-track-whatsapp]");
+      if (whatsappLink) trackWhatsappClick(whatsappLink);
+    }, { capture: true });
 
     menuToggle.addEventListener("click", () => {
       const isOpen = mobileNav.classList.toggle("open");

@@ -313,6 +313,7 @@
       <nav class="nav-links" aria-label="روابط سريعة">
         <a href="index.html#products">المنتجات</a>
         <a href="index.html#categories">التصنيفات</a>
+        <a href="merchant-dashboard.html">لوحة التاجر</a>
         <a href="terms.html">الشروط</a>
       </nav>
       <a class="btn btn-light" href="index.html"><i data-lucide="arrow-right"></i>رجوع للموقع</a>
@@ -333,6 +334,8 @@
           <p>كل البيانات هنا مؤقتة للنسخة التجريبية، والزبائن يتواصلون معك مباشرة عبر واتساب.</p>
 
           <form class="form-grid" id="merchantForm">
+            <input type="hidden" name="edit_product_id" />
+            <input type="hidden" name="image_url" />
             <div class="field">
               <label>اسم المحل</label>
               <input name="store_name" required placeholder="مثال: بيبي ستور ليبيا" />
@@ -399,6 +402,10 @@
               <textarea name="description" placeholder="اكتب وصف مختصر: الخامة، العمر المناسب، المميزات..."></textarea>
             </div>
             <div class="field wide">
+              <label>صور إضافية للمعرض</label>
+              <textarea name="extra_images" placeholder="اختياري: ضع روابط صور إضافية، كل رابط في سطر"></textarea>
+            </div>
+            <div class="field wide">
               <label>نص منشور فيسبوك إن وجد</label>
               <textarea name="facebook_text" placeholder="اختياري: الصق نص منشور فيسبوك هنا ليساعد الإدارة في المراجعة"></textarea>
             </div>
@@ -442,6 +449,7 @@
 
   <script>
     const SUBMIT_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/merchant-submit";
+    const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
     const MAX_IMAGE_SIDE = 1400;
     const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
     const form = document.getElementById("merchantForm");
@@ -457,6 +465,77 @@
 
     function normalizePhone(value) {
       return String(value || "").replace(/[^\d+]/g, "").replace(/^\+/, "");
+    }
+
+    function splitList(value) {
+      return String(value || "").split(/[,،\n]/).map(item => item.trim()).filter(Boolean);
+    }
+
+    function parseDescriptionAttributes(description) {
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
+      String(description || "").split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        const match = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/);
+        if (!match) return;
+        const label = match[1];
+        const value = match[2];
+        if (label.includes("مقاس")) attributes.sizes = splitList(value);
+        if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
+        if (label === "التوفر") attributes.stockStatus = value.trim();
+        if (label.includes("صور")) attributes.extraImages = splitList(value).filter(item => /^https?:\/\//i.test(item));
+      });
+      return attributes;
+    }
+
+    function stripDescriptionAttributes(description) {
+      return String(description || "")
+        .split(/\r?\n/)
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
+        .join("\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function fillField(name, value) {
+      if (form.elements[name]) form.elements[name].value = value ?? "";
+    }
+
+    async function loadProductForEdit() {
+      const editId = new URLSearchParams(location.search).get("edit");
+      if (!editId) return;
+
+      try {
+        setStatus("جاري تحميل المنتج للتعديل...");
+        const response = await fetch(`${PRODUCTS_URL}?id=${encodeURIComponent(editId)}&limit=1`);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || "تعذر تحميل المنتج.");
+        const product = Array.isArray(payload.products) ? payload.products[0] : null;
+        if (!product) throw new Error("المنتج غير موجود أو غير منشور.");
+
+        const attributes = parseDescriptionAttributes(product.description || "");
+        fillField("edit_product_id", product.id);
+        fillField("store_name", product.store_name);
+        fillField("city", product.city);
+        fillField("whatsapp_phone", product.whatsapp_phone);
+        fillField("title", product.title);
+        fillField("price_lyd", product.price_lyd);
+        fillField("category", product.category);
+        fillField("sizes", attributes.sizes.join("، "));
+        fillField("colors", attributes.colors.join("، "));
+        fillField("stock_status", attributes.stockStatus || "متوفر");
+        fillField("description", stripDescriptionAttributes(product.description || ""));
+        fillField("extra_images", attributes.extraImages.join("\n"));
+        fillField("image_url", product.image_url || "");
+        if (product.image_url) {
+          imagePreview.src = product.image_url;
+          imagePreview.style.display = "block";
+        }
+        setStatus("عدّل البيانات ثم أرسلها للمراجعة. الإدارة ستعتمد التغيير قبل ظهوره.", "ok");
+        form.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال التعديل للمراجعة';
+        lucide.createIcons();
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
     }
 
     async function readAsDataUrl(file) {
@@ -565,6 +644,7 @@
       }
     });
 
+    loadProductForEdit();
     lucide.createIcons();
   </script>
 </body>

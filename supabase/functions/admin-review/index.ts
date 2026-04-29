@@ -151,6 +151,7 @@ async function getStats(): Promise<Response> {
     soldProducts,
     allProducts,
     merchants,
+    whatsappInquiries,
     latestProduct,
   ] = await Promise.all([
     countRows("product_drafts", "pending_review"),
@@ -161,6 +162,7 @@ async function getStats(): Promise<Response> {
     countRows("products", "sold"),
     countAllRows("products"),
     countAllRows("merchants"),
+    countInquiryRows(),
     getLatestProduct(),
   ]);
 
@@ -174,10 +176,21 @@ async function getStats(): Promise<Response> {
       sold_products: soldProducts,
       all_products: allProducts,
       merchants,
+      whatsapp_inquiries: whatsappInquiries,
       latest_product: latestProduct,
       manual_publish_enabled: true,
     },
   });
+}
+
+async function countInquiryRows(): Promise<number> {
+  const { count, error } = await supabase
+    .from("import_jobs")
+    .select("id", { count: "exact", head: true })
+    .eq("source_platform", "whatsapp_inquiry");
+
+  if (error) return 0;
+  return count ?? 0;
 }
 
 async function countRows(table: string, status: string): Promise<number> {
@@ -230,7 +243,50 @@ async function listProducts(url: URL): Promise<Response> {
     .limit(200);
 
   if (error) throw error;
-  return json({ products: data ?? [] });
+  const inquiryCounts = await getInquiryCounts();
+  const products = (data ?? []).map((product) => {
+    const code = productCode(product.id);
+    return {
+      ...product,
+      product_code: code,
+      inquiry_count: inquiryCounts[String(product.id)] ?? inquiryCounts[code] ?? 0,
+    };
+  });
+  return json({ products });
+}
+
+async function getInquiryCounts(): Promise<Record<string, number>> {
+  const { data, error } = await supabase
+    .from("import_jobs")
+    .select("error_message,imported_count")
+    .eq("source_platform", "whatsapp_inquiry")
+    .limit(5000);
+
+  if (error) return {};
+
+  const counts: Record<string, number> = {};
+  for (const event of data ?? []) {
+    const amount = Number(event.imported_count || 1) || 1;
+    const meta = parseInquiryMeta(event.error_message);
+    for (const key of [meta.product_id, meta.product_code].filter(Boolean)) {
+      counts[key] = (counts[key] ?? 0) + amount;
+    }
+  }
+  return counts;
+}
+
+function parseInquiryMeta(value: unknown): Record<string, string> {
+  try {
+    const parsed = JSON.parse(String(value || "{}"));
+    return typeof parsed === "object" && parsed ? parsed as Record<string, string> : {};
+  } catch {
+    return {};
+  }
+}
+
+function productCode(id: unknown): string {
+  const clean = String(id || "").replace(/[^a-z0-9]/gi, "").toUpperCase();
+  return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
 }
 
 async function createDemoDraft(): Promise<Response> {
@@ -331,7 +387,8 @@ async function createManualProduct(payload: Record<string, unknown>): Promise<Re
     payload.description,
     payload.sizes,
     payload.colors,
-    payload.stock_status
+    payload.stock_status,
+    payload.extra_images
   );
 
   const product = {
@@ -369,7 +426,8 @@ async function createFacebookDraft(payload: Record<string, unknown>): Promise<Re
     postText,
     payload.sizes,
     payload.colors,
-    payload.stock_status
+    payload.stock_status,
+    payload.extra_images
   );
   const sourceUrl = cleanString(payload.source_url, "");
   const sourcePostId = sourceUrl || `manual-facebook-${Date.now()}-${crypto.randomUUID()}`;
@@ -447,7 +505,8 @@ async function updateProduct(payload: Record<string, unknown>): Promise<Response
     payload.description,
     payload.sizes,
     payload.colors,
-    payload.stock_status
+    payload.stock_status,
+    payload.extra_images
   );
 
   const updates = {
@@ -518,6 +577,7 @@ async function approveDraft(payload: Record<string, unknown>): Promise<Response>
     payload.sizes,
     payload.colors,
     payload.stock_status,
+    payload.extra_images,
     draft.description
   );
   const product = {
@@ -536,11 +596,12 @@ async function approveDraft(payload: Record<string, unknown>): Promise<Response>
     status: "published",
   };
 
-  const { data: inserted, error: insertError } = await supabase
-    .from("products")
-    .insert(product)
-    .select()
-    .single();
+  const editProductId = getEditProductId(draft.raw_payload);
+  const productQuery = editProductId
+    ? supabase.from("products").update(product).eq("id", editProductId).select().single()
+    : supabase.from("products").insert(product).select().single();
+
+  const { data: inserted, error: insertError } = await productQuery;
 
   if (insertError) throw insertError;
 
@@ -588,6 +649,12 @@ function normalizeProductStatus(value: unknown): "published" | "hidden" | "sold"
   return status === "hidden" || status === "sold" || status === "published" ? status : "published";
 }
 
+function getEditProductId(rawPayload: unknown): string {
+  if (!rawPayload || typeof rawPayload !== "object") return "";
+  const value = (rawPayload as Record<string, unknown>).edit_product_id;
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function guessTitle(message: string): string {
   const cleanLines = message
     .split(/\r?\n/)
@@ -622,17 +689,20 @@ function buildProductDescription(
   sizesValue: unknown,
   colorsValue: unknown,
   stockStatusValue: unknown,
+  extraImagesValue?: unknown,
   fallback?: unknown
 ): string | null {
   const base = stripAttributeLines(cleanString(value, fallback) ?? "");
   const sizes = splitList(sizesValue);
   const colors = splitList(colorsValue);
   const stockStatus = cleanString(stockStatusValue, "");
+  const extraImages = splitList(extraImagesValue).filter((item) => /^https?:\/\//i.test(item));
   const lines = [base];
 
   if (sizes.length) lines.push(`المقاسات المتوفرة: ${sizes.join("، ")}`);
   if (colors.length) lines.push(`الألوان: ${colors.join("، ")}`);
   if (stockStatus) lines.push(`التوفر: ${stockStatus}`);
+  if (extraImages.length) lines.push(`الصور الإضافية: ${extraImages.join("، ")}`);
 
   const description = lines.filter(Boolean).join("\n\n");
   return description || null;
@@ -643,7 +713,7 @@ function stripAttributeLines(value: string): string {
     .split(/\r?\n/)
     .filter((line) => {
       const trimmed = line.trim();
-      return !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(trimmed);
+      return !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(trimmed);
     })
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")

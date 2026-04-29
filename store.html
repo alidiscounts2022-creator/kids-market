@@ -173,6 +173,10 @@
       font-weight: 900;
       font-size: .84rem;
     }
+    .badge.code {
+      color: #5B21B6;
+      background: #F3E8FF;
+    }
     .card h3 {
       margin: 0;
       font-size: 1.08rem;
@@ -262,6 +266,11 @@
       return `${number.toLocaleString("ar-LY")} د.ل`;
     }
 
+    function productCode(product) {
+      const clean = String(product?.id || product?.title || "product").replace(/[^a-z0-9]/gi, "").toUpperCase();
+      return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
+    }
+
     function whatsappStoreUrl(phone, store) {
       const clean = String(phone || "218912345678").replace(/\D/g, "") || "218912345678";
       const text = `السلام عليكم، نبي نستفسر على منتجات ${store}`;
@@ -275,6 +284,7 @@
             <img src="${safeImage(product.image_url)}" alt="${escapeHtml(product.title || "منتج")}" loading="lazy" />
           </a>
           <div class="card-body">
+            <span class="badge code">${escapeHtml(productCode(product))}</span>
             <span class="badge">${escapeHtml(product.badge || product.category || "جديد")}</span>
             <h3><a href="product.html?id=${encodeURIComponent(product.id)}">${escapeHtml(product.title || "منتج بدون اسم")}</a></h3>
             <span class="price">${escapeHtml(formatPrice(product.price_lyd))}</span>

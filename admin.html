@@ -426,6 +426,10 @@
             <label>شارة المنتج</label>
             <input name="badge" placeholder="جديد / عرض / مواليد" />
           </div>
+          <div class="field wide">
+            <label>صور إضافية للمعرض</label>
+            <textarea name="extra_images" placeholder="ضع كل رابط صورة في سطر منفصل أو افصل بينها بفواصل"></textarea>
+          </div>
           <div class="field">
             <label>المقاسات المتوفرة</label>
             <input name="sizes" placeholder="0-3 أشهر، 3-6 أشهر، 6-12 شهر" />
@@ -505,6 +509,10 @@
               <span class="upload-note">أو ارفع صورة المنتج من الجهاز، وسيتم استخدامها في المسودة.</span>
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
+          </div>
+          <div class="field wide">
+            <label>صور إضافية للمعرض</label>
+            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
           </div>
           <div class="field">
             <label>المقاسات</label>
@@ -640,6 +648,10 @@
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
           </div>
+          <div class="field wide">
+            <label>صور إضافية للمعرض</label>
+            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+          </div>
           <div class="field">
             <label>المقاسات المتوفرة</label>
             <input name="sizes" placeholder="مثال: 0-3 أشهر، 3-6 أشهر، 6-12 شهر" />
@@ -679,7 +691,11 @@
       <div class="draft-body">
         <div class="draft-head">
           <h3 data-field="titleText"></h3>
-          <span class="pill" data-field="statusPill"></span>
+          <div class="stats-strip">
+            <span class="pill" data-field="codePill"></span>
+            <span class="pill" data-field="inquiryPill"></span>
+            <span class="pill" data-field="statusPill"></span>
+          </div>
         </div>
 
         <form class="draft-form">
@@ -727,6 +743,10 @@
           <div class="field">
             <label>شارة المنتج</label>
             <input name="badge" placeholder="جديد / عرض / مواليد" />
+          </div>
+          <div class="field wide">
+            <label>صور إضافية للمعرض</label>
+            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
           </div>
           <div class="field">
             <label>حالة المنتج</label>
@@ -836,6 +856,7 @@
         <span class="stat-chip">مباع: <strong>${Number(stats.sold_products || 0)}</strong></span>
         <span class="stat-chip">كل المنتجات: <strong>${Number(stats.all_products || 0)}</strong></span>
         <span class="stat-chip">التجار: <strong>${Number(stats.merchants || 0)}</strong></span>
+        <span class="stat-chip">استفسارات واتساب: <strong>${Number(stats.whatsapp_inquiries || 0)}</strong></span>
         <span class="stat-chip">بانتظار المراجعة: <strong>${Number(stats.pending_drafts || 0)}</strong></span>
         <span class="stat-chip">معتمد: <strong>${Number(stats.approved_drafts || 0)}</strong></span>
         ${latest}
@@ -850,6 +871,12 @@
         "\"": "&quot;",
         "'": "&#039;",
       }[char]));
+    }
+
+    function productCode(product) {
+      const clean = String(product?.product_code || product?.id || product?.title || "product").replace(/[^a-z0-9]/gi, "").toUpperCase();
+      if (String(product?.product_code || "").startsWith("TF-")) return product.product_code;
+      return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
     }
 
     function saveCurrentConfig() {
@@ -1022,6 +1049,7 @@
 
       return allPublishedProducts.filter(product => {
         const haystack = [
+          productCode(product),
           product.title,
           product.store_name,
           product.city,
@@ -1093,11 +1121,15 @@
         const form = node.querySelector("form");
         const titleText = node.querySelector('[data-field="titleText"]');
         const statusPill = node.querySelector('[data-field="statusPill"]');
+        const codePill = node.querySelector('[data-field="codePill"]');
+        const inquiryPill = node.querySelector('[data-field="inquiryPill"]');
 
         image.src = product.image_url || "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=900&q=80";
         image.alt = product.title || "منتج منشور";
         titleText.textContent = product.title || "منتج منشور";
         statusPill.textContent = productStatusLabel(product.status);
+        codePill.textContent = productCode(product);
+        inquiryPill.textContent = `واتساب: ${Number(product.inquiry_count || 0)}`;
 
         fillProduct(form, product);
         form.addEventListener("submit", async (event) => {
@@ -1130,9 +1162,10 @@
         sizes: draft.sizes?.length ? draft.sizes.join("، ") : attributes.sizes.join("، "),
         colors: draft.colors?.length ? draft.colors.join("، ") : attributes.colors.join("، "),
         stock_status: draft.stock_status || attributes.stockStatus || "متوفر",
+        extra_images: attributes.extraImages.join("\n"),
       };
 
-      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "sizes", "colors", "stock_status", "description"]) {
+      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "sizes", "colors", "stock_status", "extra_images", "description"]) {
         if (form.elements[field]) {
           form.elements[field].value = values[field] ?? "";
         }
@@ -1148,11 +1181,12 @@
         sizes: product.sizes?.length ? product.sizes.join("، ") : attributes.sizes.join("، "),
         colors: product.colors?.length ? product.colors.join("، ") : attributes.colors.join("، "),
         stock_status: product.stock_status || attributes.stockStatus || "متوفر",
+        extra_images: attributes.extraImages.join("\n"),
         badge: product.badge || "",
         status: product.status || "published",
       };
 
-      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "badge", "status", "sizes", "colors", "stock_status", "description"]) {
+      for (const field of ["id", "title", "price_lyd", "category", "city", "store_name", "whatsapp_phone", "image_url", "badge", "status", "sizes", "colors", "stock_status", "extra_images", "description"]) {
         if (form.elements[field]) {
           form.elements[field].value = values[field] ?? "";
         }
@@ -1167,15 +1201,16 @@
     }
 
     function parseDescriptionAttributes(description) {
-      const attributes = { sizes: [], colors: [], stockStatus: "" };
+      const attributes = { sizes: [], colors: [], stockStatus: "", extraImages: [] };
       String(description || "").split(/\r?\n/).forEach(line => {
         const trimmed = line.trim();
-        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]\s*(.+)$/) || [];
+        const [, label, value] = trimmed.match(/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]\s*(.+)$/) || [];
         if (!label || !value) return;
 
         if (label.includes("مقاس")) attributes.sizes = splitList(value);
         if (label.includes("لون") || label.includes("الوان")) attributes.colors = splitList(value);
         if (label === "التوفر") attributes.stockStatus = value.trim();
+        if (label.includes("صور")) attributes.extraImages = splitList(value).filter(item => /^https?:\/\//i.test(item));
       });
       return attributes;
     }
@@ -1183,7 +1218,7 @@
     function stripDescriptionAttributes(description) {
       return String(description || "")
         .split(/\r?\n/)
-        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر)\s*[:：]/.test(line.trim()))
+        .filter(line => !/^(المقاسات المتوفرة|المقاسات|الألوان|الالوان|التوفر|الصور الإضافية|صور إضافية)\s*[:：]/.test(line.trim()))
         .join("\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim();

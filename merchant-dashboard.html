@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التاجر | طفلي ماركت</title>
+  <meta name="description" content="لوحة تاجر بسيطة لعرض منتجات المحل وإرسال تعديلات للمراجعة في طفلي ماركت." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --purple: #A855F7;
+      --teal: #14B8A6;
+      --sky: #38BDF8;
+      --bg: #F5F7FA;
+      --white: #FFFFFF;
+      --text: #1F2937;
+      --muted: #667085;
+      --line: #E5EAF1;
+      --shadow: 0 22px 56px rgba(31, 41, 55, .12);
+      --container: min(1140px, calc(100% - 28px));
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Cairo", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(168,85,247,.09), rgba(20,184,166,.08)), var(--bg);
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    img { display: block; max-width: 100%; }
+    .container { width: var(--container); margin-inline: auto; }
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.86);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .nav, .brand, .btn, .meta-line, .chip {
+      display: inline-flex;
+      align-items: center;
+    }
+    .nav {
+      min-height: 72px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { gap: 10px; font-weight: 900; white-space: nowrap; }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: white;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+    }
+    .btn {
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+      background: white;
+      border: 1px solid var(--line);
+    }
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      border-color: transparent;
+      box-shadow: 0 16px 32px rgba(168,85,247,.22);
+    }
+    main { padding-block: 24px 58px; }
+    .hero, .panel, .card, .empty {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.96);
+      overflow: hidden;
+    }
+    .hero {
+      padding: 24px;
+      color: white;
+      background: linear-gradient(135deg, #1F2937, var(--purple) 54%, var(--teal));
+    }
+    .hero span {
+      width: fit-content;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      font-weight: 900;
+    }
+    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 7vw, 3.8rem); line-height: 1.16; }
+    .hero p { margin: 0; color: rgba(255,255,255,.86); font-weight: 800; }
+    .panel { display: grid; gap: 12px; margin-top: 18px; padding: 16px; }
+    .search-form { display: grid; gap: 10px; }
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 14px;
+      outline: none;
+      font-weight: 800;
+    }
+    input:focus {
+      border-color: rgba(168,85,247,.55);
+      box-shadow: 0 0 0 4px rgba(168,85,247,.12);
+    }
+    .status { color: var(--muted); font-weight: 900; }
+    .grid { display: grid; gap: 16px; margin-top: 18px; }
+    .card img {
+      width: 100%;
+      aspect-ratio: 1 / .74;
+      object-fit: cover;
+      background: #EAF8FF;
+    }
+    .card-body { display: grid; gap: 10px; padding: 14px; }
+    .card h2 { margin: 0; font-size: 1.08rem; line-height: 1.35; }
+    .price { color: var(--teal); font-size: 1.18rem; font-weight: 900; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-line, .chip {
+      gap: 7px;
+      color: #475467;
+      background: #F8FAFC;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 850;
+      font-size: .9rem;
+    }
+    .chip.code { color: #5B21B6; background: #F3E8FF; border-color: #E9D5FF; }
+    .actions { display: grid; gap: 9px; }
+    .empty { margin-top: 18px; padding: 24px; text-align: center; }
+    @media (min-width: 720px) {
+      .search-form { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1040px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i data-lucide="baby"></i></span>
+        <span>طفلي ماركت</span>
+      </a>
+      <a class="btn" href="merchant.html"><i data-lucide="badge-plus"></i>إضافة منتج</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <span><i data-lucide="store"></i>لوحة التاجر التجريبية</span>
+        <h1>شوف منتجاتك واطلب تعديلها</h1>
+        <p>اكتب رقم واتساب المحل، وستظهر المنتجات المنشورة بنفس الرقم. أي تعديل يذهب للإدارة كمسودة قبل النشر.</p>
+      </section>
+
+      <section class="panel">
+        <form class="search-form" id="searchForm">
+          <div>
+            <label for="phoneInput">رقم واتساب المحل</label>
+            <input id="phoneInput" inputmode="tel" placeholder="2189XXXXXXXX" required />
+          </div>
+          <button class="btn btn-primary" type="submit"><i data-lucide="search"></i>عرض منتجاتي</button>
+        </form>
+        <div class="status" id="status">أدخل رقم واتساب المستخدم في المنتجات المنشورة.</div>
+      </section>
+
+      <section class="grid" id="productsGrid"></section>
+    </div>
+  </main>
+
+  <script>
+    const PRODUCTS_URL = "https://qtfqbtymouzcjgsbupcf.supabase.co/functions/v1/public-products";
+    const form = document.getElementById("searchForm");
+    const phoneInput = document.getElementById("phoneInput");
+    const statusEl = document.getElementById("status");
+    const productsGrid = document.getElementById("productsGrid");
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function normalizePhone(value) {
+      return String(value || "").replace(/[^\d+]/g, "").replace(/^\+/, "");
+    }
+
+    function safeImage(value) {
+      const fallback = "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=900&q=80";
+      if (!value) return fallback;
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? url.href : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function formatPrice(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || number <= 0) return "السعر عند التاجر";
+      return `${number.toLocaleString("ar-LY")} د.ل`;
+    }
+
+    function productCode(product) {
+      const clean = String(product?.id || product?.title || "product").replace(/[^a-z0-9]/gi, "").toUpperCase();
+      return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
+    }
+
+    function productCard(product) {
+      const code = productCode(product);
+      return `
+        <article class="card">
+          <img src="${safeImage(product.image_url)}" alt="${escapeHtml(product.title || "منتج")}" loading="lazy" />
+          <div class="card-body">
+            <span class="chip code"><i data-lucide="scan-line"></i>${code}</span>
+            <h2>${escapeHtml(product.title || "منتج بدون اسم")}</h2>
+            <span class="price">${escapeHtml(formatPrice(product.price_lyd))}</span>
+            <div class="meta">
+              <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(product.city || "غير محدد")}</span>
+              <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category || "غير مصنف")}</span>
+            </div>
+            <div class="actions">
+              <a class="btn" href="product.html?id=${encodeURIComponent(product.id)}"><i data-lucide="external-link"></i>عرض</a>
+              <a class="btn btn-primary" href="merchant.html?edit=${encodeURIComponent(product.id)}"><i data-lucide="pencil"></i>طلب تعديل</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function loadProducts(phone) {
+      statusEl.textContent = "جاري جلب المنتجات...";
+      productsGrid.innerHTML = "";
+      const response = await fetch(`${PRODUCTS_URL}?phone=${encodeURIComponent(phone)}&limit=100`);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "تعذر تحميل المنتجات.");
+      const products = Array.isArray(payload.products) ? payload.products : [];
+      statusEl.textContent = products.length
+        ? `تم العثور على ${products.length} منتج منشور لهذا الرقم.`
+        : "لا توجد منتجات منشورة بهذا الرقم حالياً.";
+      productsGrid.innerHTML = products.length
+        ? products.map(productCard).join("")
+        : `<div class="empty"><h2>لا توجد منتجات بعد</h2><p>يمكنك إضافة أول منتج من زر إضافة منتج.</p></div>`;
+      lucide.createIcons();
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const phone = normalizePhone(phoneInput.value);
+      if (!/^218\d{8,10}$/.test(phone)) {
+        statusEl.textContent = "رقم واتساب لازم يبدأ بـ 218. مثال: 218912345678";
+        return;
+      }
+      try {
+        localStorage.setItem("tafli_merchant_phone", phone);
+        await loadProducts(phone);
+      } catch (error) {
+        statusEl.textContent = error.message;
+      }
+    });
+
+    const storedPhone = localStorage.getItem("tafli_merchant_phone") || "";
+    if (storedPhone) {
+      phoneInput.value = storedPhone;
+      loadProducts(storedPhone).catch(error => { statusEl.textContent = error.message; });
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
