@@ -264,6 +264,51 @@
       background: #EAF8FF;
     }
 
+    .size-picker {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #FBFDFF;
+    }
+
+    .size-picker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 850;
+    }
+
+    .size-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .size-chip {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #475467;
+      background: white;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .size-chip.active {
+      color: white;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 12px 24px rgba(168, 85, 247, .18);
+    }
+
     .side-list { display: grid; gap: 12px; }
     .feature {
       display: grid;
@@ -415,6 +460,7 @@
             <input type="hidden" name="edit_product_id" />
             <input type="hidden" name="image_url" />
             <input type="hidden" name="extra_images" />
+            <input type="hidden" name="sizes" />
 
             <div class="field wide">
               <label>اسم المنتج</label>
@@ -468,7 +514,13 @@
 
             <div class="field">
               <label>المقاسات</label>
-              <input name="sizes" placeholder="0-3 أشهر، 3-6 أشهر" />
+              <div class="size-picker">
+                <div class="size-picker-head">
+                  <span id="sizePresetLabel">اختر المقاسات المتوفرة</span>
+                  <button class="btn btn-light" id="clearSizesBtn" type="button"><i data-lucide="x"></i>مسح</button>
+                </div>
+                <div class="size-options" id="sizeOptions"></div>
+              </div>
             </div>
             <div class="field">
               <label>الألوان</label>
@@ -548,6 +600,9 @@
     const extraImagesInput = document.getElementById("extraImagesInput");
     const imagePreview = document.getElementById("imagePreview");
     const extraImagesPreview = document.getElementById("extraImagesPreview");
+    const sizeOptions = document.getElementById("sizeOptions");
+    const sizePresetLabel = document.getElementById("sizePresetLabel");
+    const clearSizesBtn = document.getElementById("clearSizesBtn");
     const profileStrip = document.getElementById("profileStrip");
     const logoutBtn = document.getElementById("logoutBtn");
     const formTitle = document.getElementById("formTitle");
@@ -556,6 +611,34 @@
     let merchant = null;
     let preparedImage = null;
     let preparedExtraImages = [];
+    let selectedSizes = [];
+
+    const SIZE_PRESETS = {
+      "مواليد": {
+        label: "أعمار المواليد",
+        values: ["حديث الولادة", "0-3 أشهر", "3-6 أشهر", "6-9 أشهر", "6-12 شهر", "12-18 شهر", "18-24 شهر"]
+      },
+      "ملابس أطفال": {
+        label: "مقاسات الملابس حسب العمر",
+        values: ["0-3 أشهر", "3-6 أشهر", "6-12 شهر", "12-18 شهر", "2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات", "6 سنوات", "7-8 سنوات", "9-10 سنوات", "11-12 سنة"]
+      },
+      "ألعاب": {
+        label: "العمر المناسب للعبة",
+        values: ["0+ أشهر", "6+ أشهر", "12+ شهر", "18+ شهر", "2+ سنوات", "3+ سنوات", "4+ سنوات", "5+ سنوات", "6+ سنوات", "8+ سنوات"]
+      },
+      "أحذية": {
+        label: "مقاسات أحذية الأطفال",
+        values: ["16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"]
+      },
+      "عربات وكراسي": {
+        label: "العمر أو الوزن المناسب",
+        values: ["حديثي الولادة", "0-6 أشهر", "0-12 شهر", "6-36 شهر", "حتى 13 كجم", "حتى 15 كجم", "حتى 18 كجم", "حتى 22 كجم", "حسب تأكيد التاجر"]
+      },
+      "غير مصنف": {
+        label: "مقاسات عامة",
+        values: ["حديثي الولادة", "0-3 أشهر", "3-6 أشهر", "6-12 شهر", "2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات", "حسب تأكيد التاجر"]
+      }
+    };
 
     function readSession() {
       try {
@@ -620,6 +703,35 @@
       if (merchantForm.elements[name]) merchantForm.elements[name].value = value ?? "";
     }
 
+    function currentSizePreset() {
+      const category = merchantForm.elements.category?.value || "غير مصنف";
+      return SIZE_PRESETS[category] || SIZE_PRESETS["غير مصنف"];
+    }
+
+    function syncSizeInput() {
+      fillField("sizes", selectedSizes.join("، "));
+    }
+
+    function setSelectedSizes(values = []) {
+      selectedSizes = [...new Set(values.map(item => String(item).trim()).filter(Boolean))];
+      syncSizeInput();
+      renderSizeOptions();
+    }
+
+    function renderSizeOptions() {
+      const preset = currentSizePreset();
+      sizePresetLabel.textContent = preset.label;
+      const presetValues = new Set(preset.values);
+      selectedSizes = selectedSizes.filter(size => presetValues.has(size));
+      syncSizeInput();
+      sizeOptions.innerHTML = preset.values.map(size => `
+        <button class="size-chip ${selectedSizes.includes(size) ? "active" : ""}" type="button" data-size-value="${escapeHtml(size)}">
+          ${escapeHtml(size)}
+        </button>
+      `).join("");
+      lucide.createIcons();
+    }
+
     function switchAuthTab(tabName) {
       authTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.authTab === tabName));
       authPanels.forEach(panel => { panel.hidden = panel.dataset.authPanel !== tabName; });
@@ -667,6 +779,7 @@
         <span class="profile-pill"><i data-lucide="message-circle"></i>${escapeHtml(merchant.whatsapp_phone || "")}</span>
       `;
       fillField("city", merchant.city || "");
+      renderSizeOptions();
       lucide.createIcons();
     }
 
@@ -766,7 +879,7 @@
         fillField("price_lyd", product.price_lyd);
         fillField("category", product.category);
         fillField("city", product.city || merchant?.city || "");
-        fillField("sizes", product.sizes?.length ? product.sizes.join("، ") : attributes.sizes.join("، "));
+        setSelectedSizes(product.sizes?.length ? product.sizes : attributes.sizes);
         fillField("colors", product.colors?.length ? product.colors.join("، ") : attributes.colors.join("، "));
         fillField("stock_status", product.stock_status || attributes.stockStatus || "متوفر");
         fillField("description", stripDescriptionAttributes(product.description || ""));
@@ -850,6 +963,7 @@
       merchant = null;
       merchantForm.reset();
       resetImageState();
+      setSelectedSizes([]);
       showAuth();
       setAuthStatus("تم تسجيل الخروج.", "ok");
     });
@@ -892,6 +1006,23 @@
       }
     });
 
+    merchantForm.elements.category.addEventListener("change", () => {
+      setSelectedSizes([]);
+    });
+
+    sizeOptions.addEventListener("click", event => {
+      const chip = event.target.closest("[data-size-value]");
+      if (!chip) return;
+      const value = chip.dataset.sizeValue;
+      if (selectedSizes.includes(value)) {
+        setSelectedSizes(selectedSizes.filter(item => item !== value));
+      } else {
+        setSelectedSizes([...selectedSizes, value]);
+      }
+    });
+
+    clearSizesBtn.addEventListener("click", () => setSelectedSizes([]));
+
     merchantForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const button = merchantForm.querySelector("button[type='submit']");
@@ -933,6 +1064,7 @@
 
         merchantForm.reset();
         fillField("city", merchant?.city || "");
+        setSelectedSizes([]);
         resetImageState();
         formTitle.textContent = "بيانات المنتج";
         merchantForm.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال المنتج للمراجعة';

@@ -104,11 +104,43 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+    .media-card {
+      position: relative;
+    }
     .product-image {
       width: 100%;
       aspect-ratio: 1 / .86;
       object-fit: cover;
       background: #EAF8FF;
+    }
+    .media-nav {
+      position: absolute;
+      top: 42%;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 12px 26px rgba(31, 41, 55, .16);
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+    .media-nav.prev { inset-inline-start: 12px; }
+    .media-nav.next { inset-inline-end: 12px; }
+    .image-count {
+      position: absolute;
+      inset-block-start: 14px;
+      inset-inline-start: 14px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      color: white;
+      background: rgba(31,41,55,.72);
+      font-size: .82rem;
+      font-weight: 900;
+      backdrop-filter: blur(12px);
     }
     .gallery {
       display: flex;
@@ -271,6 +303,7 @@
     const productId = params.get("id");
     let product = null;
     let selected = { size: "", color: "" };
+    let galleryIndex = 0;
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -335,8 +368,32 @@
       return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
     }
 
+    function fallbackOptionsFor(row) {
+      const category = row.category || "";
+      const name = row.title || row.name || "";
+      if (category.includes("مواليد") || name.includes("مواليد") || name.includes("مولود")) {
+        return { sizes: ["حديث الولادة", "0-3 أشهر", "3-6 أشهر", "6-12 شهر"], colors: ["أبيض", "سماوي", "وردي"] };
+      }
+      if (category.includes("ملابس")) {
+        return { sizes: ["0-3 أشهر", "3-6 أشهر", "6-12 شهر", "2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات"], colors: ["أزرق", "وردي", "رمادي"] };
+      }
+      if (category.includes("أحذية")) {
+        return { sizes: ["16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"], colors: ["أبيض", "بيج", "أسود"] };
+      }
+      if (category.includes("ألعاب")) {
+        return { sizes: ["6+ أشهر", "12+ شهر", "2+ سنوات", "3+ سنوات", "5+ سنوات"], colors: ["ألوان متعددة"] };
+      }
+      if (category.includes("عربات") || category.includes("كراسي")) {
+        return { sizes: ["حديثي الولادة", "0-6 أشهر", "0-12 شهر", "6-36 شهر", "حتى 15 كجم", "حتى 22 كجم"], colors: ["رمادي", "أسود"] };
+      }
+      return { sizes: [], colors: [] };
+    }
+
     function normalizeProduct(row) {
       const attributes = parseDescriptionAttributes(row.description);
+      const fallbacks = fallbackOptionsFor(row);
+      const rowSizes = splitList(row.sizes);
+      const rowColors = splitList(row.colors);
       const gallery = [
         safeImage(row.image_url),
         ...attributes.extraImages.map(safeImage)
@@ -355,9 +412,9 @@
         badge: row.badge || row.category || "جديد",
         sourceUrl: row.source_url || "",
         description: stripDescriptionAttributes(row.description) || "تفاصيل المنتج والتوفر النهائي يتم تأكيدها مباشرة مع التاجر.",
-        sizes: attributes.sizes,
-        colors: attributes.colors,
-        availability: attributes.stockStatus || "حسب تأكيد التاجر",
+        sizes: rowSizes.length ? rowSizes : (attributes.sizes.length ? attributes.sizes : fallbacks.sizes),
+        colors: rowColors.length ? rowColors : (attributes.colors.length ? attributes.colors : fallbacks.colors),
+        availability: row.stock_status || attributes.stockStatus || "حسب تأكيد التاجر",
         merchantCode: attributes.merchantCode || row.merchant_code || "",
         code: productCode(row),
       };
@@ -419,8 +476,21 @@
       lucide.createIcons();
     }
 
+    function setGalleryIndex(index) {
+      if (!product?.gallery?.length) return;
+      galleryIndex = (index + product.gallery.length) % product.gallery.length;
+      const mainImage = document.getElementById("mainImage");
+      const imageCount = document.getElementById("imageCount");
+      if (mainImage) mainImage.src = product.gallery[galleryIndex];
+      if (imageCount) imageCount.textContent = `${galleryIndex + 1} / ${product.gallery.length}`;
+      app.querySelectorAll(".gallery button").forEach((item, itemIndex) => {
+        item.classList.toggle("active", itemIndex === galleryIndex);
+      });
+    }
+
     function renderProduct() {
       document.title = `${product.name} | طفلي ماركت`;
+      galleryIndex = 0;
       selected.size = product.sizes[0] || "";
       selected.color = product.colors[0] || "";
       const storeUrl = `store.html?store=${encodeURIComponent(product.store)}`;
@@ -429,6 +499,9 @@
           <aside class="media-card">
             <img class="product-image" id="mainImage" src="${product.image}" alt="${escapeHtml(product.name)}" />
             ${product.gallery.length > 1 ? `
+              <button class="media-nav prev" type="button" data-gallery-step="-1" aria-label="الصورة السابقة"><i data-lucide="chevron-right"></i></button>
+              <button class="media-nav next" type="button" data-gallery-step="1" aria-label="الصورة التالية"><i data-lucide="chevron-left"></i></button>
+              <span class="image-count" id="imageCount">1 / ${product.gallery.length}</span>
               <div class="gallery">
                 ${product.gallery.map((image, index) => `
                   <button class="${index === 0 ? "active" : ""}" type="button" data-gallery-image="${escapeHtml(image)}">
@@ -449,8 +522,8 @@
             </div>
             <p class="description">${escapeHtml(product.description)}</p>
             <div id="options">
-              ${optionGroup("المقاس", "size", product.sizes)}
-              ${optionGroup("اللون", "color", product.colors)}
+              ${optionGroup("اختر المقاس", "size", product.sizes)}
+              ${optionGroup("اختر اللون", "color", product.colors)}
             </div>
             <div class="summary" id="summary"></div>
             <div class="actions">
@@ -522,12 +595,16 @@
     }
 
     app.addEventListener("click", event => {
+      const galleryStep = event.target.closest("[data-gallery-step]");
+      if (galleryStep) {
+        setGalleryIndex(galleryIndex + Number(galleryStep.dataset.galleryStep || 0));
+        return;
+      }
+
       const galleryButton = event.target.closest("[data-gallery-image]");
       if (galleryButton) {
-        const mainImage = document.getElementById("mainImage");
-        if (mainImage) mainImage.src = galleryButton.dataset.galleryImage;
-        app.querySelectorAll(".gallery button").forEach(item => item.classList.remove("active"));
-        galleryButton.classList.add("active");
+        const nextIndex = product.gallery.indexOf(galleryButton.dataset.galleryImage);
+        setGalleryIndex(nextIndex >= 0 ? nextIndex : 0);
         return;
       }
 
@@ -540,7 +617,7 @@
       const option = event.target.closest("[data-key]");
       if (!option || !product) return;
       selected[option.dataset.key] = option.dataset.value;
-      document.getElementById("options").innerHTML = `${optionGroup("المقاس", "size", product.sizes)}${optionGroup("اللون", "color", product.colors)}`;
+      document.getElementById("options").innerHTML = `${optionGroup("اختر المقاس", "size", product.sizes)}${optionGroup("اختر اللون", "color", product.colors)}`;
       renderSummary();
     });
 
