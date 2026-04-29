@@ -114,6 +114,36 @@
       padding: 18px;
       margin-top: 18px;
     }
+    .admin-tabs {
+      position: sticky;
+      top: 74px;
+      z-index: 15;
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .admin-tab {
+      color: #475467;
+      background: #F8FAFC;
+      border: 1px solid var(--line);
+      box-shadow: none;
+      flex: 0 0 auto;
+    }
+    .admin-tab.active {
+      color: white;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+    }
+    .admin-section[hidden] {
+      display: none !important;
+    }
     .helper-note {
       margin: 0;
       color: var(--muted);
@@ -165,6 +195,10 @@
       border-radius: 16px;
       border: 1px solid var(--line);
       background: #EAF0F6;
+    }
+    .image-url-hidden,
+    .gallery-url-hidden {
+      display: none;
     }
     .upload-note {
       color: var(--muted);
@@ -359,7 +393,15 @@
         <p>هذه الصفحة مخصصة للإدارة. تعرض مسودات المنتجات المستوردة من فيسبوك وتسمح بتعديلها ثم نشرها في طفلي ماركت.</p>
       </section>
 
-      <section class="config-card" aria-label="إعداد الاتصال">
+      <nav class="admin-tabs" aria-label="أقسام لوحة الإدارة">
+        <button class="btn admin-tab active" type="button" data-admin-tab="config"><i data-lucide="key-round"></i>الإعداد</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="drafts"><i data-lucide="clipboard-list"></i>المسودات</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="products"><i data-lucide="package-search"></i>المنتجات</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="manual"><i data-lucide="package-plus"></i>إضافة يدوي</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="facebook"><i data-lucide="file-input"></i>فيسبوك</button>
+      </nav>
+
+      <section class="config-card admin-section" data-admin-section="config" aria-label="إعداد الاتصال">
         <p class="helper-note wide">أدخل مفتاح الإدارة فقط. لا تدخل مفاتيح Supabase مثل anon أو service role هنا.</p>
         <div class="field wide">
           <label for="adminKey">مفتاح الإدارة</label>
@@ -376,7 +418,7 @@
         </div>
       </section>
 
-      <section class="config-card manual-card" aria-label="إضافة منتج يدوي">
+      <section class="config-card manual-card admin-section" data-admin-section="manual" aria-label="إضافة منتج يدوي" hidden>
         <div class="panel-head wide">
           <h2>إضافة منتج يدوي</h2>
           <p>استخدمها لإدخال منتجات حقيقية من طرف الإدارة ونشرها مباشرة في الواجهة.</p>
@@ -415,11 +457,11 @@
             <input name="whatsapp_phone" required placeholder="2189XXXXXXXX" />
           </div>
           <div class="field">
-            <label>رابط الصورة</label>
-            <input name="image_url" type="url" placeholder="https://..." />
+            <label>الصورة الرئيسية</label>
+            <input class="image-url-hidden" name="image_url" type="hidden" />
             <div class="upload-tools">
               <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
-              <span class="upload-note">أو اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
+              <span class="upload-note">اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
           </div>
@@ -429,10 +471,10 @@
           </div>
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
-            <textarea name="extra_images" placeholder="ضع كل رابط صورة في سطر منفصل أو افصل بينها بفواصل"></textarea>
+            <textarea class="gallery-url-hidden" name="extra_images"></textarea>
             <div class="upload-tools">
               <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
-              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+              <span class="upload-note">اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافتها تلقائياً.</span>
             </div>
           </div>
           <div class="field">
@@ -463,7 +505,7 @@
         </form>
       </section>
 
-      <section class="config-card manual-card" aria-label="استيراد منشور فيسبوك">
+      <section class="config-card manual-card admin-section" data-admin-section="facebook" aria-label="استيراد منشور فيسبوك" hidden>
         <div class="panel-head wide">
           <h2>استيراد منشور فيسبوك كنص</h2>
           <p>الصق نص المنشور ورابطه، وسنحوله لمسودة منتج بانتظار المراجعة بدل الإدخال من الصفر.</p>
@@ -507,20 +549,20 @@
             </select>
           </div>
           <div class="field">
-            <label>رابط الصورة</label>
-            <input name="image_url" type="url" placeholder="https://..." />
+            <label>الصورة الرئيسية</label>
+            <input class="image-url-hidden" name="image_url" type="hidden" />
             <div class="upload-tools">
               <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
-              <span class="upload-note">أو ارفع صورة المنتج من الجهاز، وسيتم استخدامها في المسودة.</span>
+              <span class="upload-note">ارفع صورة المنتج من الجهاز، وسيتم استخدامها في المسودة.</span>
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
           </div>
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
-            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <textarea class="gallery-url-hidden" name="extra_images"></textarea>
             <div class="upload-tools">
               <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
-              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+              <span class="upload-note">اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافتها تلقائياً.</span>
             </div>
           </div>
           <div class="field">
@@ -551,7 +593,7 @@
         </form>
       </section>
 
-      <div class="toolbar">
+      <div class="toolbar admin-section" data-admin-section="drafts" hidden>
         <div>
           <h2>المسودات بانتظار المراجعة</h2>
           <div class="status" id="status">أدخل مفتاح الإدارة للبدء.</div>
@@ -560,9 +602,9 @@
         <button class="btn btn-teal" id="refreshBtn" type="button"><i data-lucide="refresh-cw"></i>تحديث</button>
       </div>
 
-      <section class="drafts" id="drafts"></section>
+      <section class="drafts admin-section" data-admin-section="drafts" id="drafts" hidden></section>
 
-      <div class="toolbar">
+      <div class="toolbar admin-section" data-admin-section="products" hidden>
         <div>
           <h2>المنتجات المنشورة</h2>
           <div class="status" id="productsStatus">اضغط تحديث لعرض المنتجات المنشورة.</div>
@@ -570,7 +612,7 @@
         <button class="btn btn-teal" id="refreshProductsBtn" type="button"><i data-lucide="package-search"></i>تحديث المنتجات</button>
       </div>
 
-      <section class="config-card" aria-label="فلاتر المنتجات المنشورة">
+      <section class="config-card admin-section" data-admin-section="products" aria-label="فلاتر المنتجات المنشورة" hidden>
         <div class="field">
           <label for="productSearch">بحث داخل المنتجات</label>
           <input id="productSearch" type="search" placeholder="اسم المنتج أو المحل أو المدينة" />
@@ -617,7 +659,7 @@
         </div>
       </section>
 
-      <section class="drafts" id="publishedProducts"></section>
+      <section class="drafts admin-section" data-admin-section="products" id="publishedProducts" hidden></section>
     </div>
   </main>
 
@@ -664,20 +706,20 @@
             <input name="whatsapp_phone" required />
           </div>
           <div class="field">
-            <label>رابط الصورة</label>
-            <input name="image_url" type="url" />
+            <label>الصورة الرئيسية</label>
+            <input class="image-url-hidden" name="image_url" type="hidden" />
             <div class="upload-tools">
               <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
-              <span class="upload-note">أو اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
+              <span class="upload-note">اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
           </div>
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
-            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <textarea class="gallery-url-hidden" name="extra_images"></textarea>
             <div class="upload-tools">
               <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
-              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+              <span class="upload-note">اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافتها تلقائياً.</span>
             </div>
           </div>
           <div class="field">
@@ -760,11 +802,11 @@
             <input name="whatsapp_phone" required />
           </div>
           <div class="field">
-            <label>رابط الصورة</label>
-            <input name="image_url" type="url" />
+            <label>الصورة الرئيسية</label>
+            <input class="image-url-hidden" name="image_url" type="hidden" />
             <div class="upload-tools">
               <input type="file" accept="image/*" data-image-upload data-target-name="image_url" />
-              <span class="upload-note">أو اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
+              <span class="upload-note">اختر صورة من الهاتف/الكمبيوتر وسيتم رفعها تلقائياً.</span>
               <img class="image-preview" data-image-preview alt="معاينة الصورة" />
             </div>
           </div>
@@ -774,10 +816,10 @@
           </div>
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
-            <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <textarea class="gallery-url-hidden" name="extra_images"></textarea>
             <div class="upload-tools">
               <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
-              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+              <span class="upload-note">اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافتها تلقائياً.</span>
             </div>
           </div>
           <div class="field">
@@ -845,7 +887,17 @@
     const publishedProductsEl = document.getElementById("publishedProducts");
     const template = document.getElementById("draftTemplate");
     const productTemplate = document.getElementById("productTemplate");
+    const adminTabs = document.querySelectorAll("[data-admin-tab]");
+    const adminSections = document.querySelectorAll("[data-admin-section]");
     let allPublishedProducts = [];
+
+    function showAdminSection(name) {
+      adminTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.adminTab === name));
+      adminSections.forEach(section => {
+        section.hidden = section.dataset.adminSection !== name;
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     function getConfig() {
       return {
@@ -1341,6 +1393,7 @@
         });
         setStatus("تم إنشاء مسودة تجريبية.", "ok");
         await loadDrafts();
+        showAdminSection("drafts");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1356,6 +1409,7 @@
         });
         setStatus("تم نشر منتج مثال في الواجهة.", "ok");
         await Promise.all([loadStats(), loadProducts()]);
+        showAdminSection("products");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1374,6 +1428,7 @@
         const count = Number(stats?.published_products || 0);
         setStatus(`تم نشر المنتج اليدوي. عدد المنتجات المنشورة الآن: ${count}.`, "ok");
         await loadProducts();
+        showAdminSection("products");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1391,6 +1446,7 @@
         updateImagePreview(form, "");
         setStatus("تم إنشاء مسودة من منشور فيسبوك. راجعها في قائمة المسودات.", "ok");
         await loadDrafts();
+        showAdminSection("drafts");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1445,16 +1501,22 @@
       saveCurrentConfig();
       loadDrafts();
       loadProducts();
+      showAdminSection("drafts");
     });
     seedDraftBtn.addEventListener("click", seedDraft);
     seedProductBtn.addEventListener("click", seedProduct);
     refreshBtn.addEventListener("click", () => {
       saveCurrentConfig();
       loadDrafts();
+      showAdminSection("drafts");
     });
     refreshProductsBtn.addEventListener("click", () => {
       saveCurrentConfig();
       loadProducts();
+      showAdminSection("products");
+    });
+    adminTabs.forEach(tab => {
+      tab.addEventListener("click", () => showAdminSection(tab.dataset.adminTab));
     });
     adminKeyInput.addEventListener("input", () => {
       const cleaned = normalizeAdminKey(adminKeyInput.value);

@@ -248,6 +248,22 @@
       border: 1px solid var(--line);
     }
 
+    .gallery-preview {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .gallery-preview img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #EAF8FF;
+    }
+
     .status {
       display: none;
       margin-top: 14px;
@@ -403,11 +419,12 @@
             </div>
             <div class="field wide">
               <label>صور إضافية للمعرض</label>
-              <textarea name="extra_images" placeholder="اختياري: ضع روابط صور إضافية، كل رابط في سطر"></textarea>
+              <input type="hidden" name="extra_images" />
               <div class="upload-row">
                 <input id="extraImagesInput" type="file" accept="image/*" multiple />
-                <span>أو اختر عدة صور إضافية من الهاتف/الكمبيوتر وسيتم رفعها مع المنتج.</span>
+                <span>اختر صور إضافية من الهاتف/الكمبيوتر وسيتم رفعها مع المنتج.</span>
               </div>
+              <div class="gallery-preview" id="extraImagesPreview"></div>
             </div>
             <div class="field wide">
               <label>نص منشور فيسبوك إن وجد</label>
@@ -460,6 +477,7 @@
     const imageInput = document.getElementById("imageInput");
     const extraImagesInput = document.getElementById("extraImagesInput");
     const imagePreview = document.getElementById("imagePreview");
+    const extraImagesPreview = document.getElementById("extraImagesPreview");
     const formStatus = document.getElementById("formStatus");
     let preparedImage = null;
     let preparedExtraImages = [];
@@ -536,6 +554,7 @@
           imagePreview.src = product.image_url;
           imagePreview.style.display = "block";
         }
+        renderExtraImagesPreview(attributes.extraImages);
         setStatus("عدّل البيانات ثم أرسلها للمراجعة. الإدارة ستعتمد التغيير قبل ظهوره.", "ok");
         form.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال التعديل للمراجعة';
         lucide.createIcons();
@@ -619,13 +638,21 @@
         for (const file of files.slice(0, 6)) {
           preparedExtraImages.push(await prepareImage(file));
         }
+        renderExtraImagesPreview(preparedExtraImages.map(image => image.preview));
         setStatus(`تم تجهيز ${preparedExtraImages.length} صورة إضافية، سيتم رفعها عند الإرسال.`, "ok");
       } catch (error) {
         preparedExtraImages = [];
         extraImagesInput.value = "";
+        renderExtraImagesPreview([]);
         setStatus(error.message, "error");
       }
     });
+
+    function renderExtraImagesPreview(images) {
+      const list = (images || []).filter(Boolean);
+      extraImagesPreview.innerHTML = list.map((src, index) => `<img src="${src}" alt="صورة إضافية ${index + 1}" />`).join("");
+      extraImagesPreview.style.display = list.length ? "grid" : "none";
+    }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -666,6 +693,7 @@
         form.reset();
         preparedImage = null;
         preparedExtraImages = [];
+        renderExtraImagesPreview([]);
         imagePreview.removeAttribute("src");
         imagePreview.style.display = "none";
         setStatus(payload.message || "تم إرسال المنتج للمراجعة.", "ok");
