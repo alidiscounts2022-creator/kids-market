@@ -26,6 +26,8 @@
 - `supabase/functions/facebook-import`: وظيفة استيراد منشورات الصفحة.
 - `.github/workflows/deploy-supabase-functions.yml`: نشر دوال Supabase عبر GitHub Actions.
 - `.env.example`: أسماء المتغيرات المطلوبة لاحقا بدون أي مفاتيح حقيقية.
+- `assets/brand`: ملفات شعار طفلي ماركت بصيغ SVG وPNG وWebP، مع ملف ZIP جاهز للسوشيال والطباعة والتغليف.
+- `tools/generate-brand-assets.mjs`: سكربت إعادة توليد مقاسات الشعار من ملفات SVG الأصلية.
 
 ## التشغيل
 

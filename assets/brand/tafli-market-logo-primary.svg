@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="280" viewBox="0 0 940 280" role="img" aria-labelledby="title desc">
+  <title id="title">شعار طفلي ماركت</title>
+  <desc id="desc">شعار أفقي لمنصة طفلي ماركت</desc>
+  <defs>
+    <linearGradient id="brandBg" x1="684" y1="38" x2="890" y2="244" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A855F7"/>
+      <stop offset="0.56" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="brandText" x1="212" y1="70" x2="660" y2="198" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#14B8A6"/>
+      <stop offset="0.48" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+    <filter id="brandShadow" x="-18%" y="-18%" width="136%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#1F2937" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <g filter="url(#brandShadow)">
+    <rect x="694" y="42" width="196" height="196" rx="58" fill="url(#brandBg)"/>
+    <path d="M726 84c32-23 83-30 122-7 28 16 40 44 32 76-11 40-58 76-108 74-46-2-76-36-76-76 0-25 9-46 30-67Z" fill="#fff" opacity="0.16"/>
+    <path d="M739 120c3-14 12-22 27-22h52c15 0 24 8 27 22l13 77c3 19-9 33-28 33h-76c-19 0-31-14-28-33l13-77Z" fill="#fff"/>
+    <path d="M765 109c0-22 12-37 27-37s27 15 27 37" fill="none" stroke="#F3E8FF" stroke-width="10" stroke-linecap="round"/>
+    <path d="M762 137c18 13 43 14 61 0" fill="none" stroke="#14B8A6" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="773" cy="157" r="6" fill="#A855F7"/>
+    <circle cx="812" cy="157" r="6" fill="#38BDF8"/>
+    <path d="M793 181c9-11 27-5 27 10 0 17-20 26-27 33-7-7-27-16-27-33 0-15 18-21 27-10Z" fill="#E6FFFB" stroke="#14B8A6" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+  <g direction="rtl" unicode-bidi="plaintext">
+    <text x="390" y="118" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="84" font-weight="900" letter-spacing="0" fill="#A855F7">طفلي</text>
+    <text x="390" y="178" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="54" font-weight="900" letter-spacing="0" fill="#14B8A6">ماركت</text>
+    <text x="390" y="220" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="27" font-weight="800" letter-spacing="0" fill="#667085">سوق منتجات الأطفال في ليبيا</text>
+  </g>
+  <path d="M594 62c17-20 50-9 50 18 0 31-35 46-50 59-14-13-50-28-50-59 0-27 33-38 50-18Z" fill="url(#brandText)" opacity="0.16"/>
+</svg>
