@@ -301,6 +301,47 @@
     .draft-card.is-collapsed .draft-image {
       max-height: 190px;
     }
+    .merchant-card {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+    }
+    .merchant-main {
+      display: grid;
+      gap: 10px;
+    }
+    .merchant-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .merchant-title h3 {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.45;
+    }
+    .merchant-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .merchant-status-active {
+      color: #047857;
+      background: #ECFDF3;
+      border-color: #ABEFC6;
+    }
+    .merchant-status-paused {
+      color: #B42318;
+      background: #FEF3F2;
+      border-color: #FECDCA;
+    }
+    .merchant-status-pending {
+      color: #B54708;
+      background: #FFFAEB;
+      border-color: #FEDF89;
+    }
     .draft-image {
       width: 100%;
       aspect-ratio: 1.4 / 1;
@@ -439,6 +480,7 @@
         <button class="btn admin-tab" type="button" data-admin-tab="config"><i data-lucide="key-round"></i>الإعداد</button>
         <button class="btn admin-tab" type="button" data-admin-tab="drafts"><i data-lucide="clipboard-list"></i>المسودات</button>
         <button class="btn admin-tab" type="button" data-admin-tab="products"><i data-lucide="package-search"></i>المنتجات</button>
+        <button class="btn admin-tab" type="button" data-admin-tab="merchants"><i data-lucide="users"></i>التجار</button>
         <button class="btn admin-tab" type="button" data-admin-tab="manual"><i data-lucide="package-plus"></i>إضافة يدوي</button>
         <button class="btn admin-tab" type="button" data-admin-tab="facebook"><i data-lucide="file-input"></i>فيسبوك</button>
       </nav>
@@ -722,6 +764,32 @@
       </section>
 
       <section class="drafts admin-section" data-admin-section="products" id="publishedProducts" hidden></section>
+
+      <div class="toolbar admin-section" data-admin-section="merchants" hidden>
+        <div>
+          <h2>إدارة التجار</h2>
+          <div class="status" id="merchantsStatus">اضغط تحديث لعرض حسابات التجار.</div>
+        </div>
+        <button class="btn btn-teal" id="refreshMerchantsBtn" type="button"><i data-lucide="users"></i>تحديث التجار</button>
+      </div>
+
+      <section class="config-card admin-section" data-admin-section="merchants" aria-label="فلاتر التجار" hidden>
+        <div class="field">
+          <label for="merchantSearch">بحث داخل التجار</label>
+          <input id="merchantSearch" type="search" placeholder="اسم المحل أو المدينة أو واتساب" />
+        </div>
+        <div class="field">
+          <label for="merchantStatusFilter">حالة التاجر</label>
+          <select id="merchantStatusFilter">
+            <option value="all">كل الحالات</option>
+            <option value="active">نشط</option>
+            <option value="paused">موقوف مؤقتاً</option>
+            <option value="pending">بانتظار مراجعة</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="drafts admin-section" data-admin-section="merchants" id="merchantsList" hidden></section>
     </div>
   </main>
 
@@ -810,6 +878,10 @@
           </div>
           <div class="wide">
             <a class="source-link" target="_blank" rel="noopener" data-field="sourceUrl"></a>
+          </div>
+          <div class="field wide">
+            <label>سبب الرفض أو ملاحظة الإدارة للتاجر</label>
+            <textarea name="review_note" placeholder="مثال: الصورة غير واضحة، السعر ناقص، أو المقاسات تحتاج توضيح"></textarea>
           </div>
           <div class="actions wide">
             <button class="btn btn-teal" type="submit"><i data-lucide="check"></i>اعتماد ونشر</button>
@@ -940,14 +1012,18 @@
     const seedProductBtn = document.getElementById("seedProduct");
     const refreshBtn = document.getElementById("refreshBtn");
     const refreshProductsBtn = document.getElementById("refreshProductsBtn");
+    const refreshMerchantsBtn = document.getElementById("refreshMerchantsBtn");
     const manualProductForm = document.getElementById("manualProductForm");
     const facebookDraftForm = document.getElementById("facebookDraftForm");
     const productSearch = document.getElementById("productSearch");
     const productStatusFilter = document.getElementById("productStatusFilter");
     const productCategoryFilter = document.getElementById("productCategoryFilter");
     const productCityFilter = document.getElementById("productCityFilter");
+    const merchantSearch = document.getElementById("merchantSearch");
+    const merchantStatusFilter = document.getElementById("merchantStatusFilter");
     const statusEl = document.getElementById("status");
     const productsStatusEl = document.getElementById("productsStatus");
+    const merchantsStatusEl = document.getElementById("merchantsStatus");
     const statsStrip = document.getElementById("statsStrip");
     const dashboardMetrics = document.getElementById("dashboardMetrics");
     const dashboardStatus = document.getElementById("dashboardStatus");
@@ -957,12 +1033,14 @@
     const copyDraftsSheets = document.getElementById("copyDraftsSheets");
     const draftsEl = document.getElementById("drafts");
     const publishedProductsEl = document.getElementById("publishedProducts");
+    const merchantsList = document.getElementById("merchantsList");
     const template = document.getElementById("draftTemplate");
     const productTemplate = document.getElementById("productTemplate");
     const adminTabs = document.querySelectorAll("[data-admin-tab]");
     const adminSections = document.querySelectorAll("[data-admin-section]");
     let allPublishedProducts = [];
     let allDrafts = [];
+    let allMerchants = [];
 
     function showAdminSection(name) {
       adminTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.adminTab === name));
@@ -994,6 +1072,11 @@
     function setProductsStatus(message, type = "") {
       productsStatusEl.textContent = message;
       productsStatusEl.className = `status ${type}`.trim();
+    }
+
+    function setMerchantsStatus(message, type = "") {
+      merchantsStatusEl.textContent = message;
+      merchantsStatusEl.className = `status ${type}`.trim();
     }
 
     function setDashboardStatus(message, type = "") {
@@ -1250,6 +1333,19 @@
       }
     }
 
+    async function loadMerchants() {
+      try {
+        setMerchantsStatus("جاري جلب التجار...");
+        merchantsList.innerHTML = "";
+        const payload = await api("/merchants");
+        allMerchants = payload.merchants || [];
+        renderMerchants(filterMerchants());
+        setMerchantsStatus(`تم جلب ${allMerchants.length} تاجر.`, "ok");
+      } catch (error) {
+        setMerchantsStatus(error.message, "error");
+      }
+    }
+
     function filterPublishedProducts() {
       const query = (productSearch?.value || "").trim().toLowerCase();
       const status = productStatusFilter?.value || "all";
@@ -1277,6 +1373,79 @@
       const filtered = filterPublishedProducts();
       renderPublishedProducts(filtered);
       setProductsStatus(`عرض ${filtered.length} من ${allPublishedProducts.length} منتج.`, "ok");
+    }
+
+    function filterMerchants() {
+      const query = (merchantSearch?.value || "").trim().toLowerCase();
+      const status = merchantStatusFilter?.value || "all";
+      return allMerchants.filter(merchant => {
+        const haystack = [
+          merchant.store_name,
+          merchant.owner_name,
+          merchant.city,
+          merchant.whatsapp_phone,
+          merchant.facebook_page_url,
+        ].join(" ").toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const matchesStatus = status === "all" || (merchant.status || "active") === status;
+        return matchesQuery && matchesStatus;
+      });
+    }
+
+    function applyMerchantFilters() {
+      const filtered = filterMerchants();
+      renderMerchants(filtered);
+      setMerchantsStatus(`عرض ${filtered.length} من ${allMerchants.length} تاجر.`, "ok");
+    }
+
+    function merchantStatusLabel(status) {
+      if (status === "paused") return "موقوف مؤقتاً";
+      if (status === "pending") return "بانتظار مراجعة";
+      return "نشط";
+    }
+
+    function renderMerchants(merchants) {
+      merchantsList.innerHTML = "";
+      if (!merchants.length) {
+        merchantsList.innerHTML = `<div class="empty-state">لا توجد حسابات تجار مطابقة حالياً.</div>`;
+        return;
+      }
+
+      merchants.forEach((merchant) => {
+        const status = merchant.status || "active";
+        const store = merchant.store_name || "محل بدون اسم";
+        const storeUrl = `store.html?store=${encodeURIComponent(store)}`;
+        const facebookLink = merchant.facebook_page_url
+          ? `<a class="btn btn-light" href="${escapeHtml(merchant.facebook_page_url)}" target="_blank" rel="noopener"><i data-lucide="external-link"></i>صفحة المتجر</a>`
+          : "";
+
+        const article = document.createElement("article");
+        article.className = "draft-card merchant-card";
+        article.innerHTML = `
+          <div class="merchant-main">
+            <div class="merchant-title">
+              <h3>${escapeHtml(store)}</h3>
+              <span class="pill merchant-status-${escapeHtml(status)}">${escapeHtml(merchantStatusLabel(status))}</span>
+            </div>
+            <div class="merchant-meta">
+              <span class="stat-chip"><i data-lucide="map-pin"></i>${escapeHtml(merchant.city || "غير محدد")}</span>
+              <span class="stat-chip"><i data-lucide="phone"></i>${escapeHtml(merchant.whatsapp_phone || "بدون واتساب")}</span>
+              <span class="stat-chip"><i data-lucide="package"></i>منتجات: <strong>${Number(merchant.products_count || 0)}</strong></span>
+              <span class="stat-chip"><i data-lucide="clipboard-list"></i>مسودات: <strong>${Number(merchant.drafts_count || 0)}</strong></span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-teal" type="button" data-merchant-status="active" data-merchant-id="${escapeHtml(merchant.id)}"><i data-lucide="check-circle-2"></i>تفعيل</button>
+            <button class="btn btn-light" type="button" data-merchant-status="pending" data-merchant-id="${escapeHtml(merchant.id)}"><i data-lucide="clock-3"></i>بانتظار</button>
+            <button class="btn btn-danger" type="button" data-merchant-status="paused" data-merchant-id="${escapeHtml(merchant.id)}"><i data-lucide="pause-circle"></i>إيقاف</button>
+            <button class="btn btn-primary" type="button" data-merchant-products="${escapeHtml(store)}"><i data-lucide="package-search"></i>منتجاته</button>
+            <a class="btn btn-light" href="${storeUrl}" target="_blank" rel="noopener"><i data-lucide="store"></i>واجهة المحل</a>
+            ${facebookLink}
+          </div>
+        `;
+        merchantsList.appendChild(article);
+      });
+      lucide.createIcons();
     }
 
     function renderDrafts(drafts) {
@@ -1313,7 +1482,7 @@
           await approveDraft(form, card);
         });
         form.querySelector('[data-action="reject"]').addEventListener("click", async () => {
-          await rejectDraft(draft.id, card);
+          await rejectDraft(draft.id, card, form);
         });
 
         draftsEl.appendChild(node);
@@ -1556,15 +1725,19 @@
       }
     }
 
-    async function rejectDraft(id, card) {
+    async function rejectDraft(id, card, form) {
       try {
         setStatus("جاري رفض المسودة...");
         await api("/reject", {
           method: "POST",
-          body: JSON.stringify({ id }),
+          body: JSON.stringify({
+            id,
+            review_note: form?.elements?.review_note?.value || "",
+          }),
         });
         card.remove();
-        setStatus("تم رفض المسودة.", "ok");
+        await loadStats();
+        setStatus("تم رفض المسودة وإرسال سبب الرفض للتاجر.", "ok");
       } catch (error) {
         setStatus(error.message, "error");
       }
@@ -1684,10 +1857,36 @@
       }
     }
 
+    async function updateMerchantStatus(id, status) {
+      try {
+        setMerchantsStatus("جاري تحديث حالة التاجر...");
+        await api("/merchant-status", {
+          method: "POST",
+          body: JSON.stringify({ id, status }),
+        });
+        await Promise.all([loadMerchants(), loadStats()]);
+        setMerchantsStatus("تم تحديث حالة التاجر.", "ok");
+      } catch (error) {
+        setMerchantsStatus(error.message, "error");
+      }
+    }
+
+    async function showMerchantProducts(storeName) {
+      saveCurrentConfig();
+      productSearch.value = storeName || "";
+      productStatusFilter.value = "all";
+      productCategoryFilter.value = "all";
+      productCityFilter.value = "all";
+      if (!allPublishedProducts.length) await loadProducts();
+      applyProductFilters();
+      showAdminSection("products");
+    }
+
     saveConfig.addEventListener("click", () => {
       saveCurrentConfig();
       loadDrafts();
       loadProducts();
+      loadMerchants();
       showAdminSection("drafts");
     });
     seedDraftBtn.addEventListener("click", seedDraft);
@@ -1702,8 +1901,20 @@
       loadProducts();
       showAdminSection("products");
     });
+    refreshMerchantsBtn.addEventListener("click", () => {
+      saveCurrentConfig();
+      loadMerchants();
+      showAdminSection("merchants");
+    });
     adminTabs.forEach(tab => {
-      tab.addEventListener("click", () => showAdminSection(tab.dataset.adminTab));
+      tab.addEventListener("click", () => {
+        saveCurrentConfig();
+        const section = tab.dataset.adminTab;
+        showAdminSection(section);
+        if (section === "products" && !allPublishedProducts.length) loadProducts();
+        if (section === "drafts" && !allDrafts.length) loadDrafts();
+        if (section === "merchants" && !allMerchants.length) loadMerchants();
+      });
     });
     exportProductsCsv.addEventListener("click", async () => {
       try {
@@ -1773,6 +1984,22 @@
     [productSearch, productStatusFilter, productCategoryFilter, productCityFilter].forEach(element => {
       element.addEventListener("input", applyProductFilters);
       element.addEventListener("change", applyProductFilters);
+    });
+    [merchantSearch, merchantStatusFilter].forEach(element => {
+      element.addEventListener("input", applyMerchantFilters);
+      element.addEventListener("change", applyMerchantFilters);
+    });
+    merchantsList.addEventListener("click", async (event) => {
+      const statusButton = event.target.closest("[data-merchant-status]");
+      if (statusButton) {
+        await updateMerchantStatus(statusButton.dataset.merchantId, statusButton.dataset.merchantStatus);
+        return;
+      }
+
+      const productsButton = event.target.closest("[data-merchant-products]");
+      if (productsButton) {
+        await showMerchantProducts(productsButton.dataset.merchantProducts);
+      }
     });
 
     const config = getConfig();

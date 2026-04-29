@@ -135,6 +135,7 @@ function enrichProduct(row: Record<string, unknown>): Record<string, unknown> {
     ...row,
     product_code: productCode(row.id),
     merchant_code: parseMerchantCode(row.description),
+    review_note: parseReviewNote(row.raw_payload),
   };
 }
 
@@ -144,6 +145,12 @@ function parseMerchantCode(description: unknown): string {
     if (match?.[2]) return match[2].trim();
   }
   return "";
+}
+
+function parseReviewNote(rawPayload: unknown): string {
+  if (!rawPayload || typeof rawPayload !== "object") return "";
+  const note = (rawPayload as Record<string, unknown>).review_note;
+  return typeof note === "string" ? note.trim() : "";
 }
 
 function productCode(id: unknown): string {

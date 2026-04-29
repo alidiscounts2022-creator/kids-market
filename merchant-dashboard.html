@@ -225,6 +225,16 @@
       display: grid;
       gap: 8px;
     }
+    .review-note {
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid #FEDF89;
+      border-radius: 16px;
+      color: #92400E;
+      background: #FFFAEB;
+      font-weight: 850;
+      font-size: .92rem;
+    }
     .empty {
       padding: 26px;
       border: 1px dashed var(--line);
@@ -334,6 +344,16 @@
             <button class="btn btn-primary wide" type="submit"><i data-lucide="save"></i>حفظ بيانات المحل</button>
           </form>
           <div class="status" id="profileStatus"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>استيراد منتج من فيسبوك</h2>
+              <p>الصق نص المنشور ورابطه داخل نموذج المنتج، وارفع الصور من الهاتف أو الكمبيوتر بدل روابط الصور.</p>
+            </div>
+            <a class="btn btn-primary" href="merchant.html?facebook=1"><i data-lucide="file-input"></i>استيراد منشور</a>
+          </div>
         </section>
 
         <section class="panel">
@@ -530,11 +550,16 @@
       const merchantCode = item.merchant_code || attrs.merchantCode || "";
       const title = item.title || "منتج بدون اسم";
       const code = item.product_code || "";
+      const productUrl = new URL(`product.html?id=${encodeURIComponent(item.id)}`, location.href).href;
+      const reviewNote = item.review_note || "";
       const viewLink = type === "products" && item.status === "published"
         ? `<a class="btn" href="product.html?id=${encodeURIComponent(item.id)}"><i data-lucide="external-link"></i>عرض</a>`
         : "";
       const editLink = type === "products"
         ? `<a class="btn btn-primary" href="merchant.html?edit=${encodeURIComponent(item.id)}"><i data-lucide="pencil"></i>طلب تعديل</a>`
+        : `<a class="btn btn-primary" href="merchant.html?draft=${encodeURIComponent(item.id)}"><i data-lucide="pencil"></i>تعديل المسودة</a>`;
+      const copyLink = type === "products" && item.status === "published"
+        ? `<button class="btn" type="button" data-copy-product-link="${escapeHtml(productUrl)}"><i data-lucide="copy"></i>نسخ الرابط</button>`
         : "";
 
       return `
@@ -552,9 +577,11 @@
               <span class="meta-line"><i data-lucide="map-pin"></i>${escapeHtml(item.city || "غير محدد")}</span>
               <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(item.category || "غير مصنف")}</span>
             </div>
+            ${reviewNote ? `<p class="review-note"><i data-lucide="message-square-warning"></i> سبب الرفض: ${escapeHtml(reviewNote)}</p>` : ""}
             <div class="actions">
               ${viewLink}
               ${editLink}
+              ${copyLink}
             </div>
           </div>
         </article>
@@ -579,6 +606,11 @@
         ? rows.map(item => itemCard(item, activeView)).join("")
         : `<div class="empty">لا توجد عناصر مطابقة حالياً.</div>`;
       lucide.createIcons();
+    }
+
+    async function copyText(value, message = "تم النسخ.") {
+      await navigator.clipboard.writeText(value);
+      setStatus(listStatus, message, "ok");
     }
 
     async function loadDashboard() {
@@ -705,6 +737,11 @@
 
     refreshBtn.addEventListener("click", () => loadDashboard().catch(error => setStatus(listStatus, error.message, "error")));
     searchInput.addEventListener("input", renderItems);
+    itemsGrid.addEventListener("click", event => {
+      const copyButton = event.target.closest("[data-copy-product-link]");
+      if (!copyButton) return;
+      copyText(copyButton.dataset.copyProductLink, "تم نسخ رابط المنتج.").catch(error => setStatus(listStatus, error.message, "error"));
+    });
     tabs.forEach(tab => tab.addEventListener("click", () => {
       activeView = tab.dataset.view;
       renderItems();

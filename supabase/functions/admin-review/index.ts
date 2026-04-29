@@ -40,6 +40,10 @@ Deno.serve(async (req) => {
       return await listProducts(url);
     }
 
+    if (req.method === "GET" && action === "merchants") {
+      return await listMerchants();
+    }
+
     if (req.method === "GET") {
       return await listDrafts(url);
     }
@@ -69,6 +73,11 @@ Deno.serve(async (req) => {
       return await updateProduct(payload);
     }
 
+    if (req.method === "POST" && action === "merchant-status") {
+      const payload = await req.json();
+      return await updateMerchantStatus(payload);
+    }
+
     if (req.method === "POST" && action === "hide-product") {
       const payload = await req.json();
       return await setProductStatus(payload, "hidden");
@@ -88,16 +97,8 @@ Deno.serve(async (req) => {
     }
 
     if (req.method === "POST" && action === "reject") {
-      const { id } = await req.json();
-      if (!id) return json({ error: "id is required" }, 400);
-
-      const { error } = await supabase
-        .from("product_drafts")
-        .update({ status: "rejected" })
-        .eq("id", id);
-
-      if (error) throw error;
-      return json({ ok: true });
+      const payload = await req.json();
+      return await rejectDraft(payload);
     }
 
     return json({ error: "Not found" }, 404);
@@ -257,6 +258,48 @@ async function listProducts(url: URL): Promise<Response> {
     };
   });
   return json({ products });
+}
+
+async function listMerchants(): Promise<Response> {
+  const [merchantsResult, productsResult, draftsResult] = await Promise.all([
+    supabase
+      .from("merchants")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500),
+    supabase
+      .from("products")
+      .select("merchant_id,status")
+      .limit(5000),
+    supabase
+      .from("product_drafts")
+      .select("merchant_id,status")
+      .limit(5000),
+  ]);
+
+  if (merchantsResult.error) throw merchantsResult.error;
+  if (productsResult.error) throw productsResult.error;
+  if (draftsResult.error) throw draftsResult.error;
+
+  const productCounts = countByMerchant(productsResult.data ?? []);
+  const draftCounts = countByMerchant(draftsResult.data ?? []);
+  const merchants = (merchantsResult.data ?? []).map((merchant) => ({
+    ...merchant,
+    products_count: productCounts[String(merchant.id)] ?? 0,
+    drafts_count: draftCounts[String(merchant.id)] ?? 0,
+  }));
+
+  return json({ merchants });
+}
+
+function countByMerchant(rows: Array<Record<string, unknown>>): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const row of rows) {
+    const merchantId = String(row.merchant_id || "");
+    if (!merchantId) continue;
+    counts[merchantId] = (counts[merchantId] ?? 0) + 1;
+  }
+  return counts;
 }
 
 async function getInquiryCounts(): Promise<Record<string, number>> {
@@ -592,6 +635,20 @@ async function updateProduct(payload: Record<string, unknown>): Promise<Response
   return json({ ok: true, product: data });
 }
 
+async function updateMerchantStatus(payload: Record<string, unknown>): Promise<Response> {
+  const id = requiredString(payload.id, "معرف التاجر مطلوب.");
+  const status = normalizeMerchantStatus(payload.status);
+  const { data, error } = await supabase
+    .from("merchants")
+    .update({ status })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, merchant: data });
+}
+
 async function setProductStatus(payload: Record<string, unknown>, status: "published" | "hidden" | "sold"): Promise<Response> {
   const id = requiredString(payload.id, "معرف المنتج مطلوب.");
   const { data, error } = await supabase
@@ -610,6 +667,39 @@ async function deleteProduct(payload: Record<string, unknown>): Promise<Response
   const { error } = await supabase
     .from("products")
     .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+  return json({ ok: true });
+}
+
+async function rejectDraft(payload: Record<string, unknown>): Promise<Response> {
+  const id = requiredString(payload.id, "معرف المسودة مطلوب.");
+  const reviewNote = cleanString(payload.review_note, "") || "تحتاج المسودة إلى تعديل قبل النشر.";
+
+  const { data: draft, error: draftError } = await supabase
+    .from("product_drafts")
+    .select("raw_payload")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (draftError) throw draftError;
+  if (!draft) return json({ error: "Draft not found" }, 404);
+
+  const rawPayload = draft.raw_payload && typeof draft.raw_payload === "object"
+    ? draft.raw_payload as Record<string, unknown>
+    : {};
+
+  const { error } = await supabase
+    .from("product_drafts")
+    .update({
+      status: "rejected",
+      raw_payload: {
+        ...rawPayload,
+        review_note: reviewNote,
+        rejected_at: new Date().toISOString(),
+      },
+    })
     .eq("id", id);
 
   if (error) throw error;
@@ -706,6 +796,11 @@ function normalizePrice(value: unknown, fallback: unknown): number | null {
 function normalizeProductStatus(value: unknown): "published" | "hidden" | "sold" {
   const status = cleanString(value, "published");
   return status === "hidden" || status === "sold" || status === "published" ? status : "published";
+}
+
+function normalizeMerchantStatus(value: unknown): "pending" | "active" | "paused" {
+  const status = cleanString(value, "active");
+  return status === "pending" || status === "paused" || status === "active" ? status : "active";
 }
 
 function getEditProductId(rawPayload: unknown): string {

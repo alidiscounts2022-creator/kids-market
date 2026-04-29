@@ -458,6 +458,7 @@
 
           <form class="form-grid" id="merchantForm">
             <input type="hidden" name="edit_product_id" />
+            <input type="hidden" name="edit_draft_id" />
             <input type="hidden" name="image_url" />
             <input type="hidden" name="extra_images" />
             <input type="hidden" name="sizes" />
@@ -780,7 +781,20 @@
       `;
       fillField("city", merchant.city || "");
       renderSizeOptions();
+      focusFacebookImportMode();
       lucide.createIcons();
+    }
+
+    function focusFacebookImportMode() {
+      const params = new URLSearchParams(location.search);
+      if (params.get("facebook") !== "1" || params.get("edit") || params.get("draft")) return;
+
+      formTitle.textContent = "استيراد منتج من منشور فيسبوك";
+      setFormStatus("الصق رابط المنشور ونصه، ثم ارفع الصورة الرئيسية والصور الإضافية من الجهاز.", "ok");
+      setTimeout(() => {
+        merchantForm.elements.source_url?.closest(".field")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        merchantForm.elements.source_url?.focus();
+      }, 120);
     }
 
     function showAuth() {
@@ -863,17 +877,22 @@
     }
 
     async function loadProductForEdit() {
-      const editId = new URLSearchParams(location.search).get("edit");
-      if (!editId || !session?.access_token) return;
+      const params = new URLSearchParams(location.search);
+      const editId = params.get("edit");
+      const draftId = params.get("draft");
+      if ((!editId && !draftId) || !session?.access_token) return;
 
       try {
-        setFormStatus("جاري تحميل المنتج للتعديل...");
+        setFormStatus(editId ? "جاري تحميل المنتج للتعديل..." : "جاري تحميل المسودة للتعديل...");
         const payload = await dashboardRequest("");
-        const product = (payload.products || []).find(item => item.id === editId);
-        if (!product) throw new Error("المنتج غير موجود في حسابك أو لا يمكن تعديله.");
+        const product = editId
+          ? (payload.products || []).find(item => item.id === editId)
+          : (payload.drafts || []).find(item => item.id === draftId);
+        if (!product) throw new Error(editId ? "المنتج غير موجود في حسابك أو لا يمكن تعديله." : "المسودة غير موجودة في حسابك أو لا يمكن تعديلها.");
 
         const attributes = parseDescriptionAttributes(product.description || "");
-        fillField("edit_product_id", product.id);
+        fillField("edit_product_id", editId ? product.id : "");
+        fillField("edit_draft_id", draftId ? product.id : "");
         fillField("title", product.title);
         fillField("merchant_code", attributes.merchantCode || product.merchant_code || "");
         fillField("price_lyd", product.price_lyd);
@@ -890,9 +909,11 @@
           imagePreview.style.display = "block";
         }
         renderExtraImagesPreview(attributes.extraImages);
-        formTitle.textContent = "طلب تعديل منتج منشور";
-        merchantForm.querySelector("button[type='submit']").innerHTML = '<i data-lucide="send"></i>إرسال التعديل للمراجعة';
-        setFormStatus("عدّل البيانات ثم أرسلها للمراجعة. التغيير يظهر بعد اعتماد الإدارة.", "ok");
+        formTitle.textContent = editId ? "طلب تعديل منتج منشور" : "تعديل مسودة منتج";
+        merchantForm.querySelector("button[type='submit']").innerHTML = editId
+          ? '<i data-lucide="send"></i>إرسال التعديل للمراجعة'
+          : '<i data-lucide="save"></i>حفظ المسودة وإرجاعها للمراجعة';
+        setFormStatus(editId ? "عدّل البيانات ثم أرسلها للمراجعة. التغيير يظهر بعد اعتماد الإدارة." : "عدّل المسودة ثم احفظها، وسترجع للإدارة بانتظار المراجعة.", "ok");
         lucide.createIcons();
       } catch (error) {
         setFormStatus(error.message, "error");
@@ -1027,7 +1048,7 @@
       event.preventDefault();
       const button = merchantForm.querySelector("button[type='submit']");
       const data = Object.fromEntries(new FormData(merchantForm).entries());
-      const isEdit = Boolean(data.edit_product_id);
+      const isEdit = Boolean(data.edit_product_id || data.edit_draft_id);
       data.price_lyd = data.price_lyd ? Number(data.price_lyd) : null;
 
       if (!isEdit && !preparedImage && !data.image_url) {

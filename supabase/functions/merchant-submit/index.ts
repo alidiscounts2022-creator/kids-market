@@ -70,6 +70,9 @@ async function requireMerchant(req: Request): Promise<any> {
 
   if (error) throw error;
   if (!merchant) throw new HttpError("تعذر العثور على بيانات التاجر.", 404);
+  if (merchant.status === "paused") {
+    throw new HttpError("حساب التاجر موقوف مؤقتاً. تواصل مع الإدارة قبل إضافة منتجات جديدة.", 403);
+  }
   return merchant;
 }
 
@@ -81,8 +84,12 @@ async function createDraft(
 ): Promise<any> {
   const title = requiredString(payload.title, "اسم المنتج مطلوب.");
   const editProductId = cleanString(payload.edit_product_id, "");
+  const editDraftId = cleanString(payload.edit_draft_id, "");
   if (editProductId) {
     await assertProductBelongsToMerchant(editProductId, merchant.id);
+  }
+  if (editDraftId) {
+    await assertDraftBelongsToMerchant(editDraftId, merchant.id);
   }
 
   const description = buildProductDescription(
@@ -95,10 +102,9 @@ async function createDraft(
   );
   const sourceUrl = cleanString(payload.source_url, "") || cleanString(payload.facebook_page_url, "");
 
-  const draft = {
+  const draftBase = {
     merchant_id: merchant.id,
-    source_platform: editProductId ? "merchant_edit" : (sourceUrl?.includes("facebook.com") ? "facebook" : "merchant_form"),
-    source_post_id: `${editProductId ? "merchant-edit" : "merchant-form"}-${Date.now()}-${crypto.randomUUID()}`,
+    source_platform: editProductId ? "merchant_edit" : (editDraftId ? "merchant_form" : (sourceUrl?.includes("facebook.com") ? "facebook" : "merchant_form")),
     source_url: editProductId ? `product.html?id=${editProductId}` : sourceUrl,
     title,
     description,
@@ -111,10 +117,29 @@ async function createDraft(
     raw_payload: {
       source: "public merchant form",
       edit_product_id: editProductId,
+      edit_draft_id: editDraftId,
       merchant_code: cleanString(payload.merchant_code, ""),
       facebook_text: cleanString(payload.facebook_text, ""),
     },
     status: "pending_review",
+  };
+
+  if (editDraftId) {
+    const { data, error } = await supabase
+      .from("product_drafts")
+      .update(draftBase)
+      .eq("id", editDraftId)
+      .eq("merchant_id", merchant.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  const draft = {
+    ...draftBase,
+    source_post_id: `${editProductId ? "merchant-edit" : "merchant-form"}-${Date.now()}-${crypto.randomUUID()}`,
   };
 
   const { data, error } = await supabase
@@ -137,6 +162,19 @@ async function assertProductBelongsToMerchant(productId: string, merchantId: str
   if (error) throw error;
   if (!data) throw new HttpError("المنتج المطلوب تعديله غير موجود.", 404);
   if (data.merchant_id !== merchantId) throw new HttpError("لا يمكنك تعديل منتج لا يتبع حسابك.", 403);
+}
+
+async function assertDraftBelongsToMerchant(draftId: string, merchantId: string): Promise<void> {
+  const { data, error } = await supabase
+    .from("product_drafts")
+    .select("id,merchant_id,status")
+    .eq("id", draftId)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) throw new HttpError("المسودة المطلوب تعديلها غير موجودة.", 404);
+  if (data.merchant_id !== merchantId) throw new HttpError("لا يمكنك تعديل مسودة لا تتبع حسابك.", 403);
+  if (data.status === "approved") throw new HttpError("هذه المسودة معتمدة بالفعل ولا يمكن تعديلها من هنا.", 409);
 }
 
 async function resolveImageUrl(payload: Record<string, unknown>): Promise<string | null> {
