@@ -31,14 +31,15 @@ Deno.serve(async (req) => {
 
     return json({ error: "Not found" }, 404);
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unknown error" }, 500);
+    const status = error instanceof HttpError ? error.status : 500;
+    return json({ error: error instanceof Error ? error.message : "Unknown error" }, status);
   }
 });
 
 async function registerMerchant(payload: Record<string, unknown>): Promise<Response> {
   const email = normalizeEmail(requiredString(payload.email, "البريد الإلكتروني مطلوب."));
   const password = requiredString(payload.password, "كلمة المرور مطلوبة.");
-  if (password.length < 8) throw new Error("كلمة المرور لازم تكون 8 أحرف على الأقل.");
+  if (password.length < 8) throw new HttpError("كلمة المرور لازم تكون 8 أحرف على الأقل.", 400);
 
   const merchantInfo = {
     store_name: requiredString(payload.store_name, "اسم المحل مطلوب."),
@@ -68,7 +69,7 @@ async function registerMerchant(payload: Record<string, unknown>): Promise<Respo
   }
 
   const userId = createdUser.user?.id;
-  if (!userId) throw new Error("تعذر إنشاء حساب التاجر.");
+  if (!userId) throw new HttpError("تعذر إنشاء حساب التاجر.", 500);
 
   try {
     const merchant = await createMerchant(merchantInfo);
@@ -146,7 +147,7 @@ async function signIn(email: string, password: string): Promise<any> {
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     const message = payload.error_description || payload.msg || payload.error || "بيانات الدخول غير صحيحة.";
-    return Promise.reject(new Error(String(message)));
+    throw new HttpError(String(message), response.status === 400 ? 401 : response.status);
   }
 
   return {
@@ -164,14 +165,14 @@ async function signIn(email: string, password: string): Promise<any> {
 
 function normalizeEmail(value: string): string {
   const email = value.trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("أدخل بريد إلكتروني صحيح.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError("أدخل بريد إلكتروني صحيح.", 400);
   return email;
 }
 
 function normalizePhone(value: string): string {
   const phone = value.replace(/[^\d+]/g, "").replace(/^\+/, "");
   if (!/^218\d{8,10}$/.test(phone)) {
-    throw new Error("رقم واتساب لازم يبدأ بـ 218 ويكون بصيغة ليبية صحيحة.");
+    throw new HttpError("رقم واتساب لازم يبدأ بـ 218 ويكون بصيغة ليبية صحيحة.", 400);
   }
   return phone;
 }
@@ -184,7 +185,7 @@ function cleanString(value: unknown, fallback: unknown): string | null {
 
 function requiredString(value: unknown, message: string): string {
   const resolved = cleanString(value, "");
-  if (!resolved) throw new Error(message);
+  if (!resolved) throw new HttpError(message, 400);
   return resolved;
 }
 
@@ -193,4 +194,13 @@ function json(payload: unknown, status = 200): Response {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
+}
+
+class HttpError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
 }
