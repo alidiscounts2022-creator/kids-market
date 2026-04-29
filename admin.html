@@ -372,6 +372,7 @@
         <div class="config-actions">
           <button class="btn btn-primary" id="saveConfig" type="button"><i data-lucide="save"></i>حفظ وجلب المسودات</button>
           <button class="btn btn-teal" id="seedDraft" type="button"><i data-lucide="plus-circle"></i>إضافة مسودة تجريبية</button>
+          <button class="btn btn-light" id="seedProduct" type="button"><i data-lucide="package-plus"></i>إضافة منتج مثال منشور</button>
         </div>
       </section>
 
@@ -429,6 +430,10 @@
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
             <textarea name="extra_images" placeholder="ضع كل رابط صورة في سطر منفصل أو افصل بينها بفواصل"></textarea>
+            <div class="upload-tools">
+              <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
+              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+            </div>
           </div>
           <div class="field">
             <label>المقاسات المتوفرة</label>
@@ -513,6 +518,10 @@
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
             <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <div class="upload-tools">
+              <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
+              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+            </div>
           </div>
           <div class="field">
             <label>المقاسات</label>
@@ -589,7 +598,22 @@
         </div>
         <div class="field">
           <label for="productCityFilter">المدينة</label>
-          <input id="productCityFilter" placeholder="كل المدن" />
+          <select id="productCityFilter">
+            <option value="all">كل المدن</option>
+            <option>طرابلس</option>
+            <option>بنغازي</option>
+            <option>مصراتة</option>
+            <option>سبها</option>
+            <option>الزاوية</option>
+            <option>زليتن</option>
+            <option>الخمس</option>
+            <option>البيضاء</option>
+            <option>درنة</option>
+            <option>طبرق</option>
+            <option>اجدابيا</option>
+            <option>سرت</option>
+            <option>غريان</option>
+          </select>
         </div>
       </section>
 
@@ -651,6 +675,10 @@
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
             <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <div class="upload-tools">
+              <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
+              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+            </div>
           </div>
           <div class="field">
             <label>المقاسات المتوفرة</label>
@@ -747,6 +775,10 @@
           <div class="field wide">
             <label>صور إضافية للمعرض</label>
             <textarea name="extra_images" placeholder="روابط صور إضافية، كل رابط في سطر"></textarea>
+            <div class="upload-tools">
+              <input type="file" accept="image/*" multiple data-gallery-upload data-target-name="extra_images" />
+              <span class="upload-note">أو اختر عدة صور من الهاتف/الكمبيوتر وسيتم رفعها وإضافة روابطها تلقائياً.</span>
+            </div>
           </div>
           <div class="field">
             <label>حالة المنتج</label>
@@ -797,6 +829,7 @@
     const rememberAdminKey = document.getElementById("rememberAdminKey");
     const saveConfig = document.getElementById("saveConfig");
     const seedDraftBtn = document.getElementById("seedDraft");
+    const seedProductBtn = document.getElementById("seedProduct");
     const refreshBtn = document.getElementById("refreshBtn");
     const refreshProductsBtn = document.getElementById("refreshProductsBtn");
     const manualProductForm = document.getElementById("manualProductForm");
@@ -946,6 +979,43 @@
       }
     }
 
+    async function handleGalleryUpload(input) {
+      const files = Array.from(input.files || []);
+      if (!files.length) return;
+
+      const form = input.closest("form");
+      if (!form) return;
+
+      const targetName = input.dataset.targetName || "extra_images";
+      const target = form.elements[targetName];
+      if (!target) return;
+
+      try {
+        input.disabled = true;
+        saveCurrentConfig();
+        setStatus(`جاري تجهيز ورفع ${files.length} صورة إضافية...`);
+        const uploadedUrls = [];
+
+        for (const file of files) {
+          const payload = await prepareImagePayload(file);
+          const result = await api("/upload-image", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          if (result.url) uploadedUrls.push(result.url);
+        }
+
+        const current = splitList(target.value);
+        target.value = [...current, ...uploadedUrls].filter(Boolean).join("\n");
+        setStatus(`تم رفع ${uploadedUrls.length} صورة إضافية وإضافة روابطها تلقائياً.`, "ok");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        input.value = "";
+        input.disabled = false;
+      }
+    }
+
     async function prepareImagePayload(file) {
       if (!file.type.startsWith("image/")) {
         throw new Error("اختر ملف صورة فقط.");
@@ -1045,7 +1115,7 @@
       const query = (productSearch?.value || "").trim().toLowerCase();
       const status = productStatusFilter?.value || "all";
       const category = productCategoryFilter?.value || "all";
-      const city = (productCityFilter?.value || "").trim().toLowerCase();
+      const city = (productCityFilter?.value || "all").trim().toLowerCase();
 
       return allPublishedProducts.filter(product => {
         const haystack = [
@@ -1059,7 +1129,7 @@
         const matchesQuery = !query || haystack.includes(query);
         const matchesStatus = status === "all" || product.status === status;
         const matchesCategory = category === "all" || product.category === category;
-        const matchesCity = !city || String(product.city || "").toLowerCase().includes(city);
+        const matchesCity = city === "all" || String(product.city || "").toLowerCase() === city;
         return matchesQuery && matchesStatus && matchesCategory && matchesCity;
       });
     }
@@ -1276,6 +1346,21 @@
       }
     }
 
+    async function seedProduct() {
+      try {
+        saveCurrentConfig();
+        setStatus("جاري نشر منتج مثال...");
+        await api("/seed-product", {
+          method: "POST",
+          body: JSON.stringify({}),
+        });
+        setStatus("تم نشر منتج مثال في الواجهة.", "ok");
+        await Promise.all([loadStats(), loadProducts()]);
+      } catch (error) {
+        setStatus(error.message, "error");
+      }
+    }
+
     async function createManualProduct(form) {
       try {
         saveCurrentConfig();
@@ -1362,6 +1447,7 @@
       loadProducts();
     });
     seedDraftBtn.addEventListener("click", seedDraft);
+    seedProductBtn.addEventListener("click", seedProduct);
     refreshBtn.addEventListener("click", () => {
       saveCurrentConfig();
       loadDrafts();
@@ -1376,6 +1462,12 @@
     });
     rememberAdminKey.addEventListener("change", saveCurrentConfig);
     document.addEventListener("change", async (event) => {
+      const galleryInput = event.target?.closest?.("[data-gallery-upload]");
+      if (galleryInput) {
+        await handleGalleryUpload(galleryInput);
+        return;
+      }
+
       const input = event.target?.closest?.("[data-image-upload]");
       if (input) await handleImageUpload(input);
     });

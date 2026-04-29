@@ -83,6 +83,10 @@ Deno.serve(async (req) => {
       return await createDemoDraft();
     }
 
+    if (req.method === "POST" && action === "seed-product") {
+      return await createDemoProduct();
+    }
+
     if (req.method === "POST" && action === "reject") {
       const { id } = await req.json();
       if (!id) return json({ error: "id is required" }, 400);
@@ -345,6 +349,61 @@ async function createDemoDraft(): Promise<Response> {
   if (draftError) throw draftError;
 
   return json({ ok: true, draft: insertedDraft });
+}
+
+async function createDemoProduct(): Promise<Response> {
+  const merchantInfo = {
+    store_name: "محل ماما بيبي طرابلس",
+    owner_name: "تاجر مثال",
+    city: "طرابلس",
+    whatsapp_phone: "218912345678",
+    facebook_page_url: "https://facebook.com/tafli-demo-store",
+    status: "active",
+  };
+
+  const { data: existingMerchant, error: merchantLookupError } = await supabase
+    .from("merchants")
+    .select("*")
+    .eq("store_name", merchantInfo.store_name)
+    .eq("whatsapp_phone", merchantInfo.whatsapp_phone)
+    .maybeSingle();
+
+  if (merchantLookupError) throw merchantLookupError;
+  const merchant = existingMerchant ?? await insertMerchant(merchantInfo);
+
+  const product = {
+    merchant_id: merchant.id,
+    draft_id: null,
+    title: "طقم مواليد قطني فاخر - 5 قطع",
+    description: buildProductDescription(
+      "منتج مثال لاختبار واجهة طفلي ماركت، مناسب للهدايا وتجهيز حقيبة المولود.",
+      "0-3 أشهر، 3-6 أشهر، 6-12 شهر",
+      "أبيض، سماوي، وردي",
+      "متوفر",
+      [
+        "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=900&q=80",
+      ]
+    ),
+    price_lyd: 89,
+    city: merchant.city,
+    category: "مواليد",
+    store_name: merchant.store_name,
+    whatsapp_phone: merchant.whatsapp_phone,
+    image_url: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=900&q=80",
+    source_url: "https://facebook.com/tafli-demo-store/posts/demo-product",
+    badge: "مثال",
+    status: "published",
+  };
+
+  const { data, error } = await supabase
+    .from("products")
+    .insert(product)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return json({ ok: true, product: data });
 }
 
 async function insertMerchant(merchantInfo: Record<string, unknown>): Promise<any> {

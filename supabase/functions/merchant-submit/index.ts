@@ -30,7 +30,8 @@ Deno.serve(async (req) => {
     const payload = await req.json();
     const merchant = await getOrCreateMerchant(payload);
     const imageUrl = await resolveImageUrl(payload);
-    const draft = await createDraft(payload, merchant, imageUrl);
+    const extraImageUrls = await resolveExtraImageUrls(payload);
+    const draft = await createDraft(payload, merchant, imageUrl, extraImageUrls);
 
     return json({
       ok: true,
@@ -72,7 +73,12 @@ async function getOrCreateMerchant(payload: Record<string, unknown>): Promise<an
   return data;
 }
 
-async function createDraft(payload: Record<string, unknown>, merchant: any, imageUrl: string | null): Promise<any> {
+async function createDraft(
+  payload: Record<string, unknown>,
+  merchant: any,
+  imageUrl: string | null,
+  extraImageUrls: string[]
+): Promise<any> {
   const title = requiredString(payload.title, "اسم المنتج مطلوب.");
   const editProductId = cleanString(payload.edit_product_id, "");
   const description = buildProductDescription(
@@ -80,7 +86,7 @@ async function createDraft(payload: Record<string, unknown>, merchant: any, imag
     payload.sizes,
     payload.colors,
     payload.stock_status,
-    payload.extra_images
+    mergeExtraImages(payload.extra_images, extraImageUrls)
   );
   const sourceUrl = cleanString(payload.source_url, "") || cleanString(payload.facebook_page_url, "");
 
@@ -119,6 +125,24 @@ async function resolveImageUrl(payload: Record<string, unknown>): Promise<string
   const directUrl = cleanString(payload.image_url, "");
   if (directUrl) return directUrl;
 
+  return await uploadImageFromPayload(payload, "merchant-submissions");
+}
+
+async function resolveExtraImageUrls(payload: Record<string, unknown>): Promise<string[]> {
+  const directUrls = splitList(payload.extra_images).filter((url) => /^https?:\/\//i.test(url));
+  const files = Array.isArray(payload.extra_image_files) ? payload.extra_image_files.slice(0, 6) : [];
+  const uploadedUrls: string[] = [];
+
+  for (const item of files) {
+    if (!item || typeof item !== "object") continue;
+    const url = await uploadImageFromPayload(item as Record<string, unknown>, "merchant-gallery");
+    if (url) uploadedUrls.push(url);
+  }
+
+  return [...directUrls, ...uploadedUrls].filter((url, index, list) => list.indexOf(url) === index);
+}
+
+async function uploadImageFromPayload(payload: Record<string, unknown>, folder: string): Promise<string | null> {
   const imageData = cleanString(payload.image_data, "");
   if (!imageData) return null;
 
@@ -138,7 +162,7 @@ async function resolveImageUrl(payload: Record<string, unknown>): Promise<string
   await ensureImageBucket();
 
   const safeName = cleanFileName(payload.image_file_name);
-  const filePath = `merchant-submissions/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${safeName}.${extension}`;
+  const filePath = `${folder}/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${safeName}.${extension}`;
   const { error } = await supabase.storage
     .from(PRODUCT_IMAGES_BUCKET)
     .upload(filePath, bytes, {
@@ -153,6 +177,13 @@ async function resolveImageUrl(payload: Record<string, unknown>): Promise<string
     .getPublicUrl(filePath);
 
   return data.publicUrl;
+}
+
+function mergeExtraImages(value: unknown, uploadedUrls: string[]): string {
+  return [...splitList(value), ...uploadedUrls]
+    .filter((url) => /^https?:\/\//i.test(url))
+    .filter((url, index, list) => list.indexOf(url) === index)
+    .join("\n");
 }
 
 function buildProductDescription(

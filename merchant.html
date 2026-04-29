@@ -404,6 +404,10 @@
             <div class="field wide">
               <label>صور إضافية للمعرض</label>
               <textarea name="extra_images" placeholder="اختياري: ضع روابط صور إضافية، كل رابط في سطر"></textarea>
+              <div class="upload-row">
+                <input id="extraImagesInput" type="file" accept="image/*" multiple />
+                <span>أو اختر عدة صور إضافية من الهاتف/الكمبيوتر وسيتم رفعها مع المنتج.</span>
+              </div>
             </div>
             <div class="field wide">
               <label>نص منشور فيسبوك إن وجد</label>
@@ -454,9 +458,11 @@
     const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
     const form = document.getElementById("merchantForm");
     const imageInput = document.getElementById("imageInput");
+    const extraImagesInput = document.getElementById("extraImagesInput");
     const imagePreview = document.getElementById("imagePreview");
     const formStatus = document.getElementById("formStatus");
     let preparedImage = null;
+    let preparedExtraImages = [];
 
     function setStatus(message, type = "") {
       formStatus.textContent = message;
@@ -603,6 +609,24 @@
       }
     });
 
+    extraImagesInput.addEventListener("change", async () => {
+      try {
+        const files = Array.from(extraImagesInput.files || []);
+        preparedExtraImages = [];
+        if (!files.length) return;
+
+        setStatus(`جاري تجهيز ${files.length} صورة إضافية...`);
+        for (const file of files.slice(0, 6)) {
+          preparedExtraImages.push(await prepareImage(file));
+        }
+        setStatus(`تم تجهيز ${preparedExtraImages.length} صورة إضافية، سيتم رفعها عند الإرسال.`, "ok");
+      } catch (error) {
+        preparedExtraImages = [];
+        extraImagesInput.value = "";
+        setStatus(error.message, "error");
+      }
+    });
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const button = form.querySelector("button[type='submit']");
@@ -620,6 +644,13 @@
         data.image_mime_type = preparedImage.image_mime_type;
         data.image_data = preparedImage.image_data;
       }
+      if (preparedExtraImages.length) {
+        data.extra_image_files = preparedExtraImages.map((image) => ({
+          image_file_name: image.image_file_name,
+          image_mime_type: image.image_mime_type,
+          image_data: image.image_data,
+        }));
+      }
 
       try {
         button.disabled = true;
@@ -634,6 +665,7 @@
 
         form.reset();
         preparedImage = null;
+        preparedExtraImages = [];
         imagePreview.removeAttribute("src");
         imagePreview.style.display = "none";
         setStatus(payload.message || "تم إرسال المنتج للمراجعة.", "ok");
