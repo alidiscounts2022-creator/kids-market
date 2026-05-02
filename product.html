@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/web/favicon-64.png" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -61,6 +62,12 @@
       gap: 10px;
       font-weight: 900;
       white-space: nowrap;
+    }
+    .brand-logo {
+      width: clamp(176px, 22vw, 238px);
+      max-height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(31, 41, 55, .08));
     }
     .brand-mark {
       width: 42px;
@@ -171,6 +178,32 @@
       object-fit: cover;
     }
     .details-card { padding: 18px; }
+    .store-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, #F8FAFC, #F0FDFA);
+    }
+    .store-strip div {
+      min-width: 0;
+    }
+    .store-strip b,
+    .store-strip span {
+      display: block;
+    }
+    .store-strip b {
+      line-height: 1.35;
+    }
+    .store-strip span {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 800;
+    }
     .kicker {
       display: inline-flex;
       gap: 8px;
@@ -260,6 +293,91 @@
       gap: 10px;
       margin-top: 16px;
     }
+    .page-tools {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .related-section {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .related-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .related-head h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      line-height: 1.25;
+    }
+    .related-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-weight: 750;
+    }
+    .related-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .related-card {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 10px 28px rgba(31, 41, 55, .07);
+    }
+    .related-card img {
+      width: 96px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #EAF8FF;
+    }
+    .related-card h3 {
+      margin: 0 0 4px;
+      font-size: .96rem;
+      line-height: 1.45;
+    }
+    .related-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    .related-card .price {
+      margin: 4px 0 0;
+      font-size: .98rem;
+    }
+    .sticky-product-bar {
+      position: fixed;
+      inset-inline: 12px;
+      inset-block-end: 12px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.95);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .sticky-product-bar span {
+      overflow: hidden;
+      align-self: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-weight: 900;
+    }
     .notice-card { padding: 16px; }
     .notice-card h2 { margin: 0 0 8px; }
     .notice-card p { margin: 0; color: var(--muted); font-weight: 800; }
@@ -272,6 +390,19 @@
       .product-shell { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
       .media-card { position: sticky; top: 92px; }
       .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .page-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .related-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .related-card { grid-template-columns: 1fr; }
+      .related-card img { width: 100%; height: 160px; }
+      .sticky-product-bar { display: none; }
+    }
+    @media (max-width: 540px) {
+      body { padding-bottom: 86px; }
+      .brand-logo { width: 164px; max-height: 48px; }
+      .nav .btn { padding-inline: 12px; }
+      .nav .btn span { display: none; }
+      .store-strip { align-items: flex-start; }
+      .store-strip .btn { min-height: 38px; padding: 8px 11px; }
     }
   </style>
 </head>
@@ -279,10 +410,9 @@
   <header class="header">
     <div class="container nav">
       <a class="brand" href="index.html">
-        <span class="brand-mark"><i data-lucide="baby"></i></span>
-        <span>طفلي ماركت</span>
+        <img class="brand-logo" src="assets/brand/web/logo-combo-900.webp" alt="طفلي ماركت" />
       </a>
-      <a class="btn btn-light" href="index.html#products"><i data-lucide="arrow-right"></i>كل المنتجات</a>
+      <a class="btn btn-light" href="index.html#products"><i data-lucide="arrow-right"></i><span>كل المنتجات</span></a>
     </div>
   </header>
 
@@ -302,6 +432,7 @@
     const params = new URLSearchParams(location.search);
     const productId = params.get("id");
     let product = null;
+    let relatedProducts = [];
     let selected = { size: "", color: "" };
     let galleryIndex = 0;
 
@@ -368,6 +499,13 @@
       return `TF-${(clean || "PRODUCT").slice(0, 6)}`;
     }
 
+    function absoluteProductUrl(value = product) {
+      const id = value?.id || productId || "";
+      const url = new URL("product.html", location.href);
+      if (id) url.searchParams.set("id", id);
+      return url.href;
+    }
+
     function fallbackOptionsFor(row) {
       const category = row.category || "";
       const name = row.title || row.name || "";
@@ -431,7 +569,7 @@
         selected.color ? `اللون: ${selected.color}` : "",
         product.price ? `السعر: ${product.price}` : ""
       ].filter(Boolean).join("، ");
-      const text = `السلام عليكم، نبي نستفسر على المنتج، ${details}`;
+      const text = `السلام عليكم، نبي نستفسر على المنتج، ${details}، رابط المنتج: ${absoluteProductUrl()}`;
       return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     }
 
@@ -467,12 +605,14 @@
         <span class="meta-line"><i data-lucide="palette"></i>${selected.color ? `اللون: ${escapeHtml(selected.color)}` : "اللون: يتم تأكيده مع التاجر"}</span>
         <span class="meta-line"><i data-lucide="check-circle-2"></i>التوفر: ${escapeHtml(product.availability)}</span>
       `;
-      whatsapp.href = whatsappUrl();
-      whatsapp.dataset.productId = product.id || "";
-      whatsapp.dataset.productCode = product.code || productCode(product);
+      [whatsapp, document.getElementById("stickyWhatsapp")].filter(Boolean).forEach(link => {
+        link.href = whatsappUrl();
+        link.dataset.productId = product.id || "";
+        link.dataset.productCode = product.code || productCode(product);
+        link.dataset.size = selected.size || "";
+        link.dataset.color = selected.color || "";
+      });
       whatsapp.dataset.source = "product-page";
-      whatsapp.dataset.size = selected.size || "";
-      whatsapp.dataset.color = selected.color || "";
       lucide.createIcons();
     }
 
@@ -486,6 +626,37 @@
       app.querySelectorAll(".gallery button").forEach((item, itemIndex) => {
         item.classList.toggle("active", itemIndex === galleryIndex);
       });
+    }
+
+    function relatedProductCard(item) {
+      return `
+        <a class="related-card" href="product.html?id=${encodeURIComponent(item.id)}">
+          <img src="${safeImage(item.image)}" alt="${escapeHtml(item.name)}" />
+          <div>
+            <h3>${escapeHtml(item.name)}</h3>
+            <p>${escapeHtml(item.store)} · ${escapeHtml(item.city)}</p>
+            <span class="price">${escapeHtml(item.price)}</span>
+          </div>
+        </a>
+      `;
+    }
+
+    function relatedSection() {
+      if (!relatedProducts.length) return "";
+      return `
+        <section class="related-section">
+          <div class="related-head">
+            <div>
+              <h2>منتجات مشابهة</h2>
+              <p>اقتراحات من نفس التصنيف أو من نفس المحل.</p>
+            </div>
+            <a class="btn btn-light" href="index.html#products"><i data-lucide="shopping-bag"></i>تصفح أكثر</a>
+          </div>
+          <div class="related-grid">
+            ${relatedProducts.map(relatedProductCard).join("")}
+          </div>
+        </section>
+      `;
     }
 
     function renderProduct() {
@@ -514,6 +685,13 @@
             ` : ""}
           </aside>
           <section class="details-card">
+            <div class="store-strip">
+              <div>
+                <b>${escapeHtml(product.store)}</b>
+                <span>${escapeHtml(product.city)} · تواصل مباشر مع التاجر</span>
+              </div>
+              <a class="btn btn-light" href="${storeUrl}"><i data-lucide="store"></i>المحل</a>
+            </div>
             <span class="kicker"><i data-lucide="tag"></i>${escapeHtml(product.badge)}</span>
             <h1>${escapeHtml(product.name)}</h1>
             <span class="price">${escapeHtml(product.price)}</span>
@@ -532,11 +710,20 @@
               <a class="btn btn-primary" id="whatsapp" href="#" target="_blank" rel="noopener" data-track-whatsapp><i data-lucide="message-circle"></i>استفسار واتساب</a>
               <a class="btn btn-light" href="${storeUrl}"><i data-lucide="store"></i>كل منتجات المحل</a>
             </div>
+            <div class="page-tools">
+              <button class="btn btn-light" type="button" id="copyProductLink"><i data-lucide="copy"></i>نسخ رابط المنتج</button>
+              ${product.sourceUrl ? `<a class="btn btn-light" href="${escapeHtml(product.sourceUrl)}" target="_blank" rel="noopener"><i data-lucide="external-link"></i>مصدر الإعلان</a>` : `<a class="btn btn-light" href="index.html#products"><i data-lucide="shopping-bag"></i>كل المنتجات</a>`}
+            </div>
           </section>
           <section class="notice-card">
             <h2>تنبيه مهم</h2>
             <p>طفلي ماركت يعرض المنتج فقط. الدفع، التوصيل، والحجز يتم الاتفاق عليها مباشرة مع التاجر.</p>
           </section>
+          ${relatedSection()}
+        </div>
+        <div class="sticky-product-bar">
+          <span>${escapeHtml(product.name)} · ${escapeHtml(product.price)}</span>
+          <a class="btn btn-primary" id="stickyWhatsapp" href="${whatsappUrl()}" target="_blank" rel="noopener" data-track-whatsapp data-product-id="${escapeHtml(product.id || "")}" data-product-code="${escapeHtml(product.code || productCode(product))}" data-source="product-sticky"><i data-lucide="message-circle"></i>واتساب</a>
         </div>
       `;
       renderSummary();
@@ -553,6 +740,48 @@
       lucide.createIcons();
     }
 
+    async function fetchRelatedProducts(current) {
+      try {
+        const response = await fetch(`${PRODUCTS_URL}?limit=80`);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !Array.isArray(payload.products)) return [];
+        return payload.products
+          .map(normalizeProduct)
+          .filter(item => {
+            if (!item.id || item.id === current.id) return false;
+            return item.category === current.category
+              || item.store === current.store
+              || item.merchantId === current.merchantId
+              || item.city === current.city;
+          })
+          .slice(0, 3);
+      } catch {
+        return [];
+      }
+    }
+
+    async function copyProductLink() {
+      const link = absoluteProductUrl();
+      try {
+        await navigator.clipboard.writeText(link);
+      } catch {
+        const textarea = document.createElement("textarea");
+        textarea.value = link;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+      const button = document.getElementById("copyProductLink");
+      if (!button) return;
+      button.innerHTML = '<i data-lucide="check"></i>تم النسخ';
+      lucide.createIcons();
+      setTimeout(() => {
+        button.innerHTML = '<i data-lucide="copy"></i>نسخ رابط المنتج';
+        lucide.createIcons();
+      }, 1600);
+    }
+
     async function loadProduct() {
       if (!productId) {
         renderError("رابط المنتج غير مكتمل.");
@@ -566,6 +795,7 @@
         const row = Array.isArray(payload.products) ? payload.products[0] : null;
         if (!row) throw new Error("المنتج غير موجود أو غير منشور حالياً.");
         product = normalizeProduct(row);
+        relatedProducts = await fetchRelatedProducts(product);
         renderProduct();
       } catch (error) {
         renderError(error.message);
@@ -613,6 +843,12 @@
       const whatsappLink = event.target.closest("[data-track-whatsapp]");
       if (whatsappLink) {
         trackWhatsappClick(whatsappLink);
+        return;
+      }
+
+      const copyButton = event.target.closest("#copyProductLink");
+      if (copyButton) {
+        copyProductLink();
         return;
       }
 

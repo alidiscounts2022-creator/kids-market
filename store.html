@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/web/favicon-64.png" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -36,7 +37,6 @@
         linear-gradient(135deg, rgba(168, 85, 247, .09), rgba(20, 184, 166, .08)),
         var(--bg);
       line-height: 1.7;
-      padding-bottom: 84px;
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
@@ -62,6 +62,12 @@
       gap: 10px;
       font-weight: 900;
       white-space: nowrap;
+    }
+    .brand-logo {
+      width: clamp(176px, 22vw, 238px);
+      max-height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(31, 41, 55, .08));
     }
     .brand-mark {
       width: 42px;
@@ -371,7 +377,7 @@
       inset-inline: 14px;
       inset-block-end: 14px;
       z-index: 30;
-      display: grid;
+      display: none;
       grid-template-columns: 1fr auto;
       gap: 9px;
       padding: 10px;
@@ -390,18 +396,22 @@
       white-space: nowrap;
     }
     @media (max-width: 520px) {
+      .brand-logo { width: 164px; max-height: 48px; }
       .nav-actions .btn span { display: none; }
       .store-hero { padding: 18px; border-radius: 26px; }
       h1 { max-width: 11ch; }
     }
     @media (min-width: 680px) {
       body { padding-bottom: 0; }
-      .filters { grid-template-columns: 1.5fr 1fr 1fr auto; align-items: end; }
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
+      .filters .btn { grid-column: 1 / -1; }
       .stats, .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .contact-bar { display: none; }
     }
     @media (min-width: 980px) {
       .store-hero { grid-template-columns: minmax(0, 1.05fr) minmax(320px, .72fr); padding: 34px; }
+      .filters { grid-template-columns: 1.5fr 1fr 1fr 1fr auto; }
+      .filters .btn { grid-column: auto; }
       .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -411,8 +421,7 @@
   <header class="header">
     <div class="container nav">
       <a class="brand" href="index.html">
-        <span class="brand-mark"><i data-lucide="baby"></i></span>
-        <span>طفلي ماركت</span>
+        <img class="brand-logo" src="assets/brand/web/logo-combo-900.webp" alt="طفلي ماركت" />
       </a>
       <nav class="nav-actions" aria-label="روابط الصفحة">
         <a class="btn" href="index.html#products"><i data-lucide="shopping-bag"></i><span>كل المنتجات</span></a>
@@ -541,6 +550,12 @@
       return `${location.origin}${location.pathname}?store=${encodeURIComponent(storeProfile?.name || storeName || "")}`;
     }
 
+    function productLink(product) {
+      const url = new URL("product.html", location.href);
+      if (product?.id) url.searchParams.set("id", product.id);
+      return url.href;
+    }
+
     function whatsappUrl(phone, text) {
       const clean = String(phone || "218912345678").replace(/\D/g, "") || "218912345678";
       return `https://wa.me/${clean}?text=${encodeURIComponent(text)}`;
@@ -553,7 +568,7 @@
         `الاسم: ${product.title}`,
         `السعر: ${formatPrice(product.price_lyd)}`
       ].filter(Boolean).join("، ");
-      return whatsappUrl(product.whatsapp_phone, `السلام عليكم، نبي نستفسر على المنتج من ${product.store_name}، ${details}`);
+      return whatsappUrl(product.whatsapp_phone, `السلام عليكم، نبي نستفسر على المنتج من ${product.store_name}، ${details}، رابط المنتج: ${productLink(product)}`);
     }
 
     function buildStoreProfile(items) {
@@ -648,6 +663,11 @@
             <select id="categoryFilter"></select>
           </div>
           <div class="field">
+            <label for="cityFilter">المدينة</label>
+            <i data-lucide="map-pin"></i>
+            <select id="cityFilter"></select>
+          </div>
+          <div class="field">
             <label for="sortFilter">الترتيب</label>
             <i data-lucide="arrow-up-down"></i>
             <select id="sortFilter">
@@ -689,11 +709,17 @@
         ...storeProfile.categories.map(category => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
       ].join("");
 
+      const cityFilter = document.getElementById("cityFilter");
+      cityFilter.innerHTML = [
+        `<option value="all">كل المدن</option>`,
+        ...storeProfile.cities.map(city => `<option value="${escapeHtml(city)}">${escapeHtml(city)}</option>`)
+      ].join("");
+
       document.getElementById("filtersForm").addEventListener("submit", event => {
         event.preventDefault();
         applyFilters();
       });
-      ["searchInput", "categoryFilter", "sortFilter"].forEach(id => {
+      ["searchInput", "categoryFilter", "cityFilter", "sortFilter"].forEach(id => {
         const element = document.getElementById(id);
         element.addEventListener("input", applyFilters);
         element.addEventListener("change", applyFilters);
@@ -711,12 +737,14 @@
     function applyFilters() {
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       const category = document.getElementById("categoryFilter").value;
+      const city = document.getElementById("cityFilter").value;
       const sort = document.getElementById("sortFilter").value;
       const filtered = products.filter(product => {
         const haystack = [product.title, product.code, product.category, product.description_clean].join(" ").toLowerCase();
         const matchesQuery = !query || haystack.includes(query);
         const matchesCategory = category === "all" || product.category === category;
-        return matchesQuery && matchesCategory;
+        const matchesCity = city === "all" || product.city === city;
+        return matchesQuery && matchesCategory && matchesCity;
       });
 
       const sorted = [...filtered].sort((a, b) => {
@@ -729,7 +757,7 @@
       const grid = document.getElementById("productsGrid");
       grid.innerHTML = sorted.length
         ? sorted.map(productCard).join("")
-        : `<section class="empty" style="grid-column:1 / -1;"><h2>لا توجد نتائج مطابقة</h2><p>جرّب تغيير البحث أو التصنيف.</p></section>`;
+        : `<section class="empty" style="grid-column:1 / -1;"><h2>لا توجد نتائج مطابقة</h2><p>جرّب تغيير البحث أو المدينة أو التصنيف.</p></section>`;
       document.getElementById("resultStatus").textContent = `عرض ${sorted.length} من ${products.length} منتج داخل المحل.`;
       lucide.createIcons();
     }
