@@ -1,16 +1,23 @@
 # Tafli Market Brand Assets
 
-ملفات الشعار الرسمية لمشروع **طفلي ماركت**.
+ملفات الشعار الرسمية لمشروع **طفلي ماركت** مبنية من الصورة الأصلية المعتمدة:
 
-- `tafli-market-logo-primary.svg`: الشعار الأفقي الأساسي للموقع والمستندات.
-- `tafli-market-logo-stacked.svg`: نسخة عمودية مناسبة للسوشيال والتغليف.
-- `tafli-market-logo-white.svg`: نسخة للخلفيات الداكنة.
-- `tafli-market-mark.svg`: علامة مونوجرام عربية مستوحاة من حرفي ط وم، مناسبة كأيقونة تطبيق أو صورة حساب.
+- `source/tafli-market-master.png`: الملف الرئيسي المرفق والمعتمد.
+- `source/tafli-market-mark-transparent.png`: الأيقونة الملونة بخلفية شفافة.
+- `source/tafli-market-logo-header-transparent.png`: شعار الهيدر بدون الوصف.
+- `source/tafli-market-logo-primary-transparent.png`: الشعار الأفقي مع الوصف.
+- `source/tafli-market-logo-stacked-transparent.png`: النسخة العمودية للسوشيال والتغليف.
+- `source/tafli-market-logo-white-transparent.png`: نسخة بيضاء للخلفيات الداكنة.
 
-بعد تشغيل ملف التوليد ستجد نسخ PNG/WebP داخل مجلدات:
+نسخ الاستخدام الجاهزة:
 
-- `social`: فيسبوك، واتساب، وصور حسابات.
-- `social/profile-mark-1024.png`: أيقونة مختصرة مناسبة عندما تكون مساحة الصورة صغيرة.
-- `social/facebook-cover-1640x624.png`: غلاف أو بانر أفقي لفيسبوك.
-- `print`: ورق رسمي وأكياس تغليف.
-- `web`: favicon وأصول الموقع.
+- `web`: favicon، أيقونة الموقع، وشعارات WebP خفيفة للموقع.
+- `social`: صور فيسبوك وواتساب وغلاف فيسبوك.
+- `print`: نسخ عالية الدقة للورق الرسمي وأكياس التغليف.
+- `tafli-market-logo-pack.zip`: حزمة كاملة تضم كل النسخ أعلاه.
+
+لإعادة توليد الملفات بعد تعديل المصدر:
+
+```bash
+node tools/generate-brand-assets.mjs
+```
