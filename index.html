@@ -2664,6 +2664,447 @@
         padding: 20px;
       }
     }
+
+    /* Final blended marketplace redesign: clean market + direct trust */
+    body {
+      background:
+        linear-gradient(180deg, #FFFFFF 0, #F5F7FA 420px, #F5F7FA 100%),
+        var(--bg);
+    }
+
+    .site-header {
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom-color: rgba(229, 234, 241, 0.94);
+    }
+
+    .nav-shell {
+      min-height: 70px;
+    }
+
+    .nav-links a {
+      color: #475467;
+      font-size: 0.92rem;
+      font-weight: 850;
+    }
+
+    .header-actions .btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--purple));
+      box-shadow: 0 14px 28px rgba(20, 184, 166, 0.18);
+    }
+
+    .hero {
+      padding-block: 18px 22px;
+    }
+
+    .hero-shell {
+      min-height: 0;
+      padding: clamp(20px, 4vw, 42px);
+      color: var(--text);
+      border: 1px solid rgba(229, 234, 241, 0.96);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.94) 55%, rgba(240,253,250,0.92) 100%);
+      box-shadow: 0 24px 70px rgba(31, 41, 55, 0.10);
+    }
+
+    .hero-shell::before,
+    .hero-shell::after {
+      display: none;
+    }
+
+    .hero-copy {
+      max-width: 680px;
+      padding-top: 0;
+    }
+
+    .eyebrow {
+      color: #0F766E;
+      background: #E6FFFB;
+      border: 1px solid rgba(20, 184, 166, 0.16);
+      box-shadow: none;
+    }
+
+    .hero h1 {
+      max-width: 12ch;
+      margin-block: 16px 12px;
+      color: var(--text);
+      font-size: clamp(2.15rem, 7.4vw, 5rem);
+      letter-spacing: 0;
+    }
+
+    .hero h1 span {
+      color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .hero p {
+      max-width: 660px;
+      color: #475467;
+      font-size: clamp(1rem, 2.2vw, 1.18rem);
+      font-weight: 760;
+      line-height: 1.9;
+    }
+
+    .hero-actions .btn-light {
+      color: #FFFFFF;
+      background: linear-gradient(135deg, var(--teal), var(--purple));
+      box-shadow: 0 18px 34px rgba(20, 184, 166, 0.20);
+    }
+
+    .hero-actions .btn-ghost {
+      color: var(--text);
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(31, 41, 55, 0.08);
+    }
+
+    .hero-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 700px;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 3px;
+      min-height: 92px;
+      padding: 14px;
+      color: var(--text);
+      border: 1px solid rgba(229, 234, 241, 0.95);
+      border-radius: 18px;
+      background: #FFFFFF;
+      box-shadow: 0 10px 26px rgba(31, 41, 55, 0.06);
+    }
+
+    .metric strong {
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 760;
+    }
+
+    .hero-visual {
+      min-height: 0;
+      display: grid;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .phone-mockup {
+      transform: none;
+      width: min(330px, 76vw);
+      border: 10px solid #172033;
+      background: #172033;
+      box-shadow: 0 28px 62px rgba(31, 41, 55, 0.18);
+    }
+
+    .phone-screen {
+      min-height: 540px;
+      border-radius: 30px;
+    }
+
+    .float-card {
+      color: var(--text);
+      border: 1px solid rgba(229, 234, 241, 0.96);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 18px 42px rgba(31, 41, 55, 0.11);
+    }
+
+    .float-card b,
+    .float-card span span {
+      color: inherit;
+    }
+
+    .visual-product {
+      border: 8px solid #FFFFFF;
+      box-shadow: 0 18px 42px rgba(31, 41, 55, 0.12);
+    }
+
+    .search-panel {
+      margin-top: 0;
+      padding-block: 12px 28px;
+    }
+
+    .search-box {
+      border-radius: 22px;
+      background: rgba(255,255,255,0.98);
+      box-shadow: 0 18px 44px rgba(31, 41, 55, 0.09);
+    }
+
+    .search-highlights {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .highlight-card {
+      min-height: 74px;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(31, 41, 55, 0.06);
+    }
+
+    section {
+      padding-block: 44px;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .section-kicker {
+      color: #0F766E;
+      background: #E6FFFB;
+      border-color: rgba(20, 184, 166, 0.16);
+    }
+
+    .category-grid {
+      align-items: stretch;
+    }
+
+    .category-card {
+      min-height: 178px;
+      border-radius: 20px;
+      background: #FFFFFF;
+      box-shadow: 0 14px 34px rgba(31, 41, 55, 0.07);
+    }
+
+    .category-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 48px rgba(31, 41, 55, 0.10);
+    }
+
+    .category-icon {
+      background: linear-gradient(135deg, var(--soft-purple), var(--soft-teal));
+      color: #7E22CE;
+    }
+
+    .products-section {
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(240,253,250,0.70));
+    }
+
+    .product-toolbar {
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .filter-pill {
+      border-color: rgba(229, 234, 241, 0.98);
+      background: #FFFFFF;
+      box-shadow: 0 8px 20px rgba(31, 41, 55, 0.05);
+    }
+
+    .filter-pill.active {
+      color: #FFFFFF;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      border-color: transparent;
+    }
+
+    .helper-note {
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .products-grid {
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .product-card {
+      border-radius: 22px;
+      background: #FFFFFF;
+      box-shadow: 0 14px 36px rgba(31, 41, 55, 0.07);
+    }
+
+    .product-media {
+      margin: 10px 10px 0;
+      aspect-ratio: 1 / 0.78;
+      border-radius: 18px;
+    }
+
+    .product-media img {
+      border-radius: 18px;
+    }
+
+    .badge {
+      box-shadow: 0 12px 24px rgba(31, 41, 55, 0.10);
+    }
+
+    .product-title-row h3 {
+      font-size: 1rem;
+    }
+
+    .price {
+      color: #0F766E;
+    }
+
+    .product-actions {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+
+    .whatsapp-btn {
+      background: linear-gradient(135deg, #22C55E, var(--teal));
+    }
+
+    .merchant-shell {
+      color: #FFFFFF;
+      background:
+        linear-gradient(135deg, #1F2937 0%, #4C1D95 46%, #0F766E 100%);
+    }
+
+    .trust-grid {
+      align-items: stretch;
+    }
+
+    .trust-item {
+      background: #FFFFFF;
+      box-shadow: 0 14px 34px rgba(31, 41, 55, 0.07);
+    }
+
+    @media (min-width: 900px) {
+      .hero-shell {
+        grid-template-columns: minmax(0, 1.04fr) minmax(330px, 0.7fr);
+      }
+
+      .search-box {
+        grid-template-columns: minmax(300px, 1.35fr) minmax(150px, 0.72fr) minmax(165px, 0.78fr) auto;
+      }
+
+      .search-box .field:nth-of-type(n+4) {
+        display: none;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        justify-content: stretch;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .search-highlights {
+        grid-template-columns: 1fr;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 540px) {
+      body {
+        background: #F5F7FA;
+      }
+
+      .hero {
+        padding-block: 10px 12px;
+      }
+
+      .hero-shell {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .hero h1 {
+        max-width: 11ch;
+        margin-block: 12px 8px;
+        font-size: clamp(1.86rem, 8.8vw, 2.55rem);
+      }
+
+      .hero p {
+        font-size: 0.92rem;
+        line-height: 1.72;
+      }
+
+      .hero-actions {
+        grid-template-columns: 1fr;
+        gap: 9px;
+        margin-top: 18px;
+      }
+
+      .hero-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+        margin-top: 16px;
+      }
+
+      .metric {
+        min-height: 58px;
+        align-content: center;
+        padding: 8px 7px;
+        text-align: center;
+      }
+
+      .metric:nth-child(3) {
+        grid-column: auto;
+      }
+
+      .metric strong {
+        font-size: 0.78rem;
+        line-height: 1.35;
+      }
+
+      .metric span {
+        display: none;
+      }
+
+      .hero-visual {
+        display: none;
+      }
+
+      .phone-mockup,
+      .float-card {
+        display: none;
+      }
+
+      .visual-product {
+        position: static;
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        border-width: 5px;
+        border-radius: 18px;
+      }
+
+      .search-panel {
+        padding-block: 10px 24px;
+      }
+
+      .search-box .field:nth-of-type(n+4) {
+        display: none;
+      }
+
+      section {
+        padding-block: 34px;
+      }
+
+      .section-head {
+        text-align: right;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-card {
+        min-height: 0;
+      }
+
+      .product-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2730,16 +3171,20 @@
 
           <div class="hero-metrics" aria-label="أرقام تجريبية">
             <div class="metric">
-              <strong>منتجات منشورة</strong>
-              <span>صور، أسعار، مقاسات واختيارات قبل التواصل</span>
-            </div>
-            <div class="metric">
               <strong>محلات محلية</strong>
-              <span>كل منتج مربوط باسم المتجر والمدينة</span>
+              <span>منتجات من تجار داخل ليبيا مع اسم المحل والمدينة</span>
             </div>
             <div class="metric">
-              <strong>واتساب مباشر</strong>
-              <span>بدون دفع أو توصيل داخل الموقع حالياً</span>
+              <strong>تواصل واتساب</strong>
+              <span>رسالة جاهزة للتاجر مع اسم المنتج والاختيارات</span>
+            </div>
+            <div class="metric">
+              <strong>للعرض فقط</strong>
+              <span>الموقع لا يبيع مباشرة ولا يدير الدفع أو التوصيل</span>
+            </div>
+            <div class="metric">
+              <strong>بدون دفع داخلي</strong>
+              <span>الاتفاق النهائي يتم بين الزبون والتاجر مباشرة</span>
             </div>
           </div>
         </div>
@@ -3297,6 +3742,146 @@
         sizes: ["2+ سنوات"],
         colors: ["ألوان متعددة"],
         availability: "متوفر"
+      },
+      {
+        name: "فستان أطفال صيفي ناعم",
+        price: "85 د.ل",
+        city: "طرابلس",
+        store: "فلورينا للأطفال",
+        category: "ملابس أطفال",
+        badge: "جديد",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=900&q=80",
+        description: "فستان صيفي خفيف مناسب للخرجات والمناسبات البسيطة، بتفاصيل ناعمة وألوان هادئة.",
+        sizes: ["2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات"],
+        colors: ["وردي", "أبيض", "بنفسجي"],
+        availability: "متوفر"
+      },
+      {
+        name: "طقم خروج مواليد مع قبعة",
+        price: "92 د.ل",
+        city: "مصراتة",
+        store: "بيبي لايف",
+        category: "مواليد",
+        badge: "مواليد",
+        badgeClass: "teal",
+        image: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&w=900&q=80",
+        description: "طقم خروج كامل للمولود مع قبعة قطنية، مناسب للهدايا والاستقبال.",
+        sizes: ["حديث الولادة", "0-3 أشهر", "3-6 أشهر"],
+        colors: ["أبيض", "سماوي", "سكري"],
+        availability: "متوفر"
+      },
+      {
+        name: "لعبة نشاطات للرضع",
+        price: "68 د.ل",
+        city: "طرابلس",
+        store: "عالم الألعاب",
+        category: "ألعاب",
+        badge: "الأكثر طلباً",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=900&q=80",
+        description: "لعبة نشاطات بألوان مريحة للرضع، تساعد على الحركة والاكتشاف.",
+        sizes: ["6+ أشهر", "12+ شهر"],
+        colors: ["ألوان متعددة"],
+        availability: "كمية محدودة"
+      },
+      {
+        name: "كرسي سيارة للأطفال",
+        price: "240 د.ل",
+        city: "بنغازي",
+        store: "بيبي سيف",
+        category: "عربات وكراسي",
+        badge: "أمان",
+        badgeClass: "teal",
+        image: "",
+        description: "كرسي سيارة مريح للأطفال مع حزام تثبيت، التوفر والموديل النهائي حسب تأكيد المحل.",
+        sizes: ["0-12 شهر", "1-3 سنوات", "حتى 18 كجم"],
+        colors: ["أسود", "رمادي"],
+        availability: "حسب تأكيد التاجر"
+      },
+      {
+        name: "حذاء رياضي أطفال",
+        price: "79 د.ل",
+        city: "سبها",
+        store: "خطوات صغيرة",
+        category: "أحذية",
+        badge: "جديد",
+        badgeClass: "",
+        image: "",
+        description: "حذاء رياضي خفيف ومريح للأطفال، مناسب للمدرسة والطلعات اليومية.",
+        sizes: ["21", "22", "23", "24", "25", "26"],
+        colors: ["أبيض", "أسود", "أزرق"],
+        availability: "متوفر"
+      },
+      {
+        name: "بطانية مولود فاخرة",
+        price: "58 د.ل",
+        city: "طرابلس",
+        store: "ركن المواليد",
+        category: "مواليد",
+        badge: "هدية",
+        badgeClass: "teal",
+        image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=900&q=80",
+        description: "بطانية ناعمة للمولود، خامة لطيفة ومناسبة للبيت والخروج.",
+        sizes: ["حديث الولادة"],
+        colors: ["أبيض", "بيج", "رمادي"],
+        availability: "متوفر"
+      },
+      {
+        name: "لعبة تركيب مغناطيسية",
+        price: "110 د.ل",
+        city: "مصراتة",
+        store: "سمارت تويز",
+        category: "ألعاب",
+        badge: "تعليمي",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1618842676088-c4d48a6a7c9d?auto=format&fit=crop&w=900&q=80",
+        description: "مجموعة تركيب مغناطيسية تنمي الخيال والتركيز، مناسبة للأطفال الأكبر سناً.",
+        sizes: ["3+ سنوات", "5+ سنوات"],
+        colors: ["ألوان متعددة"],
+        availability: "متوفر"
+      },
+      {
+        name: "كرسي طعام قابل للطي",
+        price: "185 د.ل",
+        city: "طرابلس",
+        store: "بيبي ستور ليبيا",
+        category: "عربات وكراسي",
+        badge: "عملي",
+        badgeClass: "teal",
+        image: "",
+        description: "كرسي طعام عملي للأطفال، قابل للطي وسهل التنظيف.",
+        sizes: ["6-36 شهر"],
+        colors: ["رمادي", "أبيض"],
+        availability: "متوفر"
+      },
+      {
+        name: "صندل أطفال صيفي",
+        price: "52 د.ل",
+        city: "بنغازي",
+        store: "خطوات صغيرة",
+        category: "أحذية",
+        badge: "عرض",
+        badgeClass: "",
+        image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=900&q=80",
+        description: "صندل خفيف ومريح للصيف، مناسب للمشي اليومي.",
+        sizes: ["20", "21", "22", "23", "24"],
+        colors: ["بيج", "وردي", "أزرق"],
+        availability: "متوفر"
+      },
+      {
+        name: "طقم ملابس يومي للأولاد",
+        price: "95 د.ل",
+        city: "مصراتة",
+        store: "أناقة الصغار",
+        category: "ملابس أطفال",
+        badge: "جديد",
+        badgeClass: "sky",
+        image: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=900&q=80",
+        description: "طقم يومي عملي للأولاد، مناسب للمدرسة والخرجات الخفيفة.",
+        sizes: ["2 سنوات", "3 سنوات", "4 سنوات", "5 سنوات"],
+        colors: ["أزرق", "رمادي", "أخضر"],
+        availability: "متوفر"
       }
     ];
 
@@ -3364,6 +3949,41 @@
       } catch {
         return fallback;
       }
+    }
+
+    function categoryPlaceholder(category = "منتجات أطفال", name = "طفلي ماركت") {
+      const palette = category.includes("ألعاب")
+        ? ["#EAF8FF", "#38BDF8", "#A855F7"]
+        : category.includes("مواليد")
+          ? ["#F0FDFA", "#14B8A6", "#38BDF8"]
+          : category.includes("أحذية")
+            ? ["#F8FAFC", "#1F2937", "#A855F7"]
+            : category.includes("عربات")
+              ? ["#ECFEFF", "#14B8A6", "#1F2937"]
+              : ["#F3E8FF", "#A855F7", "#14B8A6"];
+      const label = escapeHtml(category);
+      const title = escapeHtml(String(name).slice(0, 28));
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+              <stop stop-color="${palette[0]}" offset="0"/>
+              <stop stop-color="#FFFFFF" offset="0.56"/>
+              <stop stop-color="${palette[0]}" offset="1"/>
+            </linearGradient>
+          </defs>
+          <rect width="900" height="700" rx="56" fill="url(#g)"/>
+          <circle cx="190" cy="160" r="74" fill="${palette[1]}" opacity=".16"/>
+          <circle cx="730" cy="160" r="96" fill="${palette[2]}" opacity=".14"/>
+          <circle cx="700" cy="530" r="130" fill="${palette[1]}" opacity=".13"/>
+          <rect x="150" y="180" width="600" height="330" rx="44" fill="#FFFFFF" stroke="#E5EAF1" stroke-width="8"/>
+          <path d="M315 345c0-74 60-134 134-134s134 60 134 134-60 134-134 134-134-60-134-134Z" fill="${palette[1]}" opacity=".15"/>
+          <path d="M365 360c32 50 136 50 168 0" fill="none" stroke="${palette[1]}" stroke-width="22" stroke-linecap="round"/>
+          <path d="M404 292c18-18 73-18 91 0" fill="none" stroke="${palette[2]}" stroke-width="18" stroke-linecap="round"/>
+          <text x="450" y="580" text-anchor="middle" font-family="Arial, Tahoma, sans-serif" font-size="42" font-weight="800" fill="#1F2937">${label}</text>
+          <text x="450" y="628" text-anchor="middle" font-family="Arial, Tahoma, sans-serif" font-size="28" font-weight="700" fill="#667085">${title}</text>
+        </svg>`;
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
     }
 
     function formatPrice(value) {
@@ -3537,7 +4157,8 @@
       const price = escapeHtml(product.price);
       const badge = escapeHtml(product.badge);
       const badgeClass = escapeHtml(product.badgeClass);
-      const image = safeImage(product.image);
+      const fallbackImage = categoryPlaceholder(product.category, product.name);
+      const image = product.image ? safeImage(product.image) : fallbackImage;
       const code = escapeHtml(product.code || productCode(product));
       const merchantCode = escapeHtml(product.merchantCode || "");
       const sizes = splitList(product.sizes);
@@ -3560,7 +4181,7 @@
       return `
         <article class="product-card" data-category="${category}" data-city="${city}" data-name="${name}">
           <div class="product-media">
-            <img src="${image}" alt="${name}" loading="lazy" />
+            <img src="${image}" alt="${name}" onerror="this.onerror=null;this.src='${fallbackImage}'" />
             <span class="badge ${badgeClass}">${badge}</span>
           </div>
           <div class="product-body">
@@ -3742,8 +4363,8 @@
           : [];
 
         if (liveProducts.length) {
-          products = liveProducts;
-          setProductsStatus(`تم تحميل ${liveProducts.length} منتج منشور من Supabase.`);
+          products = [...liveProducts, ...fallbackProducts];
+          setProductsStatus(`تم تحميل ${liveProducts.length} منتج منشور مع أمثلة تجريبية لملء واجهة السوق.`);
         } else {
           products = [...fallbackProducts];
           setProductsStatus("لا توجد منتجات منشورة بعد؛ يتم عرض بيانات تجريبية مؤقتة.");
