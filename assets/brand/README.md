@@ -7,6 +7,7 @@
 - `source/tafli-market-logo-header-transparent.png`: شعار الهيدر بدون الوصف.
 - `source/tafli-market-logo-combo-transparent.png`: شعار أفقي يجمع الأيقونة الملونة مع الاسم.
 - `source/tafli-market-logo-combo-white-transparent.png`: شعار أفقي للأرضيات الداكنة.
+- `source/tafli-market-logo-main-transparent.png`: الشعار الرئيسي الكامل من النسخة الثانية.
 - `source/tafli-market-logo-primary-transparent.png`: الشعار الأفقي مع الوصف.
 - `source/tafli-market-logo-stacked-transparent.png`: النسخة العمودية للسوشيال والتغليف.
 - `source/tafli-market-logo-white-transparent.png`: نسخة بيضاء للخلفيات الداكنة.

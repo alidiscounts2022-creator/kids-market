@@ -26,16 +26,18 @@ const transparent = {
   headerWhite: path.join(sourceDir, "tafli-market-logo-header-white-transparent.png"),
   combo: path.join(sourceDir, "tafli-market-logo-combo-transparent.png"),
   comboWhite: path.join(sourceDir, "tafli-market-logo-combo-white-transparent.png"),
+  main: path.join(sourceDir, "tafli-market-logo-main-transparent.png"),
   primary: path.join(sourceDir, "tafli-market-logo-primary-transparent.png"),
   stacked: path.join(sourceDir, "tafli-market-logo-stacked-transparent.png"),
   white: path.join(sourceDir, "tafli-market-logo-white-transparent.png"),
 };
 
 const crops = {
-  mark: { left: 245, top: 175, width: 330, height: 235 },
-  header: { left: 650, top: 285, width: 670, height: 135 },
-  primary: { left: 650, top: 285, width: 670, height: 205 },
-  stacked: { left: 130, top: 170, width: 570, height: 430 },
+  main: { left: 135, top: 160, width: 560, height: 430 },
+  mark: { left: 255, top: 185, width: 300, height: 220 },
+  header: { left: 150, top: 415, width: 530, height: 95 },
+  primary: { left: 135, top: 160, width: 560, height: 430 },
+  stacked: { left: 135, top: 160, width: 560, height: 430 },
 };
 
 const transparentBackground = { r: 255, g: 255, b: 255, alpha: 0 };
@@ -45,18 +47,60 @@ async function ensureDirs() {
   await Promise.all(Object.values(outDirs).map((dir) => fs.mkdir(dir, { recursive: true })));
 }
 
-function fadeWhiteBackground(data, channels) {
-  for (let p = 0; p < data.length; p += channels) {
+function fadeWhiteBackground(data, info) {
+  const { width, height, channels } = info;
+  const size = width * height;
+  const isBackgroundCandidate = new Uint8Array(size);
+  const connected = new Uint8Array(size);
+  const queue = [];
+
+  for (let index = 0, p = 0; index < size; index += 1, p += channels) {
     const r = data[p];
     const g = data[p + 1];
     const b = data[p + 2];
-    const alphaIndex = p + 3;
     const minChannel = Math.min(r, g, b);
+    const maxChannel = Math.max(r, g, b);
+    const chroma = maxChannel - minChannel;
 
-    if (r > 238 && g > 238 && b > 238) {
-      const edgeAlpha = Math.max(0, Math.min(255, (255 - minChannel) * 16));
-      data[alphaIndex] = Math.min(data[alphaIndex], edgeAlpha);
+    if (minChannel > 198 && chroma < 34) {
+      isBackgroundCandidate[index] = 1;
     }
+  }
+
+  function enqueue(x, y) {
+    if (x < 0 || y < 0 || x >= width || y >= height) return;
+    const index = y * width + x;
+    if (!isBackgroundCandidate[index] || connected[index]) return;
+    connected[index] = 1;
+    queue.push(index);
+  }
+
+  for (let x = 0; x < width; x += 1) {
+    enqueue(x, 0);
+    enqueue(x, height - 1);
+  }
+  for (let y = 0; y < height; y += 1) {
+    enqueue(0, y);
+    enqueue(width - 1, y);
+  }
+
+  for (let head = 0; head < queue.length; head += 1) {
+    const index = queue[head];
+    const x = index % width;
+    const y = Math.floor(index / width);
+    enqueue(x + 1, y);
+    enqueue(x - 1, y);
+    enqueue(x, y + 1);
+    enqueue(x, y - 1);
+  }
+
+  for (let index = 0; index < size; index += 1) {
+    if (!connected[index]) continue;
+    const p = index * channels;
+    const minChannel = Math.min(data[p], data[p + 1], data[p + 2]);
+    const alphaIndex = p + 3;
+    const edgeAlpha = minChannel > 226 ? 0 : Math.max(0, Math.min(255, (226 - minChannel) * 9));
+    data[alphaIndex] = Math.min(data[alphaIndex], edgeAlpha);
   }
 }
 
@@ -82,7 +126,7 @@ async function extractTransparent(crop, output, zones = []) {
     .raw()
     .toBuffer({ resolveWithObject: true });
 
-  fadeWhiteBackground(data, info.channels);
+  fadeWhiteBackground(data, info);
   clearCropNoise(data, info, zones);
 
   const trimmed = await sharp(data, {
@@ -324,12 +368,9 @@ async function buildZip() {
 await ensureDirs();
 await extractTransparent(crops.mark, transparent.mark);
 await extractTransparent(crops.header, transparent.header);
-await extractTransparent(crops.primary, transparent.primary, [
-  { left: 0, top: 120, width: 82, height: 95 },
-]);
-await extractTransparent(crops.stacked, transparent.stacked, [
-  { left: 500, top: 100, width: 80, height: 150 },
-]);
+await extractTransparent(crops.primary, transparent.primary);
+await extractTransparent(crops.stacked, transparent.stacked);
+await extractTransparent(crops.main, transparent.main);
 await makeWhiteLogo(transparent.primary, transparent.white);
 await makeWhiteLogo(transparent.header, transparent.headerWhite);
 await buildLogoCombo({ wordmark: transparent.header, output: transparent.combo });
