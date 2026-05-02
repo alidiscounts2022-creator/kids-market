@@ -1,37 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
   <title id="title">علامة طفلي ماركت</title>
-  <desc id="desc">أيقونة ناعمة لمنصة منتجات الأطفال في ليبيا، تجمع بصمة طفل وقلب بألوان بنفسجي وتركوازي وسماوي</desc>
+  <desc id="desc">مونوجرام عربي احترافي مستوحى من حرفي ط وم لمنصة طفلي ماركت</desc>
   <defs>
-    <linearGradient id="bg" x1="88" y1="62" x2="432" y2="450" gradientUnits="userSpaceOnUse">
+    <linearGradient id="brandBg" x1="66" y1="54" x2="448" y2="458" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#A855F7"/>
       <stop offset="0.52" stop-color="#38BDF8"/>
       <stop offset="1" stop-color="#14B8A6"/>
     </linearGradient>
-    <linearGradient id="footOne" x1="154" y1="160" x2="256" y2="342" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#A855F7"/>
-      <stop offset="1" stop-color="#38BDF8"/>
-    </linearGradient>
-    <linearGradient id="footTwo" x1="260" y1="162" x2="360" y2="342" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#38BDF8"/>
-      <stop offset="1" stop-color="#14B8A6"/>
+    <linearGradient id="softLight" x1="120" y1="88" x2="402" y2="414" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.08"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#1F2937" flood-opacity="0.16"/>
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#1F2937" flood-opacity="0.18"/>
     </filter>
   </defs>
-  <rect width="512" height="512" rx="128" fill="#FFFFFF"/>
-  <rect x="46" y="46" width="420" height="420" rx="116" fill="url(#bg)"/>
-  <path d="M96 132c68-64 188-76 271-28 61 36 88 97 70 169-24 91-128 174-238 166-100-7-163-82-163-170 0-55 20-101 60-137Z" fill="#FFFFFF" opacity="0.15"/>
-  <path d="M391 127c13-15 40-7 40 16 0 25-29 38-40 49-11-11-40-24-40-49 0-23 27-31 40-16Z" fill="#FFFFFF" opacity="0.88"/>
+  <rect width="512" height="512" fill="#FFFFFF"/>
+  <rect x="48" y="48" width="416" height="416" rx="118" fill="url(#brandBg)"/>
+  <path d="M104 131c68-63 184-75 265-27 60 36 86 97 68 169-24 90-126 172-234 164-99-7-161-82-161-168 0-55 21-102 62-138Z" fill="url(#softLight)"/>
   <g filter="url(#shadow)">
-    <circle cx="256" cy="264" r="142" fill="#FFFFFF"/>
-    <g transform="rotate(-18 238 250)">
-      <ellipse cx="238" cy="276" rx="48" ry="84" fill="url(#footOne)"/>
-      <circle cx="202" cy="176" r="16" fill="#A855F7"/>
-      <circle cx="230" cy="164" r="15" fill="#A855F7"/>
-      <circle cx="260" cy="168" r="14" fill="#8B5CF6"/>
-      <circle cx="286" cy="186" r="13" fill="#38BDF8"/>
-    </g>
-    <path d="M320 307c23-26 66-13 66 25 0 43-49 64-66 81-18-17-66-38-66-81 0-38 43-51 66-25Z" fill="#E6FFFB" stroke="#14B8A6" stroke-width="13" stroke-linejoin="round"/>
+    <circle cx="256" cy="256" r="152" fill="#FFFFFF" opacity="0.14"/>
+    <text x="256" y="306" text-anchor="middle" direction="rtl" unicode-bidi="plaintext" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="178" font-weight="900" fill="#FFFFFF">طم</text>
+    <circle cx="156" cy="160" r="15" fill="#FFFFFF" opacity="0.88"/>
+    <circle cx="198" cy="138" r="11" fill="#E6FFFB" opacity="0.92"/>
+    <circle cx="234" cy="150" r="9" fill="#FFFFFF" opacity="0.72"/>
+    <path d="M350 130c12-14 37-6 37 15 0 23-27 35-37 45-10-10-37-22-37-45 0-21 25-29 37-15Z" fill="#FFFFFF" opacity="0.22"/>
   </g>
 </svg>

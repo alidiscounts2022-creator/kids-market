@@ -2,23 +2,18 @@
   <title id="title">شعار طفلي ماركت الأبيض</title>
   <desc id="desc">نسخة بيضاء من شعار طفلي ماركت للخلفيات الداكنة</desc>
   <defs>
-    <linearGradient id="bg" x1="692" y1="42" x2="892" y2="240" gradientUnits="userSpaceOnUse">
+    <linearGradient id="brandBg" x1="694" y1="43" x2="892" y2="239" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#A855F7"/>
       <stop offset="0.52" stop-color="#38BDF8"/>
       <stop offset="1" stop-color="#14B8A6"/>
     </linearGradient>
   </defs>
-  <rect x="696" y="42" width="196" height="196" rx="58" fill="url(#bg)"/>
-  <path d="M862 83c7-8 22-4 22 9 0 14-16 22-22 28-6-6-22-14-22-28 0-13 15-17 22-9Z" fill="#fff" opacity="0.9"/>
-  <circle cx="794" cy="146" r="66" fill="#FFFFFF"/>
-  <g transform="rotate(-18 783 144)">
-    <ellipse cx="783" cy="157" rx="22" ry="38" fill="#A855F7"/>
-    <circle cx="767" cy="111" r="7" fill="#A855F7"/>
-    <circle cx="780" cy="106" r="7" fill="#A855F7"/>
-    <circle cx="794" cy="108" r="6" fill="#8B5CF6"/>
-    <circle cx="806" cy="116" r="6" fill="#38BDF8"/>
-  </g>
-  <path d="M824 179c11-13 32-6 32 12 0 21-23 31-32 39-9-8-32-18-32-39 0-18 21-25 32-12Z" fill="#E6FFFB" stroke="#14B8A6" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="696" y="42" width="196" height="196" rx="58" fill="url(#brandBg)"/>
+  <circle cx="794" cy="140" r="72" fill="#FFFFFF" opacity="0.14"/>
+  <text x="794" y="164" text-anchor="middle" direction="rtl" unicode-bidi="plaintext" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="84" font-weight="900" fill="#FFFFFF">طم</text>
+  <circle cx="747" cy="95" r="7" fill="#FFFFFF" opacity="0.88"/>
+  <circle cx="766" cy="86" r="5" fill="#E6FFFB" opacity="0.92"/>
+  <circle cx="784" cy="91" r="4" fill="#FFFFFF" opacity="0.72"/>
   <g direction="rtl" unicode-bidi="plaintext">
     <text x="390" y="118" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="84" font-weight="900" fill="#FFFFFF">طفلي</text>
     <text x="390" y="178" text-anchor="middle" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="54" font-weight="900" fill="#99F6E4">ماركت</text>
