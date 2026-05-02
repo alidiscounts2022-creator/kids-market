@@ -23,6 +23,9 @@ const master = path.join(sourceDir, "tafli-market-master.png");
 const transparent = {
   mark: path.join(sourceDir, "tafli-market-mark-transparent.png"),
   header: path.join(sourceDir, "tafli-market-logo-header-transparent.png"),
+  headerWhite: path.join(sourceDir, "tafli-market-logo-header-white-transparent.png"),
+  combo: path.join(sourceDir, "tafli-market-logo-combo-transparent.png"),
+  comboWhite: path.join(sourceDir, "tafli-market-logo-combo-white-transparent.png"),
   primary: path.join(sourceDir, "tafli-market-logo-primary-transparent.png"),
   stacked: path.join(sourceDir, "tafli-market-logo-stacked-transparent.png"),
   white: path.join(sourceDir, "tafli-market-logo-white-transparent.png"),
@@ -134,6 +137,48 @@ async function makeWhiteLogo(input, output) {
     .toFile(output);
 }
 
+async function buildLogoCombo({ wordmark, output, markHeight = 168, wordmarkHeight = 118 }) {
+  const markBuffer = await sharp(transparent.mark)
+    .resize({ height: markHeight, fit: "contain", background: transparentBackground })
+    .png()
+    .toBuffer();
+  const wordmarkBuffer = await sharp(wordmark)
+    .resize({ height: wordmarkHeight, fit: "contain", background: transparentBackground })
+    .png()
+    .toBuffer();
+
+  const markMeta = await sharp(markBuffer).metadata();
+  const wordmarkMeta = await sharp(wordmarkBuffer).metadata();
+  const gap = 22;
+  const paddingX = 24;
+  const paddingY = 18;
+  const canvasWidth = markMeta.width + wordmarkMeta.width + gap + paddingX * 2;
+  const canvasHeight = Math.max(markMeta.height, wordmarkMeta.height) + paddingY * 2;
+
+  await sharp({
+    create: {
+      width: canvasWidth,
+      height: canvasHeight,
+      channels: 4,
+      background: transparentBackground,
+    },
+  })
+    .composite([
+      {
+        input: markBuffer,
+        left: paddingX,
+        top: Math.round((canvasHeight - markMeta.height) / 2),
+      },
+      {
+        input: wordmarkBuffer,
+        left: paddingX + markMeta.width + gap,
+        top: Math.round((canvasHeight - wordmarkMeta.height) / 2),
+      },
+    ])
+    .png({ compressionLevel: 9 })
+    .toFile(output);
+}
+
 async function renderContained({ src, name, width, height, background = transparentBackground, format }) {
   const output = path.join(brandDir, name);
   const ext = format || path.extname(name).toLowerCase().slice(1);
@@ -208,6 +253,8 @@ const jobs = [
   { src: transparent.mark, name: "social/profile-mark-1024.png", width: 1024, height: 1024 },
   { src: transparent.mark, name: "social/profile-mark-512.png", width: 512, height: 512 },
   { src: transparent.header, name: "web/logo-header-640.webp", width: 640 },
+  { src: transparent.combo, name: "web/logo-combo-900.webp", width: 900 },
+  { src: transparent.comboWhite, name: "web/logo-combo-white-1200.webp", width: 1200 },
   { src: transparent.primary, name: "web/logo-primary-1200.webp", width: 1200 },
   { src: transparent.white, name: "web/logo-white-1200.webp", width: 1200 },
   { src: transparent.mark, name: "web/logo-mark-512.webp", width: 512, height: 512 },
@@ -284,6 +331,9 @@ await extractTransparent(crops.stacked, transparent.stacked, [
   { left: 500, top: 100, width: 80, height: 150 },
 ]);
 await makeWhiteLogo(transparent.primary, transparent.white);
+await makeWhiteLogo(transparent.header, transparent.headerWhite);
+await buildLogoCombo({ wordmark: transparent.header, output: transparent.combo });
+await buildLogoCombo({ wordmark: transparent.headerWhite, output: transparent.comboWhite });
 
 await buildSvgWrapper({
   png: transparent.mark,
@@ -292,10 +342,10 @@ await buildSvgWrapper({
   height: 270,
 });
 await buildSvgWrapper({
-  png: transparent.header,
+  png: transparent.combo,
   name: "tafli-market-logo-primary.svg",
-  width: 760,
-  height: 170,
+  width: 900,
+  height: 220,
 });
 await buildSvgWrapper({
   png: transparent.stacked,
