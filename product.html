@@ -404,6 +404,189 @@
       .store-strip { align-items: flex-start; }
       .store-strip .btn { min-height: 38px; padding: 8px 11px; }
     }
+
+    /* Product page polish: decision-first, clean market + direct trust */
+    body {
+      background:
+        linear-gradient(180deg, #FFFFFF 0, #F5F7FA 430px, #F5F7FA 100%),
+        radial-gradient(circle at 85% 8%, rgba(20, 184, 166, .12), transparent 28%),
+        var(--bg);
+    }
+    .header {
+      background: rgba(255,255,255,.94);
+    }
+    .nav { min-height: 70px; }
+    main { padding-block: 18px 64px; }
+    .product-shell {
+      gap: 20px;
+    }
+    .media-card,
+    .details-card,
+    .notice-card,
+    .empty-card {
+      border-radius: 24px;
+      box-shadow: 0 18px 48px rgba(31, 41, 55, .09);
+    }
+    .media-card {
+      background: white;
+    }
+    .product-image {
+      aspect-ratio: 1 / .92;
+    }
+    .media-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      background: #FFFFFF;
+    }
+    .media-facts span {
+      display: grid;
+      place-items: center;
+      min-height: 54px;
+      padding: 8px;
+      border-radius: 16px;
+      color: #475467;
+      background: #F8FAFC;
+      font-size: .78rem;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .details-card {
+      padding: clamp(16px, 3vw, 24px);
+    }
+    .store-strip {
+      border-radius: 18px;
+      background: linear-gradient(135deg, #FFFFFF, #F0FDFA);
+      box-shadow: 0 10px 26px rgba(31, 41, 55, .06);
+    }
+    .store-strip-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .store-avatar {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: white;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      font-weight: 900;
+    }
+    .kicker {
+      color: #0F766E;
+      background: #E6FFFB;
+    }
+    h1 {
+      max-width: 13ch;
+      letter-spacing: 0;
+    }
+    .description {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #FBFCFE;
+    }
+    .decision-panel {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid rgba(20, 184, 166, .16);
+      border-radius: 20px;
+      background: linear-gradient(135deg, #F0FDFA, #FFFFFF);
+    }
+    .decision-panel h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.35;
+    }
+    .decision-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 800;
+    }
+    .option-group {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+    .option {
+      min-height: 42px;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, .04);
+    }
+    .summary {
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+    }
+    .actions .btn,
+    .page-tools .btn {
+      min-height: 48px;
+    }
+    .trust-tiles {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 12px;
+    }
+    .trust-tile {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 10px 28px rgba(31, 41, 55, .06);
+    }
+    .trust-tile i {
+      color: var(--teal);
+      flex: 0 0 auto;
+      margin-top: 3px;
+    }
+    .trust-tile b,
+    .trust-tile span {
+      display: block;
+    }
+    .trust-tile b {
+      line-height: 1.35;
+    }
+    .trust-tile span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 800;
+    }
+    .notice-card {
+      border-color: rgba(20, 184, 166, .16);
+      background: linear-gradient(135deg, #FFFFFF, #F0FDFA);
+    }
+    .sticky-product-bar .btn {
+      min-height: 44px;
+      padding-inline: 14px;
+    }
+    @media (min-width: 860px) {
+      .product-shell { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
+      .trust-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .notice-card { align-self: stretch; }
+    }
+    @media (max-width: 540px) {
+      body { padding-bottom: 0; }
+      main { padding-block-start: 12px; }
+      h1 { font-size: clamp(1.75rem, 8vw, 2.45rem); }
+      .media-facts { grid-template-columns: 1fr 1fr; }
+      .media-facts span:last-child { grid-column: 1 / -1; }
+      .description { font-size: .92rem; }
+      .trust-tile { padding: 12px; }
+      .sticky-product-bar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -659,6 +842,38 @@
       `;
     }
 
+    function storeInitial() {
+      return String(product?.store || "ط").trim().slice(0, 1) || "ط";
+    }
+
+    function trustTiles() {
+      return `
+        <section class="trust-tiles">
+          <article class="trust-tile">
+            <i data-lucide="message-circle"></i>
+            <div>
+              <b>رسالة واتساب جاهزة</b>
+              <span>تصل للتاجر ومعها الكود، السعر، المقاس واللون المختار.</span>
+            </div>
+          </article>
+          <article class="trust-tile">
+            <i data-lucide="link-2"></i>
+            <div>
+              <b>رابط المنتج مرفق</b>
+              <span>الزبون لا يحتاج يشرح المنتج؛ الرابط يصل داخل الرسالة.</span>
+            </div>
+          </article>
+          <article class="trust-tile">
+            <i data-lucide="shield-check"></i>
+            <div>
+              <b>الاتفاق خارج الموقع</b>
+              <span>الدفع، التوصيل، والحجز يتم مباشرة مع المحل.</span>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
     function renderProduct() {
       document.title = `${product.name} | طفلي ماركت`;
       galleryIndex = 0;
@@ -683,12 +898,20 @@
                 `).join("")}
               </div>
             ` : ""}
+            <div class="media-facts">
+              <span><i data-lucide="images"></i>${product.gallery.length || 1} صور</span>
+              <span><i data-lucide="layers-3"></i>${escapeHtml(product.category)}</span>
+              <span><i data-lucide="map-pin"></i>${escapeHtml(product.city)}</span>
+            </div>
           </aside>
           <section class="details-card">
             <div class="store-strip">
-              <div>
-                <b>${escapeHtml(product.store)}</b>
-                <span>${escapeHtml(product.city)} · تواصل مباشر مع التاجر</span>
+              <div class="store-strip-main">
+                <span class="store-avatar">${escapeHtml(storeInitial())}</span>
+                <div>
+                  <b>${escapeHtml(product.store)}</b>
+                  <span>${escapeHtml(product.city)} · تواصل مباشر مع التاجر</span>
+                </div>
               </div>
               <a class="btn btn-light" href="${storeUrl}"><i data-lucide="store"></i>المحل</a>
             </div>
@@ -701,6 +924,10 @@
               <span class="meta-line"><i data-lucide="layers-3"></i>${escapeHtml(product.category)}</span>
             </div>
             <p class="description">${escapeHtml(product.description)}</p>
+            <div class="decision-panel">
+              <h2>اختياراتك قبل واتساب</h2>
+              <p>اختر المقاس واللون المتاح، وسنجهز الرسالة للتاجر مع رابط المنتج وكوده.</p>
+            </div>
             <div id="options">
               ${optionGroup("اختر المقاس", "size", product.sizes)}
               ${optionGroup("اختر اللون", "color", product.colors)}
@@ -719,6 +946,7 @@
             <h2>تنبيه مهم</h2>
             <p>طفلي ماركت يعرض المنتج فقط. الدفع، التوصيل، والحجز يتم الاتفاق عليها مباشرة مع التاجر.</p>
           </section>
+          ${trustTiles()}
           ${relatedSection()}
         </div>
         <div class="sticky-product-bar">

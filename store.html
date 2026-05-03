@@ -415,6 +415,193 @@
       .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
+
+    /* Storefront polish: branded merchant page, calmer market surface */
+    body {
+      background:
+        linear-gradient(180deg, #FFFFFF 0, #F5F7FA 420px, #F5F7FA 100%),
+        radial-gradient(circle at 12% 0%, rgba(168, 85, 247, .10), transparent 28%),
+        var(--bg);
+    }
+    .header {
+      background: rgba(255,255,255,.94);
+    }
+    main { padding-block: 18px 60px; }
+    .store-hero {
+      color: var(--text);
+      border: 1px solid rgba(229,234,241,.96);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.94) 56%, rgba(240,253,250,.92) 100%);
+      box-shadow: 0 24px 70px rgba(31, 41, 55, .10);
+    }
+    .store-hero::after {
+      display: none;
+    }
+    .kicker {
+      color: #0F766E;
+      border-color: rgba(20,184,166,.16);
+      background: #E6FFFB;
+    }
+    .store-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .store-avatar {
+      width: 60px;
+      height: 60px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: #FFFFFF;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      box-shadow: 0 16px 34px rgba(20,184,166,.18);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+    .store-identity small {
+      display: block;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.4;
+    }
+    h1 {
+      color: var(--text);
+      max-width: 15ch;
+      letter-spacing: 0;
+    }
+    .hero-copy p {
+      color: #475467;
+      font-weight: 780;
+    }
+    .hero-actions .btn:not(.btn-primary):not(.btn-whatsapp) {
+      color: var(--text);
+      background: #FFFFFF;
+      border-color: var(--line);
+    }
+    .hero-actions .btn-whatsapp {
+      box-shadow: 0 16px 34px rgba(34, 197, 94, .18);
+    }
+    .stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .stat {
+      min-height: 58px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 26px rgba(31, 41, 55, .06);
+    }
+    .cover-card {
+      background: #FFFFFF;
+      border-color: var(--line);
+      box-shadow: 0 18px 48px rgba(31, 41, 55, .10);
+    }
+    .cover-card img {
+      aspect-ratio: 1 / .78;
+      border-radius: 0;
+    }
+    .cover-body {
+      background: #FFFFFF;
+    }
+    .store-trust {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .store-trust span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 44px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #FFFFFF;
+      color: #475467;
+      font-size: .82rem;
+      font-weight: 900;
+      text-align: center;
+    }
+    .filters {
+      border-radius: 22px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 18px 44px rgba(31, 41, 55, .08);
+    }
+    .store-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 2px 14px;
+      scrollbar-width: none;
+    }
+    .store-tabs::-webkit-scrollbar { display: none; }
+    .store-tab {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #FFFFFF;
+      color: #475467;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .store-tab.active {
+      color: #FFFFFF;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+    }
+    .section-head {
+      align-items: center;
+    }
+    .product-card {
+      border-radius: 22px;
+      background: #FFFFFF;
+      box-shadow: 0 14px 36px rgba(31, 41, 55, .07);
+    }
+    .product-media {
+      margin: 10px 10px 0;
+      border-radius: 18px;
+    }
+    .product-media img {
+      border-radius: 18px;
+      aspect-ratio: 1 / .78;
+    }
+    .product-title-row {
+      display: grid;
+      gap: 6px;
+    }
+    .price { font-size: 1.18rem; }
+    .product-actions {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    }
+    .info-card {
+      border-color: rgba(20,184,166,.16);
+      background: linear-gradient(135deg, #FFFFFF, #F0FDFA);
+    }
+    @media (min-width: 980px) {
+      .store-hero { grid-template-columns: minmax(0, 1.02fr) minmax(320px, .64fr); }
+    }
+    @media (max-width: 680px) {
+      .store-avatar { width: 52px; height: 52px; border-radius: 18px; }
+      .stats,
+      .store-trust {
+        grid-template-columns: 1fr;
+      }
+      .stat,
+      .store-trust span {
+        justify-content: flex-start;
+        text-align: right;
+      }
+      .product-actions {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -585,6 +772,24 @@
       };
     }
 
+    function storeInitial() {
+      return String(storeProfile?.name || storeName || "ط").trim().slice(0, 1) || "ط";
+    }
+
+    function storeCode() {
+      const source = String(storeProfile?.merchant_id || storeProfile?.name || storeName || "store").replace(/[^a-z0-9]/gi, "").toUpperCase();
+      return `SHOP-${(source || "LOCAL").slice(0, 6)}`;
+    }
+
+    function categoryTabs(categories) {
+      return `
+        <div class="store-tabs" id="storeTabs" aria-label="تصنيفات المحل">
+          <button class="store-tab active" type="button" data-store-category="all">كل المنتجات</button>
+          ${categories.map(category => `<button class="store-tab" type="button" data-store-category="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}
+        </div>
+      `;
+    }
+
     function productCard(product) {
       const tags = [
         product.sizes?.length ? `<span class="badge"><i data-lucide="ruler"></i>${escapeHtml(product.sizes[0])}${product.sizes.length > 1 ? ` +${product.sizes.length - 1}` : ""}</span>` : "",
@@ -627,12 +832,23 @@
       app.innerHTML = `
         <section class="store-hero">
           <div class="hero-copy">
-            <span class="kicker"><i data-lucide="store"></i>واجهة محل</span>
+            <div class="store-identity">
+              <span class="store-avatar">${escapeHtml(storeInitial())}</span>
+              <div>
+                <span class="kicker"><i data-lucide="store"></i>واجهة محل</span>
+                <small>كود المحل: ${escapeHtml(storeCode())}</small>
+              </div>
+            </div>
             <h1>${escapeHtml(storeProfile.name)}</h1>
             <p>صفحة واحدة تجمع منتجات المحل المنشورة، مع تواصل مباشر عبر واتساب. طفلي ماركت يعرض المنتجات فقط ولا يدير البيع أو التوصيل.</p>
             <div class="hero-actions">
               <a class="btn btn-whatsapp" href="${contactUrl}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>تواصل مع المحل</a>
               <button class="btn" id="copyStoreLink" type="button"><i data-lucide="copy"></i>نسخ رابط المحل</button>
+            </div>
+            <div class="store-trust">
+              <span><i data-lucide="message-circle"></i>واتساب مباشر</span>
+              <span><i data-lucide="eye"></i>عرض فقط</span>
+              <span><i data-lucide="shield-check"></i>اتفاق مع التاجر</span>
             </div>
             <div class="stats">
               <div class="stat"><i data-lucide="package"></i>${products.length} منتج منشور</div>
@@ -680,6 +896,8 @@
           <button class="btn btn-primary" type="submit"><i data-lucide="sliders-horizontal"></i>تطبيق</button>
         </form>
 
+        ${categoryTabs(storeProfile.categories)}
+
         <div class="section-head">
           <div>
             <h2>منتجات المحل</h2>
@@ -717,6 +935,12 @@
 
       document.getElementById("filtersForm").addEventListener("submit", event => {
         event.preventDefault();
+        applyFilters();
+      });
+      document.getElementById("storeTabs").addEventListener("click", event => {
+        const tab = event.target.closest("[data-store-category]");
+        if (!tab) return;
+        document.getElementById("categoryFilter").value = tab.dataset.storeCategory;
         applyFilters();
       });
       ["searchInput", "categoryFilter", "cityFilter", "sortFilter"].forEach(id => {
@@ -759,6 +983,9 @@
         ? sorted.map(productCard).join("")
         : `<section class="empty" style="grid-column:1 / -1;"><h2>لا توجد نتائج مطابقة</h2><p>جرّب تغيير البحث أو المدينة أو التصنيف.</p></section>`;
       document.getElementById("resultStatus").textContent = `عرض ${sorted.length} من ${products.length} منتج داخل المحل.`;
+      document.querySelectorAll("[data-store-category]").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.storeCategory === category);
+      });
       lucide.createIcons();
     }
 
